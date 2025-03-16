@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Page Title</title>
+    </head>
+    <body>
+        
+    </body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Emoji/loto Generator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: pink;
+            color: light blue;
+            margin: 0;
+        }
+        .button-container {
+            text-align: center;
+        }
+        .button {
+            font-size: 40px;
+            padding: 20px 40px;
+            background-color: light blue;
+            color: light blue;
+            border-color: pink;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .emoji {
+            font-size: 100px;
+            margin-top: 22px;
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <button class="button">loto</button>
+        <div class="emoji">start now!</div>
+    </div>
+
+    <script>
+        const button = document.querySelector('.button');
+        const emojiDiv = document.querySelector('.emoji');
+        const emojis = ['try again!', 'lost!', 'lost!', 'y😂ur funny', 'lost!', '😊', 'you w😇n!', '🙂', '🙃', '😉', '😌', 'lost!', 'lost', 'lost!', 'lost!', '😙', '😚', 'try again!', '😛', '😜', '😝', 'lost!', '🤨', '🧐', 'n🤓ob', '😎', 'lost!', 'd😏nt even try!', '😒', '😞', '😔', '😟', '😕', '🙁', 'lost!', 'game over!', '😖', '😫', '😩', '🥺', '😢', 'lost!', 'lost!', '😠', '😡', 'game over!', 'lost again!', '😳', 'lost!', 'game 🥶ver!', '😱MG', '😨', '😰', '😥', '😓', 'lost!', '🤔', '🤭', '🤫', 'y🤥u are lying to yourself!', '😶', '😐', 'lost', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', 'game 😵ver', 'game over!', 'game over!', '🤧', '😷', '🤕', 'pay me r🤑bux!', 'l😈st! ', 'l👿st!', 'game over!', 'try again!', 'try again!', 'game over!', '👻Boo', 'game over!', 'game ☠️ver!', 'lost!', 'lost!'];
+
+        button.addEventListener('click', () => {
+            const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            emojiDiv.textContent = randomEmoji;
+        });
+    </script>
+</body>
+</html>

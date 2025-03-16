@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API FETCHER</title>
+    <style>
+        *{
+            margin: 0;
+            padding:0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            padding:20px;
+            background-color: #f0f2f5;
+        }
+
+        .container{
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1{
+            text-align: center;
+            color:#333;
+            margin-bottom: 30px;
+        }
+
+        .api-section{
+            background-color: #f0f2f5;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(red, green, blue, alpha);
+            margin-bottom: 20px;
+        }
+
+        .input-group{
+            margin-bottom:20px;
+        }
+
+        input[type="text"]{
+            width:70%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-right:10px;
+            border-radius: 5px;
+        }
+
+        button{
+            padding :10px 20px;
+            background-color: #007bff;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            transition:background-color 3s;
+
+        }
+        button:hover{
+            background-color: #0056b3;
+        }
+
+        .responsive-container{
+        margin-top: 20px;
+        padding:10px;
+        background-color: #f0f2f5;
+        border-radius: 5px;
+        white-space:pre-wrap;
+        }
+
+        .sample-api{
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: #e9ecef;
+            transition: background-color 3s;
+        }
+
+        .sample-api:hover{
+            background-color:#dee2e6;
+        }
+    </style>
+</head>
+<body>
+ <div class="container">
+    <h1>API FETCHER</h1>
+    <div class="api-fetcher">
+        <div class="input-group">
+            <input type="text" id="apiUrl" placeholder="Enter API URL">
+            <button onclick="fetchDtata">fetch data</button>
+        </div>
+        <div class="sample-apis" onclick="setaApiUrl('https://jsonplaceholder.typicode.com/users')">
+<h3>USERS API</h3>
+<p>JSON placeholder Users</p>
+        </div>
+        <div class="sample-api" onclick="setApiUrl('https://randomuser.me/api/')">
+            <h3>Random User</h3>
+            <p>Random User Generator</p>
+        </div>
+        <div class="response-container"id="response"></div>
+    </div>
+ </div> 
+ <script>
+    function setApiUrl(url){
+        document.getElementById('apiUrl').value=url;
+    }
+    async function fetchData(){
+        const apiUrl=document.getElementById('apiUrl').value;
+        const responseContainer = document.getElementById('response');
+    
+
+    if(!apiUrl){
+        alert('Please enter an API URL');
+        return;
+    }
+
+    try{
+        responseContainer.textContent='Loading....';
+        const response=await fetch(apiUrl);
+    
+    if(!response.ok){
+        throw new Error('HTTP error! status:${response.status}');
+    }
+   const data=await response.json();
+   responseContainer.textContent = JSON.stringify(data,nuyll,2);
+}catch(error){
+    responseContainer.textContent=`Error : ${error.message}`;
+}
+}
+ </script>  
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Google.com</title>
+    </head>
+    <body>
+    <div style='height:30px;'></div>
+    <div style='text-align:center;'><img src='https://pngimg.com/uploads/google/google_PNG19644.png' width='60%'>
+<input type="text" id="search" placeholder="🔍   Search..." onkeydown="if (event.key==='Enter') searchGoogle()"></div><div style='height:10px;'></div>
+<span style='display:flex; justify-content:center;'><button>Google Search</button><div style='width:20px;'></div><button onclick='window.location.href="https://www.google.com/doodles/"'>I'm Feeling Lucky</button></span>
+
+<script>
+  function searchGoogle() {
+    var searchQuery = document.getElementById("search").value;
+    var url = "https://www.google.com/search?q=" + searchQuery;
+    window.location.href = url;
+  }
+</script> 
+    </body>
+</html>
