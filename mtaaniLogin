@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In / Sign Up</title>
+
+
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: url('https://imgs.search.brave.com/rkpYFOMoWWUJxRWI-lntn3jRqGj0-aEe-cXcYAND4J4/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvODkx/NTAxODc2L3Bob3Rv/L2FlcmlhbC12aWV3/LW9mLWNpdHktbmV0/d29yay1vZi1iZWlq/aW5nLXNreWxpbmUu/anBnP3M9NjEyeDYx/MiZ3PTAmaz0yMCZj/PWNTay1xNkpvOVFU/eUJfeE00N2NBVjJ2/RFNUb3ZFYlNsa1JD/VG9hZkFabmM9') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .wrapper {
+            background-color: rgba(98, 107, 234, 0.9);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            max-width: 90%;
+            margin: 20px; 
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: calc(100% - 22px);
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00f10c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #bb1515;
+        }
+
+        .form-switch {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-switch a {
+            color: #b3c5d8;
+            text-decoration: none;
+        }
+
+        .form-switch a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .wrapper {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper" id="signupWrapper">
+        <h1>Sign Up</h1>
+        <form id="signupForm">
+            <div>
+                <input required type="text" name="firstname" id="signup-firstname-input" placeholder="Name">
+            </div>
+            <div>
+                <input required type="email" name="email" id="signup-email-input" placeholder="Email">
+            </div>
+            <div>
+                <input required type="password" name="password" id="signup-password-input" placeholder="Password">
+            </div>
+            <div>
+                <input required type="password" name="repeat-password" id="signup-repeat-password-input" placeholder="Confirm Password">
+            </div>
+            <button type="submit">Sign Up</button>
+        </form>
+        <div class="form-switch">
+            <a href="#" id="switchToSignIn">Already have an account? Sign In</a>
+        </div>
+    </div>
+
+    <div class="wrapper" id="signinWrapper" style="display: none;">
+        <h1>Sign In</h1>
+        <form id="signinForm">
+            <div>
+                <input required type="email" name="email" id="signin-email-input" placeholder="Email">
+            </div>
+            <div>
+                <input required type="password" name="password" id="signin-password-input" placeholder="Password">
+            </div>
+            <button type="submit">Sign In</button>
+        </form>
+        <div class="form-switch">
+            <a href="#" id="switchToSignUp">Create an account? Sign Up</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            const password = document.getElementById('signup-password-input').value;
+            const repeatPassword = document.getElementById('signup-repeat-password-input').value;
+
+            if (password !== repeatPassword) {
+                alert("Passwords do not match.");
+                event.preventDefault();
+            }
+        });
+
+        document.getElementById('switchToSignIn').addEventListener('click', function(event) {
+            event.preventDefault();
+            document.getElementById('signupWrapper').style.display = 'none';
+            document.getElementById('signinWrapper').style.display = 'block';
+        });
+
+        document.getElementById('switchToSignUp').addEventListener('click', function(event) {
+            event.preventDefault();
+            document.getElementById('signinWrapper').style.display = 'none';
+            document.getElementById('signupWrapper').style.display = 'block';
+        });
+
+    </script>
+</body>
+</html>
