@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STUDY ME -  the STUDY ME range of scripts provided by BroganDB of SoloLearn for users to look over and to learn from - The Shareable URL QR Gen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 50px;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: inline-block; /* Centers the form */
+        }
+        input[type="text"] {
+            width: 80%;
+            max-width: 400px; /* Limits the  maximum width */
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            padding: 15px 25px;
+            background-color: #5cb85c;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #4cae4c;
+        }
+        .qrCodeContainer {
+            margin-top: 20px; /* Space above QR code */
+            display: flex;
+            justify-content: center; /* Center the QR code */
+            align-items: center; /* Align vertically */
+        }
+        img {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: none; /* Hide initially */
+        }
+        .qrLink {
+            display: none; /* Hide initially */
+            margin-top: 10px;
+            color: #007bff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<h1>QR Code Generator</h1>
+<form id="qrForm">
+    <input type="text" id="urlInput" placeholder="Enter URL" required>
+    <input type="submit" value="Generate QR Code">
+</form>
+
+<div class="qrCodeContainer">
+    <img id="qrCode" src="" alt="QR Code will be displayed here">
+</div>
+<p id="qrLink" class="qrLink"></p>
+
+<script>
+    document.getElementById('qrForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the form from submitting
+
+        const url =< document.getElementById('urlInput').value;
+        const qrCodeImage = document.getElementById('qrCode');
+        const qrLink = document.getElementById('qrLink');
+
+        // Generate the QR code image URL using the goqr.me API
+        const qrCodeUrl = https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)};
+        qrCodeImage.src = qrCodeUrl;
+        
+        // Set the link to the QR code image
+        qrLink.innerHTML = View your sharable QR link: <a href="${qrCodeUrl}" target="_blank">${qrCodeUrl}</a>;
+        
+        // Show the QR code and link
+        qrCodeImage.style.display = 'block';
+        qrLink.style.display = 'block'; // Show the link
+    });
+</script>
+
+</body>
+</html>
