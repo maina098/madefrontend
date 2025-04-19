@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=sync"
+    />
+    <style>
+        
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Bungee+Spice&family=Edu+AU+VIC+WA+NT+Arrows:wght@400..700&display=swap');
+
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    font-family: "Barlow Condensed", sans-serif;
+    
+}
+.head{
+    text-align: center ;
+   font-family: "";
+   font-family: "Bungee Spice", sans-serif;
+}
+label{
+    display: block;
+    margin:5px 0px ;
+}
+.container{
+    width: 280px;
+    border: 1px solid rgb(176, 176, 176);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 5px grey;
+
+}
+.box{ 
+    display: inline;
+    margin: 5px ;
+
+}
+.user{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+input ,  select{
+    width: 100%;
+    height:20px;
+}
+#username{
+    width: 80%;
+    height: 25px;
+    
+}
+#checkbox1 , #checkbox2{
+    width: min-content;
+    margin: 10px 5px;
+}
+.submit{
+    width: 100%;
+    margin: 0px 10px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: blueviolet;
+    color: white;
+    font-size: large;
+}
+.submit:hover{
+    background-color: blue;
+}
+select::-webkit-scrollbar {
+    display: none;
+  }
+  
+
+    </style>
+  </head>
+  <body>
+  <div class="container">
+    <h1 class="head">create account</h1>
+    <form>
+      <label for="username"> username</label>
+      <div class="user">
+        <input type="text" id="username" readonly/>
+        <button type="button" id="generate" onclick="userName()"><span class="material-symbols-outlined">
+          sync
+          </span></button>
+      
+      </div>
+      <label for="password"> password</label>
+      <div>
+        <input onkeyup="passwordChecker()" type="password" id="password" />
+      </div>
+      <label for="age">select your date of birth </label>
+      <div onclick="dropdown()">
+        <select id="age" > 
+        <option></option>
+        </select>
+      
+      </div>
+      <label for="slide"> Remember your username and password </label>
+      <div onclick="slider()">
+        <input type="range" id="slide" max="1" min="0" onchange="slider()"/>
+      </div>
+      <div>
+        <div>
+          <input type="radio" name="sel" id="checkbox1" checked  onclick="condition()"/>
+          <label class="box" for="checkbox1">
+            I didn't agree to the terms and conditions
+          </label>
+        </div>
+        <div>
+          <input type="radio" name="sel" id="checkbox2" />
+          <label class="box" for="checkbox2">
+            I agree to the terms and conditions
+          </label>
+        </div>
+        
+      </div>
+    </form>
+    <button class="submit" type="submit" id="final" onclick="submit()">sign up</button>
+  </div>
+  <script>
+let name = "";
+function userName() {
+  clear();
+  const randomChar = () =>
+    String.fromCharCode(33 + Math.floor(Math.random() * 90));
+  for (let i = 0; i < Math.floor(25 + Math.random() * 40); i++) {
+    name += randomChar();
+  }
+  userInput(name);
+}
+function clear() {
+  name = "";
+}
+function userInput(name) {
+  const username = document.getElementById("username");
+  username.value = name;
+}
+function passwordChecker() {
+  const password = document.getElementById("password");
+
+
+
+  if (password.value[password.value.length - 1]) {
+    alert("you cant use that character");
+    password.value = password.value = "";
+  }
+}
+
+
+
+function dropdown() {
+  const age = document.getElementById("age");
+  const currentDate = new Date();
+  let time;
+  let ages;
+  while (currentDate.getFullYear() >= 2000) {
+    const week = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thrusday",
+      "Friday",
+      "Saturday",
+    ];
+
+    time = `${currentDate.getDate()} - ${currentDate.getMonth()+1} - ${currentDate.getFullYear()} - ${
+      week[currentDate.getDay()]
+    }`;
+    ages += `<option> ${time} </option>`;
+    currentDate.setDate(currentDate.getDate() - 1);
+  }
+  age.innerHTML += ages;
+ 
+}
+
+function condition() {
+  const rad1 = document.getElementById("checkbox1");
+  const rad2 = document.getElementById("checkbox2");
+
+  rad1.checked = false;
+  rad2.checked = true;
+
+  if (rad2.checked == true) {
+    alert("Once you agreed with our term and condition the you cannot disagree");
+    
+  }
+}
+const a = document.getElementById('slide');
+a.value = 0;
+function slider(){
+  
+  if(a.value == 1){
+      alert("can't you remember a single username and password by yourself");
+      a.value = 0;
+  }
+  
+}
+function submit(){
+  alert("You can't fill a simple form , first fill the complete form 😶‍🌫️😶‍🌫️")
+}
+
+  </script>
+  </body>
+</html>
