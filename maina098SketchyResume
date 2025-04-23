@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sketch Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-main: 'Gloria Hallelujah', cursive;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: 
+        repeating-linear-gradient(to bottom, #fdfdfd, #fdfdfd 28px, #a0a0a0 29px),
+        #fff;
+      color: #000;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .sketchy {
+      border: 2px solid black;
+      filter: url(#sketch);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 2px 2px 0px #000;
+      background: rgba(255, 228, 196, 0.2);
+    }
+
+    header {
+      text-align: center;
+    }
+
+    h1, h2, h3 {
+      border-bottom: 2px solid black;
+      display: inline-block;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    h1::before,
+    h2::before,
+    h3::before {
+      content: '';
+      position: absolute;
+      left: -4px;
+      right: -4px;
+      top: 50%;
+      bottom: 0;
+      background: rgba(255, 0, 0, 0.3);
+      z-index: -1;
+      transform: rotate(-2deg);
+      border-radius: 2px;
+    }
+
+    h2::before {
+      background: rgba(225, 255, 0, 0.4);
+    }
+    h3::before {
+      background: rgba(0, 255, 225, 0.4);
+    }
+
+    .projects {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .project-card {
+      width: auto;
+      border: 2px solid black;
+      padding: 15px;
+      box-shadow: 1px 1px 0px #000;
+      filter: url(#sketch);
+      background: rgba(173, 216, 230, 0.3);
+    }
+
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .skill {
+      border: 2px solid black;
+      padding: 5px 10px;
+      box-shadow: 1px 1px 0px #000;
+      filter: url(#sketch);
+      background: rgba(144, 238, 144, 0.3);
+    }
+
+    form input, form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 2px solid black;
+      font-family: var(--font-main);
+      background: rgba(255, 255, 255, 0.5);
+      filter: url(#sketch);
+    }
+
+    form button {
+      border: 2px solid black;
+      padding: 10px 20px;
+      box-shadow: 1px 1px 0px #000;
+      font-family: var(--font-main);
+      background: rgba(255, 222, 173, 0.5);
+      cursor: pointer;
+      filter: url(#sketch);
+    }
+
+    footer {
+      text-align: center;
+      border: 2px solid black;
+      padding: 10px;
+      filter: url(#sketch);
+      box-shadow: 2px 2px 0px #000;
+      background: rgba(255, 192, 203, 0.3);
+    }
+
+    .asterisk {
+      font-size: 0.6em;
+      font-style: italic;
+      color: #555;
+      display: block;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0">
+    <filter id="sketch">
+      <feTurbulence type="turbulence" baseFrequency="0.03" numOctaves="4" result="turbulence"/>
+      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="2" />
+    </filter>
+  </svg>
+
+  <header class="sketchy">
+    <h1>Anderson Maina</h1>
+    <p>web Developer and  AI Enthusiast</p>
+  </header>
+
+ 
+  <section class="sketchy">
+    <h2>About Me</h2>
+    <p>I love to think and then create sometimes without even thinking.<br>
+        I am Enthusiast who blosssoms in the questioning of  everything <br>
+        Am always eager to learn and collaborate my knowledge in various fields.</p>
+    <span class="asterisk">* But I'm equally lazy to code..</span>
+  </section>
+
+  <section class="sketchy">
+    <h2>Projects</h2>
+    <div class="projects">
+      <div class="project-card">
+        <h3>Terminal</h3>
+        <p>A web based terminal sim. </p>
+      </div>
+      <div class="project-card">
+        <h3>Number System Converter</h3>
+        <p>A completely functional expirement to convert the varoius number systems format <br>
+            to the other site in liason with the involved arithmetic operations .</p>
+      </div>
+      <span class="asterisk">* There are much more but it's a pain to add those..</span>
+    </div>
+  </section>
+
+  <section class="sketchy">
+    <h2>Skills</h2>
+    <div class="skills">
+      <div class="skill">HTML</div>
+      <div class="skill">CSS</div>
+      <div class="skill">JavaScript</div>
+      <div class="skill">Python</div>
+      <div class="skill">Java</div>
+      <div class="skill">Node.js</div>
+      <div class="skill">MySQL</div>
+      <div class="skill">React</div>
+    </div>
+    <span class="asterisk">* Don't think I need to mention more..</span>
+  </section>
+
+  <section class="sketchy">
+    <h2>Contact Me</h2>
+    <form>
+      <label>Name</label>
+      <input type="text" name="name">
+      <label>Email</label>
+      <input type="email" name="email">
+      <label>Message</label>
+      <textarea name="message" rows="4"></textarea>
+      <button onclick="alert('Succesfully Sent Anderson will get back to you sooner !!!')">Send</button>
+    </form>
+  </section>
+
+  <footer>
+    <p>© 2025 Anderson Maina Portfolio .</p>
+  </footer>
+</body>
+</html>
