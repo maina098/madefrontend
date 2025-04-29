@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>𝑆𝒊𝒎𝒑𝒍𝒆 𝑪𝒉𝒆𝒔𝒔</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #111;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    overflow-x: hidden;
+  }
+  h1 {
+    margin-top: 10px;
+    font-size: 32px;
+  }
+  .scoreboard {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+    font-size: 20px;
+  }
+  .team {
+    margin: 0 30px;
+  }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(8, 60px);
+    grid-template-rows: repeat(8, 60px);
+    margin: 20px auto;
+    border: 4px solid #fff;
+  }
+  .cell {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    background-color: #eee;
+  }
+  .black {
+    background-color: #333;
+  }
+  .winner {
+    margin-top: 20px;
+    font-size: 30px;
+    color: yellow;
+  }
+</style>
+</head>
+<body>
+
+<h1>Hernandez trinity🕷️ 𝑉𝑆 lnn Liam🪬- 𝐶ℎ𝑒𝑠𝑠</h1>
+
+<div class="scoreboard">
+  <div class="team" id="team1">Stranger Things: 0</div>
+  <div class="team" id="team2">Wednesday: 0</div>
+</div>
+
+<div class="board" id="board"></div>
+
+<div class="winner" id="winner"></div>
+
+<!-- Confetti effect -->
+<canvas id="confetti" style="position:fixed;top:0;left:0;pointer-events:none;width:100%;height:100%;"></canvas>
+
+<script>
+// Configurations
+const pieces = {
+  'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', 'p': '♟️',
+  'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔', 'P': '♙'
+};
+
+let board = [
+  ['r','n','b','q','k','b','n','r'],
+  ['p','p','p','p','p','p','p','p'],
+  ['','','','','','','',''],
+  ['','','','','','','',''],
+  ['','','','','','','',''],
+  ['','','','','','','',''],
+  ['P','P','P','P','P','P','P','P'],
+  ['R','N','B','Q','K','B','N','R']
+];
+
+let turn = 'white'; // Stranger Things: White, Wednesday: Black
+let selected = null;
+let scores = { 'white': 0, 'black': 0 };
+
+function createBoard() {
+  const boardDiv = document.getElementById('board');
+  boardDiv.innerHTML = '';
+  for (let y = 0; y < 8; y++) {
+    for (let x = 0; x < 8; x++) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      if ((x + y) % 2 == 1) cell.classList.add('black');
+      cell.dataset.x = x;
+      cell.dataset.y = y;
+      cell.innerHTML = pieces[board[y][x]] || '';
+      cell.addEventListener('click', handleMove);
+      boardDiv.appendChild(cell);
+    }
+  }
+}
+
+function handleMove(e) {
+  const x = parseInt(e.target.dataset.x);
+  const y = parseInt(e.target.dataset.y);
+  const piece = board[y][x];
+
+  if (selected) {
+    const [sx, sy] = selected;
+    if (sx === x && sy === y) {
+      selected = null;
+      return;
+    }
+    if (isOwnPiece(piece)) {
+      selected = [x, y];
+      return;
+    }
+    movePiece(sx, sy, x, y);
+    selected = null;
+  } else {
+    if (piece && isOwnPiece(piece)) {
+      selected = [x, y];
+    }
+  }
+}
+
+function isOwnPiece(piece) {
+  if (!piece) return false;
+  if (turn === 'white') return piece === piece.toUpperCase();
+  else return piece === piece.toLowerCase();
+}
+
+function movePiece(sx, sy, x, y) {
+  const target = board[y][x];
+  if (target.toLowerCase() === 'k') {
+    endGame();
+    return;
+  }
+  board[y][x] = board[sy][sx];
+  board[sy][sx] = '';
+  turn = (turn === 'white') ? 'black' : 'white';
+  createBoard();
+}
+
+function endGame() {
+  const winner = (turn === 'white') ? 'Stranger Things' : 'Wednesday';
+  document.getElementById('winner').innerText = `${winner} wins!`;
+
+  if (turn === 'white') scores.white++;
+  else scores.black++;
+
+  document.getElementById('team1').innerText = `Stranger Things: ${scores.white}`;
+  document.getElementById('team2').innerText = `Wednesday: ${scores.black}`;
+  
+  launchConfetti();
+}
+
+function launchConfetti() {
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  const pieces = [];
+  const numberOfPieces = 150;
+  const colors = ['#ff0', '#f0f', '#0ff', '#0f0', '#f00'];
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  for (let i = 0; i < numberOfPieces; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 5 + 5,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      speed: Math.random() * 3 + 2
+    });
+  }
+
+  function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let p of pieces) {
+      p.y += p.speed;
+      if (p.y > canvas.height) p.y = 0;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    requestAnimationFrame(update);
+  }
+
+  update();
+}
+
+createBoard();
+</script>
+
+</body>
+</html>
