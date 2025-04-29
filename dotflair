@@ -1,0 +1,152 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<style>
+  body {
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    cursor: none;
+    background: #050505;
+    touch-action: none; /* Prevent scrolling on mobile */
+  }
+  
+  .dot {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease-out;
+    will-change: transform; /* Optimize animation */
+  }
+  
+  .wand-cursor {
+    position: absolute;
+    font-size: 20px;
+    pointer-events: none;
+    transform: translate(-50%, -50%) rotate(45deg);
+    z-index: 1000;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+    animation: float 0.5s ease-in-out infinite alternate;
+    will-change: transform; /* Optimize animation */
+  }
+  
+  @keyframes float {
+    from { transform: translate(-50%, -50%) rotate(45deg); }
+    to { transform: translate(-50%, -60%) rotate(45deg); }
+  }
+
+  /* Mobile-specific adjustments */
+  @media (max-width: 768px) {
+    .wand-cursor {
+      font-size: 20px; /* Larger cursor for touch devices */
+    }
+  }
+</style>
+</head>
+<body>
+<div class="wand-cursor">🌟</div>
+<script>
+  const dots = [];
+  const dotCount = 20;
+  
+  // Magical color palette
+  const colors = [
+    '#fcfcfc', '#ebf7fa', '#dcf5fc', '#bdeffc',
+    '#00c6fc', '#37d0fa', '#7ae2ff', '#02f799', 
+    '#17fca4', '#87face', '#a8f7d9', '#ffe605',
+    '#fce82d', '#f5ff85', '#eaf759', '#fbfcf0'
+  ];
+  
+  // Create dots
+  for (let i = 0; i < dotCount; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    
+    // Assign colors from the palette in a repeating pattern
+    const colorIndex = i % colors.length;
+    dot.style.backgroundColor = colors[colorIndex];
+    
+    // Size and opacity decrease with each dot
+    const size = 15 - (i * 0.5);
+    dot.style.width = dot.style.height = `${size}px`;
+    dot.style.opacity = 1 - (i / dotCount);
+    
+    // Add a subtle glow effect
+    dot.style.boxShadow = `0 0 ${size/2}px ${size/3}px ${colors[colorIndex]}`;
+    
+    document.body.appendChild(dot);
+    dots.push(dot);
+  }
+  
+  // Update positions
+  let lastX = window.innerWidth / 2;
+  let lastY = window.innerHeight / 2;
+  const wand = document.querySelector('.wand-cursor');
+  
+  // Handle both mouse and touch events
+  function updatePosition(x, y) {
+    lastX = x;
+    lastY = y;
+    wand.style.left = `${lastX}px`;
+    wand.style.top = `${lastY}px`;
+  }
+  
+  // Mouse movement
+  document.addEventListener('mousemove', (e) => {
+    updatePosition(e.clientX, e.clientY);
+  });
+  
+  // Touch movement
+  document.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    if (e.touches.length > 0) {
+      updatePosition(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: false });
+  
+  // Handle touch start in case the first touch doesn't move
+  document.addEventListener('touchstart', (e) => {
+    if (e.touches.length > 0) {
+      updatePosition(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  });
+
+  // Animation loop
+  function animate() {
+    let x = lastX;
+    let y = lastY;
+    
+    dots.forEach((dot, i) => {
+      const nextDot = dots[i - 1] || { x: lastX, y: lastY };
+      
+      // Smooth movement with interpolation
+      dot.x = dot.x || x;
+      dot.y = dot.y || y;
+      dot.x = dot.x + (nextDot.x - dot.x) * 0.3;
+      dot.y = dot.y + (nextDot.y - dot.y) * 0.3;
+      
+      dot.style.left = `${dot.x}px`;
+      dot.style.top = `${dot.y}px`;
+      
+      // Store current position for next dot
+      x = dot.x;
+      y = dot.y;
+    });
+    
+    requestAnimationFrame(animate);
+  }
+  
+  animate();
+
+  // Handle window resize
+  window.addEventListener('resize', () => {
+    wand.style.left = `${lastX}px`;
+    wand.style.top = `${lastY}px`;
+  });
+</script>
+</body>
+</html>
