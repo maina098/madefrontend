@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Catch the Square</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background: #f0f0f0;
+    }
+    #game {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      margin: 30px auto;
+      border: 3px solid #333;
+      background-color: white;
+    }
+    #square {
+      width: 50px;
+      height: 50px;
+      background: red;
+      position: absolute;
+      cursor: pointer;
+    }
+    #score, #timer {
+      font-size: 24px;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Catch the Square!</h1>
+<div id="score">Score: 0</div>
+<div id="timer">Time Left: 30s</div>
+<div id="game">
+  <div id="square"></div>
+</div>
+
+<script>
+  const square = document.getElementById('square');
+  const game = document.getElementById('game');
+  const scoreDisplay = document.getElementById('score');
+  const timerDisplay = document.getElementById('timer');
+  let score = 0;
+  let timeLeft = 30;
+
+  function moveSquare() {
+    const maxX = game.clientWidth - square.clientWidth;
+    const maxY = game.clientHeight - square.clientHeight;
+    const x = Math.floor(Math.random() * maxX);
+    const y = Math.floor(Math.random() * maxY);
+    square.style.left = x + 'px';
+    square.style.top = y + 'px';
+  }
+
+  square.addEventListener('click', () => {
+    score++;
+    scoreDisplay.textContent = "Score: " + score;
+    moveSquare();
+  });
+
+  function startGame() {
+    moveSquare();
+    const timer = setInterval(() => {
+      timeLeft--;
+      timerDisplay.textContent = "Time Left: " + timeLeft + "s";
+      if (timeLeft === 0) {
+        clearInterval(timer);
+        square.style.display = 'none';
+        alert("Time's up! Your score: " + score);
+      }
+    }, 1000);
+  }
+
+  startGame();
+</script>
+
+</body>
+</html>
