@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Salary & Budget Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+    }
+    header {
+      background: #2196f3;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .dashboard {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .card {
+      flex: 1;
+      padding: 20px;
+      background: #e3f2fd;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input, select {
+      padding: 8px;
+      width: 100%;
+    }
+    button {
+      padding: 10px;
+      margin-top: 10px;
+      background: #2196f3;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    canvas {
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Salary-Based Budget Tracker</h1>
+  </header>
+  <div class="container">
+    <div class="dashboard">
+      <div class="card">
+        <h3>Salary</h3>
+        <p id="salaryDisplay">$0.00</p>
+      </div>
+      <div class="card">
+        <h3>Planned Budget</h3>
+        <p id="budgetDisplay">$0.00</p>
+      </div>
+      <div class="card">
+        <h3>Total Spent (Debit)</h3>
+        <p id="debitDisplay">$0.00</p>
+      </div>
+      <div class="card">
+        <h3>Balance</h3>
+        <p id="balanceDisplay">$0.00</p>
+      </div>
+    </div>
+
+    <h2>Enter Salary & Budget Goal</h2>
+    <div class="form-group">
+      <label for="salaryInput">Salary:</label>
+      <input type="number" id="salaryInput" />
+    </div>
+    <div class="form-group">
+      <label for="budgetInput">Planned Budget:</label>
+      <input type="number" id="budgetInput" />
+    </div>
+    <button onclick="setSalaryAndBudget()">Set</button>
+
+    <h2>Add Expense</h2>
+    <div class="form-group">
+      <label for="category">Category:</label>
+      <select id="category">
+        <option>Food</option>
+        <option>Transport</option>
+        <option>Entertainment</option>
+        <option>Utilities</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="amount">Amount:</label>
+      <input type="number" id="amount" />
+    </div>
+    <button onclick="addExpense()">Add Expense</button>
+
+    <h2>Spending Breakdown</h2>
+    <canvas id="chartCanvas"></canvas>
+
+    <h2>Expenses</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody id="expenseTable"></tbody>
+    </table>
+  </div>
+
+  <script>
+    let salary = 0;
+    let plannedBudget = 0;
+    let expenses = [];
+
+    const categoryColors = {
+      Food: '#FF6384',
+      Transport: '#36A2EB',
+      Entertainment: '#FFCE56',
+      Utilities: '#4BC0C0',
+      Other: '#9966FF'
+    };
+
+    function setSalaryAndBudget() {
+      salary = parseFloat(document.getElementById("salaryInput").value) || 0;
+      plannedBudget = parseFloat(document.getElementById("budgetInput").value) || 0;
+      updateDashboard();
+    }
+
+    function addExpense() {
+      const category = document.getElementById("category").value;
+      const amount = parseFloat(document.getElementById("amount").value);
+      if (isNaN(amount) || amount <= 0) return;
+
+      expenses.push({ category, amount });
+      updateDashboard();
+      updateTable();
+      updateChart();
+    }
+
+    function updateDashboard() {
+      const totalDebit = expenses.reduce((sum, e) => sum + e.amount, 0);
+      const balance = salary - totalDebit;
+
+      document.getElementById("salaryDisplay").innerText = `$${salary.toFixed(2)}`;
+      document.getElementById("budgetDisplay").innerText = `$${plannedBudget.toFixed(2)}`;
+      document.getElementById("debitDisplay").innerText = `$${totalDebit.toFixed(2)}`;
+      document.getElementById("balanceDisplay").innerText = `$${balance.toFixed(2)}`;
+    }
+
+    function updateTable() {
+      const table = document.getElementById("expenseTable");
+      table.innerHTML = "";
+      expenses.forEach(e => {
+        table.innerHTML += `<tr><td>${e.category}</td><td>$${e.amount.toFixed(2)}</td></tr>`;
+      });
+    }
+
+    let chart;
+    function updateChart() {
+      const totals = {};
+      expenses.forEach(e => {
+        totals[e.category] = (totals[e.category] || 0) + e.amount;
+      });
+
+      const labels = Object.keys(totals);
+      const data = Object.values(totals);
+      const colors = labels.map(l => categoryColors[l] || '#ccc');
+
+      if (chart) chart.destroy();
+      const ctx = document.getElementById("chartCanvas").getContext("2d");
+      chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels,
+          datasets: [{
+            data,
+            backgroundColor: colors
+          }]
+        }
+      });
+    }
+  </script>
+</body>
+</html>
