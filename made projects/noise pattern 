@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Noise Pattern II</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!--SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; }
+        body { 
+            margin: 0; 
+            background-color: black; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+            outline: none;
+            background: #000;
+            -webkit-tap-highlight-color: transparent;
+        }
+        canvas { 
+            display: block; 
+            width: 100%; 
+            height: 100%; 
+            z-index: 1;
+        }
+        /* Custom SweetAlert2 styling to match the canvas */
+        .swal2-popup {
+            background: rgba(0, 0, 0, 0.9) !important;
+            color: #fff !important;
+            border: 2px solid #00d4ff;
+            font-size: 14px;
+            z-index: 1000 !important;
+        }
+        .swal2-title {
+            color: #ff9500 !important;
+            font-size: 18px !important;
+        }
+        .swal2-content {
+            color: #d4aaff !important;
+            font-size: 14px !important;
+        }
+        .swal2-confirm {
+            background-color: #00d4ff !important;
+            color: #000 !important;
+            font-size: 14px !important;
+        }
+        .swal2-timer-progress-bar {
+            background: #ff0000 !important;
+        }
+    </style>
+    <!-- Include p5.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.5.0/lib/p5.js"></script>
+    <!-- Include SimplexNoise library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
+    <!--SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+<script>
+    window.addEventListener('resize', handleWindowResize, false);
+
+    let noiseGenerator;
+    let noiseZoom = 0.1;
+    let noiseOffsetX = 0;
+    let noiseOffsetY = 0;
+    let currentRenderMode = 'flow';
+    let noiseOctaves = 10;
+    let noiseRoughness = 0.05;
+    let lastTouchPositionX, lastTouchPositionY;
+    let lastPinchDistance;
+
+    function setup() {
+        createCanvas(window.innerWidth, window.innerHeight);
+        pixelDensity(1);
+        colorMode(HSB, 360, 100, 100, 100);
+        noiseGenerator = new SimplexNoise();
+        handleWindowResize();
+        loop();
+        
+        // Show welcome message
+        Swal.fire({
+            title: 'Noise Pattern II',
+            text: 'Pinch and see its Magic!',
+            icon: 'info',
+            showConfirmButton: false,
+            backdrop: 'rgba(0, 0, 0, 0.4)',
+            allowOutsideClick: true,
+            allowEscapeKey: true,
+            timer: 2500,
+            timerProgressBar: true,
+            width: '300px',
+            willClose: () => {
+                Swal.close();
+            }
+        });
+    }
+
+    function draw() {
+        background(0);
+
+        const noiseStartX = noiseOffsetX * noiseZoom * 4;
+        const noiseStartY = noiseOffsetY * noiseZoom;
+        const noiseEndX = (noiseOffsetX + 100) * noiseZoom * 4;
+        const noiseEndY = (noiseOffsetY + 100) * noiseZoom;
+
+        // Adjust step size based on render mode for performance
+        const gridStepSize = currentRenderMode === 'flow' ? 10 : 15;
+
+        for (let x = 0; x < width; x += gridStepSize) {
+            for (let y = 0; y < height; y += gridStepSize) {
+                const normalizedX = x / width;
+                const normalizedY = y / height;
+                const noiseRangeX = noiseEndX - noiseStartX;
+                const noiseRangeY = noiseEndY - noiseStartY;
+
+                const noiseCoordX1 = noiseStartX + cos(normalizedX * 2 * PI) * noiseRangeX / (2 * PI);
+                const noiseCoordY1 = noiseStartY + cos(normalizedY * 2 * PI) * noiseRangeY / (2 * PI);
+                const noiseCoordX2 = noiseEndX + sin(normalizedX * 2 * PI) * noiseRangeX / (2 * PI);
+                const noiseCoordY2 = noiseEndY + sin(normalizedY * 2 * PI) * noiseRangeY / (2 * PI);
+
+                const noiseValue = fractalNoise(
+                    noiseCoordX1, noiseCoordY1, 
+                    noiseCoordX2, noiseCoordY2, 
+                    noiseOctaves, noiseRoughness
+                );
+                const normalizedNoise = (noiseValue + 1) / 2;
+
+                const hue = map(normalizedNoise, 0, 1, 0, 360);
+                const saturation = 80;
+                const brightness = map(normalizedNoise, 0, 1, 50, 100);
+
+                if (currentRenderMode === 'flow') {
+                    const flowAngle = map(normalizedNoise, 0, 1, 0, TWO_PI);
+                    const flowLength = gridStepSize * 0.5;
+                    stroke(hue, saturation, brightness);
+                    strokeWeight(2);
+                    line(x, y, x + cos(flowAngle) * flowLength, y + sin(flowAngle) * flowLength);
+                } else if (currentRenderMode === 'contour') {
+                    const contourBand = floor(map(normalizedNoise, 0, 1, 0, 5));
+                    const contourHue = map(contourBand, 0, 4, 0, 360);
+                    noStroke();
+                    fill(contourHue, saturation, brightness);
+                    rect(x, y, gridStepSize, gridStepSize);
+                }
+            }
+        }
+    }
+
+    function touchStarted() {
+        if (touches.length > 0) {
+            lastTouchPositionX = touches[0].x;
+            lastTouchPositionY = touches[0].y;
+        }
+        return false;
+    }
+
+    function touchMoved() {
+        if (touches.length === 1) {
+            // Single touch: pan
+            noiseOffsetX += (lastTouchPositionX - touches[0].x) * noiseZoom * 100;
+            noiseOffsetY += (lastTouchPositionY - touches[0].y) * noiseZoom * 100;
+            lastTouchPositionX = touches[0].x;
+            lastTouchPositionY = touches[0].y;
+            loop();
+        } else if (touches.length === 2) {
+            // Pinch to zoom
+            const currentPinchDistance = dist(touches[0].x, touches[0].y, touches[1].x, touches[1].y);
+            if (!lastPinchDistance) lastPinchDistance = currentPinchDistance;
+            noiseZoom *= lastPinchDistance / currentPinchDistance;
+            lastPinchDistance = currentPinchDistance;
+            loop();
+        }
+        return false;
+    }
+
+    function touchEnded() {
+        lastPinchDistance = null;
+        return false;
+    }
+
+    function keyPressed() {
+        if (key === '1') {
+            currentRenderMode = 'flow';
+            loop();
+        } else if (key === '2') {
+            currentRenderMode = 'contour';
+            loop();
+        } else if (key.toLowerCase() === 't') {
+            noiseRoughness = noiseRoughness === 0.5 ? 0.7 : 0.5;
+            loop();
+        }
+    }
+
+    function handleWindowResize() {
+        resizeCanvas(window.innerWidth, window.innerHeight);
+        loop();
+    }
+
+    function fractalNoise(x1, y1, x2, y2, octaves, persistence) {
+        let totalNoise = 0;
+        let currentFrequency = 1;
+        let currentAmplitude = 1;
+        let maxPossibleValue = 0;
+        
+        for (let i = 0; i < octaves; i++) {
+            totalNoise += noiseGenerator.noise4D(
+                x1 * currentFrequency, 
+                y1 * currentFrequency, 
+                x2 * currentFrequency, 
+                y2 * currentFrequency
+            ) * currentAmplitude;
+            
+            maxPossibleValue += currentAmplitude;
+            currentAmplitude *= persistence;
+            currentFrequency *= 2;
+        }
+        
+        return totalNoise / maxPossibleValue;
+    }
+</script>
+</body>
+</html>
