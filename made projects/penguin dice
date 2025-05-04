@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penguin's dice</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        :root {
+            --background: #615c5c;
+            --color: white;
+            --nav-bg: black;
+            --btn-bg: white;
+            --btn-color: black;
+        }
+
+        .light {
+            --background: #ffffff;
+            --color: rgb(0, 0, 0);
+            --nav-bg: #cfcece;
+            --btn-bg: rgb(46, 46, 46);
+            --btn-color: white;
+        }
+
+        body {
+            background-color: var(--background);
+            color: white;
+            transition: 0.5s ease;
+        }
+
+        nav {
+            padding: 15px;
+            background-color: var(--nav-bg);
+            font-size: small;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--color);
+        }
+
+        #toggle {
+            background-color: var(--background);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            padding: 5px;
+            border: none;
+            color: var(--color);
+            font-size: 20px;
+        }
+
+        #icon {
+            animation: 1s fade;
+        }
+
+        @keyframes fade {
+            0% {
+                margin-right: -12px;
+            }
+
+            100% {
+                margin-top: 0px;
+                transform: rotate(360deg);
+            }
+        }
+
+        .main {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .scene {
+            width: 200px;
+            height: 200px;
+            perspective: 800px;
+        }
+
+        .cube {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            transform-style: preserve-3d;
+            transform: rotateX(0deg) rotateY(0deg);
+            transition: 1s ease-in-out;
+            margin: auto;
+        }
+
+        .face {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            font-size: x-large;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            font-weight: bolder;
+            color: black;
+            background-color: rgb(0, 255, 149);
+
+        }
+
+        .dot {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: black;
+            border-radius: 50%;
+        }
+
+        .top-left {
+            top: 20px;
+            left: 20px;
+        }
+
+        .top-right {
+            top: 20px;
+            right: 20px;
+        }
+
+        .middle-left {
+            top: 42px;
+            left: 20px;
+        }
+
+        .middle-right {
+            top: 42px;
+            right: 20px;
+        }
+
+        .bottom-left {
+            bottom: 20px;
+            left: 20px;
+        }
+
+        .bottom-right {
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .center {
+            top: 42px;
+            left: 42px;
+        }
+
+        button {
+            padding: 15px 50px;
+            background: rgb(0, 255, 149);
+            border: none;
+            border-radius: 5px;
+        }
+
+        .one {
+            transform: rotateY(0deg) translateZ(50px);
+        }
+
+        .two {
+            transform: rotateY(90deg) translateZ(50px);
+        }
+
+        .three {
+            transform: rotateY(180deg) translateZ(50px);
+        }
+
+        .four {
+            transform: rotateY(-90deg) translateZ(50px);
+        }
+
+        .five {
+            transform: rotateX(90deg) translateZ(50px);
+        }
+
+        .six {
+            transform: rotateX(-90deg) translateZ(50px);
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <h1>Penguin's dice</h1>
+        <button id="toggle"><span class="fa-solid fa-sun" id="icon"></span></button>
+    </nav>
+    <div class="main">
+        <div class="scene">
+            <div class="cube">
+                <div class="face one">
+                    <div class="dot center"></div>
+                </div>
+
+                <div class="face two">
+                    <div class="dot top-left"></div>
+                    <div class="dot bottom-right"></div>
+                </div>
+
+                <div class="face three">
+                    <div class="dot top-left"></div>
+                    <div class="dot center"></div>
+                    <div class="dot bottom-right"></div>
+                </div>
+
+                <div class="face four">
+                    <div class="dot top-left"></div>
+                    <div class="dot top-right"></div>
+                    <div class="dot bottom-left"></div>
+                    <div class="dot bottom-right"></div>
+                </div>
+
+                <div class="face five">
+                    <div class="dot top-left"></div>
+                    <div class="dot top-right"></div>
+                    <div class="dot center"></div>
+                    <div class="dot bottom-left"></div>
+                    <div class="dot bottom-right"></div>
+                </div>
+
+                <div class="face six">
+                    <div class="dot top-left"></div>
+                    <div class="dot top-right"></div>
+                    <div class="dot middle-left"></div>
+                    <div class="dot middle-right"></div>
+                    <div class="dot bottom-left"></div>
+                    <div class="dot bottom-right"></div>
+                </div>
+            </div>
+        </div>
+        <button onclick="roll()">roll</button>
+
+    </div>
+    <script>
+        document.getElementById("toggle").addEventListener("click", () => {
+            var icon = document.getElementById("icon");
+            document.body.classList.toggle("light")
+            if (icon.classList.contains("fa-sun")) {
+                icon.classList.remove("fa-sun");
+                icon.classList.add("fa-moon");
+            } else {
+                icon.classList.remove("fa-moon");
+                icon.classList.add("fa-sun");
+            }
+        })
+
+        function showMessage(face) {
+            switch (face) {
+                case 1:
+                    alert("You rolled a 1! Why don't skeletons fight? They don't have the guts.");
+                    break;
+                case 2:
+                    alert("No WIFI for 5 hours")
+                    break;
+                case 3:
+                    alert("You have a surprise!")
+                    window.location.href = "https://www.youtube.com/watch?v=MtN1YnoL46Q";
+                    break;
+                case 4:
+                    alert("Follow me!")
+                    break;
+                case 5:
+                    alert("Why did your math book look sad? Because it had too many problems")
+                    break;
+                case 6:
+                    alert("Sorry there is nothing")
+                    window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+                    break;
+            }
+        }
+        var cube = document.getElementsByClassName("cube")[0];
+        function roll() {
+            var face = Math.ceil(Math.random() * 6);
+            const faces = {
+                1: { x: 0, y: 0 },
+                2: { x: 0, y: -90 },
+                3: { x: 0, y: -180 },
+                4: { x: 0, y: 90 },
+                5: { x: -90, y: 0 },
+                6: { x: 90, y: 0 }
+            };
+            const rotation = faces[face];
+            const extraX = 360 * Math.floor(Math.random() * 2 + 1);
+            const extraY = 360 * Math.floor(Math.random() * 2 + 1);
+            cube.style.transform = `rotateX(${rotation.x + extraX}deg) rotateY(${rotation.y + extraY}deg)`;
+
+            setTimeout(() => {
+                showMessage(face);
+            }, 1000);
+        }
+
+    </script>
+</body>
+</html>
