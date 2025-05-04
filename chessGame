@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gothic Chess</title>
+<style>
+
+body {
+    background: black;
+    color: white;
+    font-family: "Gothic A1", sans-serif;
+}
+.chess-board {
+    display: grid;
+    grid-template-columns: repeat(8, 80px);
+    grid-template-rows: repeat(8, 80px);
+    width: 640px;
+    height: 640px;
+    border: 5px solid crimson;
+    box-shadow: 0px 0px 20px darkred;
+}
+.square {
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, black 40%, gray 100%);
+}
+
+</style>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="chess-board">
+        <!-- Dynamically generate board squares via JS -->
+    </div>
+    <script src="script.js"></script>
+<script>
+// Gothic Chess Game
+document.addEventListener('DOMContentLoaded', () => {
+    const chessBoard = document.querySelector('.chess-board');
+    
+    // Game state
+    let selectedPiece = null;
+    let currentPlayer = 'white';
+    let gameOver = false;
+    
+    // Gothic theme settings
+    const darkSquareColor = '#1a0000';
+    const lightSquareColor = '#3a0a0a';
+    const selectedSquareColor = '#8a0303';
+    const moveHighlightColor = '#530202';
+    
+    // Gothic piece design
+    const pieceTypes = {
+        'white': {
+            'pawn': '♙',
+            'rook': '♖',
+            'knight': '♘',
+            'bishop': '♗',
+            'queen': '♕',
+            'king': '♔'
+        },
+        'black': {
+            'pawn': '♟',
+            'rook': '♜',
+            'knight': '♞',
+            'bishop': '♝',
+            'queen': '♛',
+            'king': '♚'
+        }
+    };
+    
+    // Initial board setup
+    const initialBoard = [
+        ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'],
+        ['pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn'],
+        [null, null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null, null],
+        ['pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn'],
+        ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook']
+    ];
+    
+    const boardState = Array(8).fill().map(() => Array(8).fill(null));
+    
+    // Create chess board
+    function createBoard() {
+        chessBoard.innerHTML = '';
+        
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                const square = document.createElement('div');
+                square.classList.add('square');
+                square.dataset.row = row;
+                square.dataset.col = col;
+                
+                // Alternate square colors (dark gothic red and black)
+                if ((row + col) % 2 === 0) {
+                    square.style.background = lightSquareColor;
+                } else {
+                    square.style.background = darkSquareColor;
+                }
+                
+                // Add gothic decorative elements to the corners
+                if ((row === 0 || row === 7) && (col === 0 || col === 7)) {
+                    square.style.backgroundImage = 'radial-gradient(circle at center, rgba(120, 0, 0, 0.6) 10%, transparent 60%)';
+                }
+                
+                square.addEventListener('click', handleSquareClick);
+                chessBoard.appendChild(square);
+            }
+        }
+    }
+    
+    // Initialize the board with pieces
+    function setupPieces() {
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                const pieceType = initialBoard[row][col];
+                if (pieceType) {
+                    const color = row < 2 ? 'black' : 'white';
+                    boardState[row][col] = { type: pieceType, color: color };
+                }
+            }
+        }
+        renderBoardState();
+    }
+    
+    // Render pieces based on the current board state
+    function renderBoardState() {
+        const squares = document.querySelectorAll('.square');
+        squares.forEach(square => {
+            const row = parseInt(square.dataset.row);
+            const col = parseInt(square.dataset.col);
+            
+            // Clear previous content
+            square.innerHTML = '';
+            
+            const piece = boardState[row][col];
+            if (piece) {
+                const pieceElement = document.createElement('div');
+                pieceElement.classList.add('piece', piece.color);
+                pieceElement.innerHTML = pieceTypes[piece.color][piece.type];
+                
+                // Apply gothic styling to pieces
+                pieceElement.style.fontSize = '50px';
+                pieceElement.style.display = 'flex';
+                pieceElement.style.justifyContent = 'center';
+                pieceElement.style.alignItems = 'center';
+                pieceElement.style.height = '100%';
+                pieceElement.style.fontWeight = 'bold';
+                
+                // Shadow effect for pieces
+                if (piece.color === 'white') {
+                    pieceElement.style.color = '#d0d0d0';
+                    pieceElement.style.textShadow = '0 0 10px #fff, 0 0 20px #aaa';
+                } else {
+                    pieceElement.style.color = '#202020';
+                    pieceElement.style.textShadow = '0 0 10px #600, 0 0 15px #300';
+                }
+                
+                square.appendChild(pieceElement);
+            }
+        });
+    }
+    
+    // Reset highlight and selection
+    function resetHighlights() {
+        const squares = document.querySelectorAll('.square');
+        squares.forEach(square => {
+            const row = parseInt(square.dataset.row);
+            const col = parseInt(square.dataset.col);
+            
+            // Restore original colors
+            if ((row + col) % 2 === 0) {
+                square.style.background = lightSquareColor;
+            } else {
+                square.style.background = darkSquareColor;
+            }
+            
+            // Re-add corner decorations
+            if ((row === 0 || row === 7) && (col === 0 || col === 7)) {
+                square.style.backgroundImage = 'radial-gradient(circle at center, rgba(120, 0, 0, 0.6) 10%, transparent 60%)';
+            }
+        });
+    }
+    
+    // Highlight the selected piece and valid moves
+    function highlightSelectedPiece(row, col) {
+        const square = document.querySelector(`.square[data-row="${row}"][data-col="${col}"]`);
+        square.style.background = selectedSquareColor;
+        
+        // Highlight valid moves
+        const validMoves = getValidMoves(row, col);
+        validMoves.forEach(move => {
+            const moveSquare = document.querySelector(`.square[data-row="${move.row}"][data-col="${move.col}"]`);
+            moveSquare.style.background = moveHighlightColor;
+        });
+    }
+    
+    // Handle square click
+    function handleSquareClick(event) {
+        if (gameOver) return;
+        
+        const square = event.currentTarget;
+        const row = parseInt(square.dataset.row);
+        const col = parseInt(square.dataset.col);
+        const piece = boardState[row][col];
+        
+        // If no piece is selected and clicked on own piece, select it
+        if (!selectedPiece && piece && piece.color === currentPlayer) {
+            selectedPiece = { row, col };
+            highlightSelectedPiece(row, col);
+        } 
+        // If a piece is already selected
+        else if (selectedPiece) {
+            const fromRow = selectedPiece.row;
+            const fromCol = selectedPiece.col;
+            
+            // Clicked on another of your pieces, change selection
+            if (piece && piece.color === currentPlayer) {
+                resetHighlights();
+                selectedPiece = { row, col };
+                highlightSelectedPiece(row, col);
+            } 
+            // Try to make a move
+            else {
+                const validMoves = getValidMoves(fromRow, fromCol);
+                const isValidMove = validMoves.some(move => move.row === row && move.col === col);
+                
+                if (isValidMove) {
+                    // Check if it's a capture
+                    const isCapture = boardState[row][col] !== null;
+                    
+                    // Move the piece
+                    boardState[row][col] = boardState[fromRow][fromCol];
+                    boardState[fromRow][fromCol] = null;
+                    
+                    // Check for pawn promotion
+                    if (boardState[row][col].type === 'pawn') {
+                        if ((boardState[row][col].color === 'white' && row === 0) || 
+                            (boardState[row][col].color === 'black' && row === 7)) {
+                            // Promote to queen
+                            boardState[row][col].type = 'queen';
+                        }
+                    }
+                    
+                    // Check for king capture (game over)
+                    if (isCapture && piece.type === 'king') {
+                        gameOver = true;
+                        setTimeout(() => {
+                            alert(`Game over! ${currentPlayer.charAt(0).toUpperCase() + currentPlayer.slice(1)} wins!`);
+                        }, 100);
+                    }
+                    
+                    // Add gothic effect for moves
+                    addMoveEffect(row, col, isCapture);
+                    
+                    // Switch player turn
+                    currentPlayer = currentPlayer === 'white' ? 'black' : 'white';
+                    
+                    // Update UI
+                    resetHighlights();
+                    renderBoardState();
+                    
+                    // Display current player
+                    document.querySelector('body').style.boxShadow = 
+                        currentPlayer === 'white' ? 'inset 0 0 50px rgba(200, 200, 200, 0.3)' : 'inset 0 0 50px rgba(100, 0, 0, 0.3)';
+                }
+                
+                // Reset selection
+                selectedPiece = null;
+                resetHighlights();
+            }
+        }
+    }
+    
+    // Add visual effect for moves
+    function addMoveEffect(row, col, isCapture) {
+        const square = document.querySelector(`.square[data-row="${row}"][data-col="${col}"]`);
+        
+        if (isCapture) {
+            // Blood effect for captures
+            square.style.backgroundImage = 'radial-gradient(circle at center, rgba(150, 0, 0, 0.8) 0%, transparent 70%)';
+            setTimeout(() => {
+                square.style.backgroundImage = '';
+                if ((row === 0 || row === 7) && (col === 0 || col === 7)) {
+                    square.style.backgroundImage = 'radial-gradient(circle at center, rgba(120, 0, 0, 0.6) 10%, transparent 60%)';
+                }
+            }, 800);
+        } else {
+            // Subtle effect for normal moves
+            square.style.backgroundImage = 'radial-gradient(circle at center, rgba(80, 0, 0, 0.5) 0%, transparent 70%)';
+            setTimeout(() => {
+                square.style.backgroundImage = '';
+                if ((row === 0 || row === 7) && (col === 0 || col === 7)) {
+                    square.style.backgroundImage = 'radial-gradient(circle at center, rgba(120, 0, 0, 0.6) 10%, transparent 60%)';
+                }
+            }, 500);
+        }
+    }
+    
+    // Get valid moves for a piece
+    function getValidMoves(row, col) {
+        const piece = boardState[row][col];
+        if (!piece) return [];
+        
+        const moves = [];
+        
+        switch (piece.type) {
+            case 'pawn':
+                // Pawns move differently based on color
+                const direction = piece.color === 'white' ? -1 : 1;
+                const startRow = piece.color === 'white' ? 6 : 1;
+                
+                // Forward move
+                if (isInBounds(row + direction, col) && !boardState[row + direction][col]) {
+                    moves.push({ row: row + direction, col: col });
+                    
+                    // Double move from starting position
+                    if (row === startRow && !boardState[row + 2 * direction][col]) {
+                        moves.push({ row: row + 2 * direction, col: col });
+                    }
+                }
+                
+                // Capture moves
+                for (let dcol of [-1, 1]) {
+                    if (isInBounds(row + direction, col + dcol) && 
+                        boardState[row + direction][col + dcol] && 
+                        boardState[row + direction][col + dcol].color !== piece.color) {
+                        moves.push({ row: row + direction, col: col + dcol });
+                    }
+                }
+                break;
+                
+            case 'rook':
+                // Horizontal and vertical moves
+                addLineMoves(row, col, [[-1, 0], [1, 0], [0, -1], [0, 1]], moves);
+                break;
+                
+            case 'knight':
+                // L-shaped moves
+                for (let [dr, dc] of [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]]) {
+                    if (isInBounds(row + dr, col + dc) && 
+                        (!boardState[row + dr][col + dc] || boardState[row + dr][col + dc].color !== piece.color)) {
+                        moves.push({ row: row + dr, col: col + dc });
+                    }
+                }
+                break;
+                
+            case 'bishop':
+                // Diagonal moves
+                addLineMoves(row, col, [[-1, -1], [-1, 1], [1, -1], [1, 1]], moves);
+                break;
+                
+            case 'queen':
+                // Combines rook and bishop moves
+                addLineMoves(row, col, [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, -1], [1, 1]], moves);
+                break;
+                
+            case 'king':
+                // One square in any direction
+                for (let dr = -1; dr <= 1; dr++) {
+                    for (let dc = -1; dc <= 1; dc++) {
+                        if (dr === 0 && dc === 0) continue;
+                        
+                        if (isInBounds(row + dr, col + dc) && 
+                            (!boardState[row + dr][col + dc] || boardState[row + dr][col + dc].color !== piece.color)) {
+                            moves.push({ row: row + dr, col: col + dc });
+                        }
+                    }
+                }
+                break;
+        }
+        
+        return moves;
+    }
+    
+    // Helper function to add line moves (for rook, bishop, queen)
+    function addLineMoves(row, col, directions, moves) {
+        const piece = boardState[row][col];
+        
+        for (let [dr, dc] of directions) {
+            let r = row + dr;
+            let c = col + dc;
+            
+            while (isInBounds(r, c)) {
+                if (!boardState[r][c]) {
+                    moves.push({ row: r, col: c });
+                } else {
+                    if (boardState[r][c].color !== piece.color) {
+                        moves.push({ row: r, col: c });
+                    }
+                    break;
+                }
+                
+                r += dr;
+                c += dc;
+            }
+        }
+    }
+    
+    // Check if coordinates are within the board
+    function isInBounds(row, col) {
+        return row >= 0 && row < 8 && col >= 0 && col < 8;
+    }
+    
+    // Add gothic background to the page
+    function addGothicBackground() {
+        document.body.style.background = 'linear-gradient(to bottom, #000, #200000, #000)';
+        document.body.style.minHeight = '100vh';
+        document.body.style.display = 'flex';
+        document.body.style.justifyContent = 'center';
+        document.body.style.alignItems = 'center';
+        document.body.style.backgroundImage = 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M50 50 L60 40 L40 40 Z\' fill=\'%23300000\' fill-opacity=\'0.05\'/%3E%3C/svg%3E")';
+    }
+    
+    // Add title and game information
+    function addGameInfo() {
+        const gameContainer = document.createElement('div');
+        gameContainer.style.display = 'flex';
+        gameContainer.style.flexDirection = 'column';
+        gameContainer.style.alignItems = 'center';
+        
+        const title = document.createElement('h1');
+        title.textContent = 'Gothic Chess';
+        title.style.fontFamily = '"Gothic A1", "Copperplate Gothic", serif';
+        title.style.fontSize = '3rem';
+        title.style.marginBottom = '1rem';
+        title.style.textShadow = '0 0 10px crimson, 0 0 20px #500';
+        
+        const turnIndicator = document.createElement('div');
+        turnIndicator.textContent = 'White to move';
+        turnIndicator.style.marginBottom = '2rem';
+        turnIndicator.style.fontSize = '1.2rem';
+        turnIndicator.style.fontFamily = '"Gothic A1", serif';
+        turnIndicator.style.textShadow = '0 0 5px #fff';
+        
+        // Update turn indicator when player changes
+        setInterval(() => {
+            turnIndicator.textContent = `${currentPlayer.charAt(0).toUpperCase() + currentPlayer.slice(1)} to move`;
+            if (currentPlayer === 'white') {
+                turnIndicator.style.textShadow = '0 0 5px #fff';
+                turnIndicator.style.color = '#fff';
+            } else {
+                turnIndicator.style.textShadow = '0 0 5px #f00';
+                turnIndicator.style.color = '#aaa';
+            }
+        }, 100);
+        
+        // Add restart button
+        const restartButton = document.createElement('button');
+        restartButton.textContent = 'Restart Game';
+        restartButton.style.marginTop = '2rem';
+        restartButton.style.padding = '10px 20px';
+        restartButton.style.background = 'linear-gradient(to bottom, #500, #300)';
+        restartButton.style.color = '#ccc';
+        restartButton.style.border = '1px solid #700';
+        restartButton.style.borderRadius = '4px';
+        restartButton.style.fontFamily = '"Gothic A1", serif';
+        restartButton.style.cursor = 'pointer';
+        restartButton.style.boxShadow = '0 0 10px rgba(100, 0, 0, 0.5)';
+        
+        restartButton.addEventListener('mouseover', () => {
+            restartButton.style.background = 'linear-gradient(to bottom, #700, #400)';
+        });
+        
+        restartButton.addEventListener('mouseout', () => {
+            restartButton.style.background = 'linear-gradient(to bottom, #500, #300)';
+        });
+        
+        restartButton.addEventListener('click', () => {
+            initGame();
+        });
+        
+        document.body.insertBefore(gameContainer, chessBoard);
+        gameContainer.appendChild(title);
+        gameContainer.appendChild(turnIndicator);
+        document.body.appendChild(restartButton);
+    }
+    
+    // Initialize the game
+    function initGame() {
+        selectedPiece = null;
+        currentPlayer = 'white';
+        gameOver = false;
+        
+        createBoard();
+        setupPieces();
+        addGothicBackground();
+        
+        // Remove existing title if restarting
+        const existingTitle = document.querySelector('h1');
+        if (!existingTitle) {
+            addGameInfo();
+        }
+    }
+    
+    // Start the game
+    initGame();
+});
+
+</script>
+
+</body>
+</html>
