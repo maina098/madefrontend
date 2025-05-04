@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chemical Equation Balancer</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #aeefff;
+      text-align: center;
+      padding: 50px 20px;
+      background: transparent;
+    }
+
+    h2 {
+      font-size: 2em;
+      color: #aeefff;
+      margin-bottom: 20px;
+      text-shadow: 0 0 8px #00d1ff88;
+    }
+
+    input#inputEq {
+      width: 80%;
+      max-width: 400px;
+      padding: 10px;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      box-shadow: 0 0 8px #00d1ff88;
+    }
+
+    button {
+      margin: 15px 5px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #00d1ff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00d1ff88;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #00b8e6;
+    }
+
+    #result {
+      font-size: 1.3em;
+      margin-top: 20px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    #result.success {
+      color: #aeefff;
+      background: rgba(0, 200, 255, 0.1);
+      box-shadow: 0 0 10px #00d1ff55;
+    }
+
+    #result.error {
+      color: #ff6b6b;
+      background: rgba(255, 0, 0, 0.05);
+      box-shadow: 0 0 10px #ff000044;
+    }
+
+    canvas#bgCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background-color: #0e0e2c;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<h2>Chemical Equation Balancer</h2>
+
+<input id="inputEq" placeholder="Example: H2 + O2 -> H2O" required>
+<br><br>
+<button onclick="balance()">Balance</button>
+<button onclick="resetAll()">Reset</button>
+
+<div id="result"></div>
+
+<script>
+// Background animation
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let dots = [];
+
+function initDots() {
+  dots = Array.from({ length: 40 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 2,
+    vy: (Math.random() - 0.5) * 2,
+    r: 2 + Math.random() * 2,
+    color: `hsl(${Math.random() * 360}, 100%, 70%)`
+  }));
+}
+
+function animateDots() {
+  ctx.fillStyle = "rgba(14, 14, 44, 0.2)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  for (let dot of dots) {
+    ctx.beginPath();
+    ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
+    ctx.fillStyle = dot.color;
+    ctx.shadowColor = dot.color;
+    ctx.shadowBlur = 8;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    dot.x += dot.vx;
+    dot.y += dot.vy;
+    if (dot.x < 0 || dot.x > canvas.width) dot.vx *= -1;
+    if (dot.y < 0 || dot.y > canvas.height) dot.vy *= -1;
+  }
+  requestAnimationFrame(animateDots);
+}
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  initDots();
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+animateDots();
+
+
+function parseFormula(formula) {
+  const stack = [{}];
+  let i = 0;
+  while (i < formula.length) {
+    if (formula[i] === '(') {
+      stack.push({});
+      i++;
+    } else if (formula[i] === ')') {
+      const group = stack.pop();
+      i++;
+      let num = '';
+      while (i < formula.length && /\d/.test(formula[i])) num += formula[i++];
+      const mult = parseInt(num || '1');
+      for (let el in group) {
+        stack[stack.length - 1][el] = (stack[stack.length - 1][el] || 0) + group[el] * mult;
+      }
+    } else {
+      const match = formula.slice(i).match(/^([A-Z][a-z]*)(\d*)/);
+      if (!match) break;
+      const [, el, num] = match;
+      i += match[0].length;
+      stack[stack.length - 1][el] = (stack[stack.length - 1][el] || 0) + parseInt(num || '1');
+    }
+  }
+  return stack[0];
+}
+
+function buildMatrix(reactants, products, elements) {
+  return elements.map(el =>
+    reactants.concat(products).map((compound, i) => {
+      const count = parseFormula(compound)[el] || 0;
+      return i < reactants.length ? count : -count;
+    })
+  );
+}
+
+function gaussianElimination(matrix) {
+  const rows = matrix.length;
+  const cols = matrix[0].length;
+  const A = matrix.map(row => row.slice());
+  const coeffs = new Array(cols).fill(1);
+
+  for (let i = 0; i < rows; i++) {
+    let pivotRow = i;
+    while (pivotRow < rows && A[pivotRow][i] === 0) pivotRow++;
+    if (pivotRow === rows) continue;
+    [A[i], A[pivotRow]] = [A[pivotRow], A[i]];
+    for (let j = i + 1; j < rows; j++) {
+      const factor = A[j][i] / A[i][i];
+      for (let k = i; k < cols; k++) {
+        A[j][k] -= factor * A[i][k];
+      }
+    }
+  }
+
+  const solution = new Array(cols).fill(1);
+  for (let i = rows - 1; i >= 0; i--) {
+    let sum = 0;
+    let pivotCol = A[i].findIndex(x => x !== 0);
+    if (pivotCol === -1) continue;
+    for (let j = pivotCol + 1; j < cols; j++) {
+      sum += A[i][j] * solution[j];
+    }
+    solution[pivotCol] = -sum / A[i][pivotCol];
+  }
+
+  const lcmDen = lcmArray(solution.map(x => denom(x)));
+  const intSolution = solution.map(x => Math.round(x * lcmDen));
+  const gcdAll = intSolution.reduce(gcd);
+  return intSolution.map(x => x / gcdAll);
+}
+
+function denom(x) {
+  const parts = x.toString().split('.');
+  if (parts.length === 1) return 1;
+  return Math.pow(10, parts[1].length);
+}
+function gcd(a, b) { return b ? gcd(b, a % b) : a; }
+function lcm(a, b) { return (a * b) / gcd(a, b); }
+function lcmArray(arr) { return arr.reduce(lcm); }
+
+// Balancing with validation
+function balance() {
+  const resultEl = document.getElementById("result");
+  resultEl.className = "";
+  const input = document.getElementById("inputEq").value.trim();
+
+  if (!input.includes('->')) {
+    resultEl.textContent = "Please use '->' to separate reactants and products.";
+    resultEl.className = "error";
+    return;
+  }
+
+  const [lhs, rhs] = input.split("->").map(s => s.trim());
+  if (!lhs || !rhs) {
+    resultEl.textContent = "Both reactants and products must be provided.";
+    resultEl.className = "error";
+    return;
+  }
+
+  const reactants = lhs.split('+').map(s => s.trim()).filter(Boolean);
+  const products = rhs.split('+').map(s => s.trim()).filter(Boolean);
+
+  const reactantElements = new Set();
+  reactants.forEach(comp => {
+    const parsed = parseFormula(comp);
+    Object.keys(parsed).forEach(el => reactantElements.add(el));
+  });
+
+  const productElements = new Set();
+  products.forEach(comp => {
+    const parsed = parseFormula(comp);
+    Object.keys(parsed).forEach(el => productElements.add(el));
+  });
+
+  const missingFromProducts = [...reactantElements].filter(el => !productElements.has(el));
+  const missingFromReactants = [...productElements].filter(el => !reactantElements.has(el));
+
+  if (missingFromProducts.length || missingFromReactants.length) {
+    resultEl.textContent = "Reactants and products must contain the same elements.";
+    resultEl.className = "error";
+    return;
+  }
+
+  const compounds = reactants.concat(products);
+  const elementsSet = new Set();
+  compounds.forEach(comp => {
+    const parsed = parseFormula(comp);
+    Object.keys(parsed).forEach(el => elementsSet.add(el));
+  });
+  const elements = Array.from(elementsSet);
+  const matrix = buildMatrix(reactants, products, elements);
+  const coeffs = gaussianElimination(matrix);
+
+  const leftSide = reactants.map((c, i) => (coeffs[i] > 1 ? coeffs[i] : '') + c).join(' + ');
+  const rightSide = products.map((c, i) => {
+    const j = i + reactants.length;
+    return (coeffs[j] > 1 ? coeffs[j] : '') + c;
+  }).join(' + ');
+
+  resultEl.textContent = leftSide + ' → ' + rightSide;
+  resultEl.className = "success";
+}
+
+function resetAll() {
+  document.getElementById("inputEq").value = "";
+  const resultEl = document.getElementById("result");
+  resultEl.textContent = "";@
+  resultEl.className = "";
+}
+</script>
+
+</body>
+</html>
