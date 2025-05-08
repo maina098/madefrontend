@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>my birthday</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: radial-gradient(circle at center, #001f33, #000);
+      font-family: 'Fira Code', monospace;
+      color: #ccf6ff;
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    #loadingScreen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #001133, #000);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #ccf6ff;
+      font-size: 20px;
+      font-family: 'Fira Code', monospace;
+      transition: opacity 1s ease;
+    }
+
+    #loadingScreen img {
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+      box-shadow: 0 0 25px #00ccff;
+    }
+
+    #matrix {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 750px;
+      width: 100%;
+      position: absolute;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      box-shadow: 0 0 60px #00ccff;
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      text-align: center;
+    }
+
+    .editor {
+      background-color: #001a33;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .header {
+      background-color: #002b4d;
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+    }
+
+    .red { background: #ff5f56; }
+    .yellow { background: #ffbd2e; }
+    .green { background: #27c93f; }
+
+    .title {
+      margin-left: 12px;
+      font-size: 14px;
+      color: #eee;
+    }
+
+    .code-window {
+      padding: 24px;
+      text-align: left;
+      font-size: 16px;
+      background: #001122;
+      min-height: 220px;
+      color: #66e0ff;
+      position: relative;
+    }
+
+    #codeArea { white-space: pre-wrap; }
+
+    #cursor {
+      width: 10px;
+      height: 20px;
+      background: #00ccff;
+      animation: blink 1s step-start infinite;
+      position: absolute;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    #terminalOutput {
+      background: #002b4d;
+      padding: 20px;
+      border-radius: 12px;
+      color: #ccffcc;
+      font-size: 14px;
+      min-height: 80px;
+      margin-top: 20px;
+      border: 1px solid #66e0ff;
+    }
+
+    #surpriseBtn {
+      background: linear-gradient(135deg, #00ccff, #0055ff);
+      border: none;
+      padding: 16px 40px;
+      margin-top: 30px;
+      border-radius: 30px;
+      font-size: 18px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 20px #00ccff;
+    }
+
+    #surpriseBtn:hover {
+      background: linear-gradient(135deg, #0099cc, #0044cc);
+      transform: scale(1.1);
+    }
+
+    .shake {
+      animation: shake 0.5s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+  </style>
+</head>
+<body>
+<div id="loadingScreen">
+  <img src="https://www.dropbox.com/scl/fi/nla69kz1n1p3qwjcesi1z/1aa561629e4ae136.jpg?rlkey=wmj83d6ewq7vup5w5ptzvy1vy&st=0cugn2g0&raw=1" alt="Profile Picture">
+  <p>Initializing...</p>
+</div>
+
+<canvas id="matrix"></canvas>
+<div class="container">
+  <div class="editor">
+    <div class="header">
+      <div class="buttons">
+        <span class="btn red"></span>
+        <span class="btn yellow"></span>
+        <span class="btn green"></span>
+      </div>
+      <div class="title">birthday_protocol.js — Party Studio</div>
+    </div>
+    <div class="code-window">
+      <pre id="codeArea"></pre><div id="cursor"></div>
+    </div>
+  </div>
+  <div id="terminalOutput"></div>
+  <button id="surpriseBtn">Execute Birthday Protocol</button>
+</div>
+
+<script>
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  const letters = '0101010011';
+  const fontSize = 14;
+  const columns = canvas.width / fontSize;
+  const drops = Array.from({ length: columns }).fill(1);
+
+  function drawMatrix() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.07)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#00ccff";
+    ctx.font = fontSize + "px monospace";
+    drops.forEach((y, x) => {
+      const text = letters[Math.floor(Math.random() * letters.length)];
+      ctx.fillText(text, x * fontSize, y * fontSize);
+      if (y * fontSize > canvas.height && Math.random() > 0.975) {
+        drops[x] = 0;
+      }
+      drops[x]++;
+    });
+  }
+
+  setInterval(drawMatrix, 33);
+
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  window.onload = function() {
+    const codeArea = document.getElementById("codeArea");
+    const cursor = document.getElementById("cursor");
+    const terminalOutput = document.getElementById("terminalOutput");
+
+    const codeLines = [
+      "const birthday = () => {",
+      "  console.log('It’s My Special Day!');",
+      "  console.log('Thank you all for the love & wishes!');",
+      "  blastConfetti();",
+      "  sliceCake();",
+      "  smileBright();",
+      "};",
+      "",
+      "birthday();"
+    ];
+
+    let lineIndex = 0;
+    let charIndex = 0;
+    const typingSpeed = 60;
+
+    function typeCode() {
+      if (lineIndex < codeLines.length) {
+        let currentLine = codeLines[lineIndex];
+        if (charIndex < currentLine.length) {
+          codeArea.textContent += currentLine.charAt(charIndex);
+          charIndex++;
+          moveCursor();
+          setTimeout(typeCode, typingSpeed);
+        } else {
+          codeArea.textContent += "\n";
+          lineIndex++;
+          charIndex = 0;
+          setTimeout(typeCode, typingSpeed);
+        }
+      }
+    }
+    typeCode();
+
+    function moveCursor() {
+      const lines = codeArea.innerText.split("\n");
+      const lastLine = lines[lines.length - 1];
+      cursor.style.top = (lines.length - 1) * 24 + "px";
+      cursor.style.left = (lastLine.length * 10) + "px";
+    }
+
+    const loading = document.getElementById("loadingScreen");
+    loading.style.opacity = 0;
+    setTimeout(() => {
+      loading.remove();
+    }, 1000);
+
+    document.getElementById("surpriseBtn").addEventListener("click", () => {
+      terminalOutput.innerHTML = "Running birthday_protocol.js...\nStatus: PARTY MODE\nCake: Ready\nLights: Flashing\n\n*** HAPPY BIRTHDAY TO ME! ***";
+      document.querySelector(".editor").classList.add("shake");
+      setTimeout(() => {
+        document.querySelector(".editor").classList.remove("shake");
+      }, 1500);
+      launchFireworks();
+    });
+  };
+
+  function launchFireworks() {
+    for (let i = 0; i < 50; i++) {
+      const firework = document.createElement('div');
+      firework.style.position = 'fixed';
+      firework.style.width = '6px';
+      firework.style.height = '6px';
+      firework.style.background = `hsl(${Math.random() * 200 + 180}, 100%, 70%)`;
+      firework.style.top = (Math.random() * window.innerHeight) + 'px';
+      firework.style.left = (Math.random() * window.innerWidth) + 'px';
+      firework.style.borderRadius = '50%';
+      firework.style.opacity = 1;
+      firework.style.zIndex = 2;
+      firework.style.transition = 'all 2s ease-out';
+      document.body.appendChild(firework);
+      setTimeout(() => {
+        firework.style.top = (parseFloat(firework.style.top) - 100) + 'px';
+        firework.style.opacity = 0;
+      }, 100);
+      setTimeout(() => {
+        firework.remove();
+      }, 2200);
+    }
+  }
+</script>
+</body>
+</html>
+
+
+
+
