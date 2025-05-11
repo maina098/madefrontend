@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Geometrical Grid</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="description" content="Experience a mesmerizing grid of pulsing geometric shapes, dancing in vibrant hues. This web-based canvas animation blends code and art, creating a hypnotic visual symphony that evolves with every frame.">
+        <meta name="keywords" content="geometric animation, canvas art, web animation, dynamic shapes, colorful patterns, JavaScript art, visual effects, pulsing grids, creative coding, interactive visuals">
+        <meta name="author" content="ᴴᵗᵗየ">
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                background: rgb(0, 0, 0);
+                overflow: hidden;
+                -webkit-overflow-scrolling: touch;
+                touch-action: none;
+            }
+            canvas {
+                display: block;
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            //CONFIGURATION
+            const config = {
+                gridRows: 11, 
+                gridCols: 11, 
+            };
+
+            //UTILITY FUNCTIONS
+            const util = {
+                fill: function(rgb, opacity) {
+                    ctx.beginPath();
+                    ctx.rect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+                    ctx.fillStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opacity})`;
+                    ctx.fill();
+                },
+                hsla: function(hue, saturation, lightness, alpha) {
+                    return `hsla(${hue},${saturation * 100}%,${lightness * 100}%,${alpha})`;
+                },
+                rgba: function(r, g, b, a) {
+                    return `rgba(${r},${g},${b},${a})`;
+                },
+            };
+
+            //INITIALIZATION
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            document.body.appendChild(canvas);
+
+            const backgroundColor = [0, 0, 0];
+            let gridSize = window.innerHeight;
+            let isPaused = false; // Track animation state
+            let animationFrameId; // Store animation frame ID
+
+            const animationLoop = {
+                loopMax: 240,
+                loopCounter: 0,
+                loopProgress: 0,
+                sinValue: 0,
+                cosValue: 0,
+                normalizedSin: 0,
+                update: function() {
+                    this.loopCounter = (this.loopCounter + 1) % this.loopMax;
+                    this.loopProgress = this.loopCounter / this.loopMax;
+                    this.sinValue = Math.sin(this.loopProgress * Math.PI * 2);
+                    this.cosValue = Math.cos(this.loopProgress * Math.PI * 2);
+                    this.normalizedSin = (this.sinValue + 1) / 2;
+                }
+            };
+
+            function setup() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                gridSize = Math.min(window.innerWidth, window.innerHeight) - 40;
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                animationLoop.update();
+                util.fill(backgroundColor, 1);
+            }
+
+            setup();
+            window.addEventListener("resize", setup);
+
+            // Touch event to toggle pause/play 
+            canvas.addEventListener("touchstart", function(e) {
+                e.preventDefault();
+                isPaused = !isPaused;
+                if (!isPaused) {
+                    window.requestAnimationFrame(draw);
+                } else {
+                    cancelAnimationFrame(animationFrameId);
+                }
+            });
+
+            const shapeTypes = ['square', 'circle', 'rectangle', 'rhombus', 'trapezoid', 'ring'];
+            const particles = [];
+            for (let y = 0; y < config.gridRows; y++) {
+                for (let x = 0; x < config.gridCols; x++) {
+                    let shape;
+                    // Check the left neighbor's shape (if it exists)
+                    const leftNeighbor = x > 0 ? particles[particles.length - 1] : null;
+                    do {
+                        shape = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
+                    } while (shape === 'rectangle' && leftNeighbor && leftNeighbor.shape === 'rectangle');
+                    particles.push(new Particle(x, y, shape));
+                }
+            }
+
+            function draw() {
+                if (isPaused) return; // Skip drawing if paused
+                animationLoop.update();
+                util.fill(backgroundColor, 0.95);
+
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].draw();
+                }
+
+                animationFrameId = window.requestAnimationFrame(draw);
+            }
+
+            window.requestAnimationFrame(draw);
+
+            function Particle(gridX, gridY, shape) {
+                this.gridX = gridX;
+                this.gridY = gridY;
+                this.shape = shape;
+                this.normalizedX = gridX / config.gridCols;
+                this.normalizedY = gridY / config.gridRows;
+                this.cellSize = gridSize / config.gridCols;
+                this.margin = 2;
+
+                this.draw = function() {
+                    const pulseFactor = (Math.sin((this.gridX * config.gridRows + this.gridY) * 2912.09) / Math.tan(988823 + animationLoop.cosValue * 0.028) * 17.6566) % 1;
+                    const colorFactor = (Math.cos((this.gridX * config.gridRows + this.gridY) * 9912.09) / Math.tan(988823 + animationLoop.sinValue * 0.028) * 17.6678) % 1;
+                    let dynamicSize = Math.max(this.cellSize * 0.5 + this.cellSize * 0.5 * (pulseFactor * colorFactor), this.margin + 0.1);
+                    const hue = (360 * (pulseFactor + colorFactor) / 2 + animationLoop.normalizedSin * 30) % 360;
+
+                    ctx.beginPath();
+                    ctx.strokeStyle = util.hsla(hue, 0.9, 0.7, 0.8);
+                    ctx.fillStyle = util.hsla(hue, 1, 0.5, 0.9 - pulseFactor * 0.2);
+                    ctx.lineCap = 'round';
+                    ctx.lineWidth = 2;
+
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = util.hsla(hue, 1, 0.6, 0.4);
+
+                    const xPos = this.gridX * this.cellSize + (this.cellSize - dynamicSize - this.margin) / 2 - gridSize / 2;
+                    const yPos = this.gridY * this.cellSize + (this.cellSize - dynamicSize - this.margin) / 2 - gridSize / 2;
+
+                    if (this.shape === 'square') {
+                        ctx.moveTo(xPos, yPos);
+                        ctx.lineTo(xPos + dynamicSize - this.margin, yPos);
+                        ctx.lineTo(xPos + dynamicSize - this.margin, yPos + dynamicSize - this.margin);
+                        ctx.lineTo(xPos, yPos + dynamicSize - this.margin);
+                        ctx.lineTo(xPos, yPos);
+                    } else if (this.shape === 'circle') {
+                        const radius = Math.max((dynamicSize - this.margin) / 2, 0.1);
+                        ctx.arc(xPos + (dynamicSize - this.margin) / 2, yPos + (dynamicSize - this.margin) / 2, radius, 0, 2 * Math.PI);
+                    } else if (this.shape === 'rectangle') {
+                        const rectWidth = (dynamicSize - this.margin) * 1.5;
+                        const rectHeight = (dynamicSize - this.margin) * 0.7;
+                        ctx.moveTo(xPos, yPos);
+                        ctx.lineTo(xPos + rectWidth, yPos);
+                        ctx.lineTo(xPos + rectWidth, yPos + rectHeight);
+                        ctx.lineTo(xPos, yPos + rectHeight);
+                        ctx.lineTo(xPos, yPos);
+                    } else if (this.shape === 'rhombus') {
+                        const half = (dynamicSize - this.margin) / 2;
+                        ctx.moveTo(xPos + half, yPos);
+                        ctx.lineTo(xPos + dynamicSize - this.margin, yPos + half);
+                        ctx.lineTo(xPos + half, yPos + dynamicSize - this.margin);
+                        ctx.lineTo(xPos, yPos + half);
+                        ctx.lineTo(xPos + half, yPos);
+                    } else if (this.shape === 'trapezoid') {
+                        const topWidth = (dynamicSize - this.margin) * 0.6;
+                        const bottomWidth = dynamicSize - this.margin;
+                        const height = dynamicSize - this.margin;
+                        ctx.moveTo(xPos + (dynamicSize - topWidth) / 2, yPos);
+                        ctx.lineTo(xPos + (dynamicSize - topWidth) / 2 + topWidth, yPos);
+                        ctx.lineTo(xPos + dynamicSize - this.margin, yPos + height);
+                        ctx.lineTo(xPos, yPos + height);
+                        ctx.lineTo(xPos + (dynamicSize - topWidth) / 2, yPos);
+                    } else if (this.shape === 'ring') {
+                        const radius = Math.max((dynamicSize - this.margin) / 2, 0.1);
+                        ctx.lineWidth = 4;
+                        ctx.arc(xPos + (dynamicSize - this.margin) / 2, yPos + (dynamicSize - this.margin) / 2, radius, 0, 2 * Math.PI);
+                        ctx.stroke();
+                        ctx.closePath();
+                        ctx.beginPath();
+                    }
+
+                    if (this.shape !== 'ring') {
+                        ctx.fill();
+                    }
+                    ctx.stroke();
+                    ctx.closePath();
+
+                    ctx.shadowBlur = 0;
+                    ctx.shadowColor = 'transparent';
+                    ctx.lineWidth = 2;
+                };
+            }
+        </script>
+    </body>
+</html>
