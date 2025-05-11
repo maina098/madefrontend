@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Interactive Code Simulation</title>
+    <style>
+      body {
+        background-color: black;
+        color: white;
+        margin: 20px; /* Added some margin */
+        font-family: sans-serif;
+      }
+
+      h2 {
+          color: #cccccc;
+          margin-top: 30px;
+      }
+
+      /* --- Your original C++ code display styles --- */
+      pre {
+        font-size: 0.9em;
+        white-space: pre-wrap;
+        word-break: break-word;
+        padding-left: 4em;
+        position: relative;
+      }
+
+      ol {
+        counter-reset: item;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        /* Added a border and padding for the code block */
+        border: 1px solid #555;
+        padding: 10px 0;
+        background-color: #222;
+      }
+
+      ol::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 2.5em;
+        width: 1px;
+        background: grey;
+      }
+
+      li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75em; /* space b/w number and code */
+        margin: 0;
+        padding: 0 15px 0 0; /* Add right padding */
+        line-height: 1.2em; /* adjust line height here */
+      }
+
+      li::before {
+        content: counter(item);
+        counter-increment: item;
+        min-width: 2em;
+        text-align: right;
+        color: #808080;
+        margin-right: 0.2em;
+      }
+      /* --- End of your original C++ code display styles --- */
+
+      /* --- Styles for the interactive simulation section --- */
+      .simulation-area {
+          margin-top: 30px;
+          padding: 20px;
+          border: 1px solid #555;
+          background-color: #1a1a1a;
+      }
+
+      .simulation-area label {
+          display: block; /* Make labels appear on their own line */
+          margin-bottom: 5px;
+          color: #aaaaaa;
+      }
+
+      .simulation-area input[type="text"],
+      .simulation-area input[type="number"] {
+          display: block; /* Make inputs appear on their own line */
+          margin-bottom: 15px;
+          padding: 8px;
+          border: 1px solid #555;
+          background-color: #333;
+          color: white;
+          width: calc(100% - 18px); /* Adjust width considering padding and border */
+      }
+
+       .simulation-area button {
+           padding: 10px 15px;
+           background-color: #007bff; /* Blue button */
+           color: white;
+           border: none;
+           cursor: pointer;
+           font-size: 1em;
+           margin-bottom: 15px;
+       }
+
+        .simulation-area button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+
+      .output-area {
+          margin-top: 15px;
+          padding: 15px;
+          border: 1px dashed #666; /* Dashed border for output */
+          background-color: #000; /* Black background for output */
+          color: #00ff00; /* Green text like a console */
+          white-space: pre-wrap; /* Respect line breaks */
+          font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; /* Monospace font for output */
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <h2>C++ Source Code:</h2>
+
+    <ol>
+      <li>#include &ltiostream&gt</li>
+      <li>using namespace std;</li>
+      <li></li>
+      <li>int main() {</li>
+      <li><b> </b>  string name;</li>
+      <li><b> </b>  int age;</li>
+      <li><b> </b><b> </b> cin >> name;</li>
+      <li><b> </b><b> </b>cout << "Enter your name: " << name << endl;</li>
+      <li><b> </b><b> </b> cin >> age;</li>
+      <li><b> </b><b> </b>cout << "Enter your age: " << age << endl;</li>
+      <li><b> </b><b> </b><b> </b>  cout << "You are " << name << " and you are " << age << " years old" << endl;</li>
+      <li><b> </b><b> </b>  cout << "Program Finished!" << endl;</li>
+      <li>  return 0;</li>
+      <li>}</li>
+    </ol>
+    <h2>Simulate Running the Code:</h2>
+
+    <div class="simulation-area">
+        <p>Imagine this is the console asking for input:</p>
+
+        <label for="nameInput">Enter your name:</label>
+        <input type="text" id="nameInput">
+
+        <label for="ageInput">Enter your age:</label>
+        <input type="number" id="ageInput">
+
+        <button id="runButton">Simulate Execution (Run)</button>
+
+        <div class="output-area" id="outputArea">
+            </div>
+    </div>
+
+    <script>
+        // Get references to the HTML elements
+        const nameInput = document.getElementById('nameInput');
+        const ageInput = document.getElementById('ageInput');
+        const runButton = document.getElementById('runButton');
+        const outputArea = document.getElementById('outputArea');
+
+        // Add an event listener to the button
+        runButton.addEventListener('click', function() {
+            // Get the values entered by the user
+            const name = nameInput.value;
+            const age = ageInput.value; // This will be a string, but JS handles it fine for concatenation
+
+            // Clear previous output
+            outputArea.textContent = '';
+
+            // Simulate the prompts and user input visually in the output area
+            outputArea.textContent += `Enter your name: ${name}\n`;
+            outputArea.textContent += `Enter your age: ${age}\n`;
+
+            // Simulate the cout statement using the entered values
+            // This part directly mirrors the C++ logic but is done in JS
+            if (name && age) { // Check if both inputs have values
+                 outputArea.textContent += `You are ${name} and you are ${age} years old\n`;
+                 outputArea.textContent += `Program Finished!\n`;
+            } else {
+                 outputArea.textContent += "Please enter both name and age to see the output.\n";
+            }
+
+        });
+    </script>
+
+  </body>
+</html>
