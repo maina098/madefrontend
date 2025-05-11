@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Graph</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+      
+  </script>
+  <style>
+    body {
+      background-color: #dcdcdc;
+      font-family: 'Segoe UI', sans-serif;
+      color: #333;
+      text-align: center;
+    }
+
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #555;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 1rem;
+      border: 2px solid #ccc;
+    }
+
+    button {
+      margin: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: maroon;
+      color: lightpink;
+    }
+
+  </style>
+</head>
+<body>
+  <h2>Parabola Generator</h2>
+  <p><code>Enter a <b>QUADRATIC</b> polynomial</code></p>
+  <input id="userInput" placeholder="e.g.: x^2 - 4x + 3">
+  <br>
+  <button onclick="drawGraph()">Plot Graph</button>
+  <button onclick="showInfo()">Show Zeroes and Vertex</button>
+  <p id="resultInfo"></p>
+  <canvas id="graphCanvas" ></canvas>
+
+  <script>
+    let graphChart;
+
+    function solveEquation(equationString, xValue) {
+      const fixedEquation = equationString
+        .replace(/(\d*)x\^2/g, (_, num) => `${num || 1}*Math.pow(${xValue},2)`)
+        .replace(/(\d*)x(?![\d\^])/g, (_, num) => `${num || 1}*${xValue}`)
+        .replace(/x/g, xValue);
+      return eval(fixedEquation);
+    }
+
+    function drawGraph() {
+      const userEquation = document.getElementById('userInput').value;
+      const xPoints = [];
+      const yPoints = [];
+
+      for (let number = -10; number <= 10; number += 0.2) {
+        try {
+          const answer = solveEquation(userEquation, number.toFixed(4));
+          xPoints.push(number);
+          yPoints.push(answer);
+        } catch (error) {
+          alert("Invalid equation format.");
+          return;
+        }
+      }
+
+      if (graphChart) graphChart.destroy();
+
+      const canvasArea = document.getElementById('graphCanvas').getContext('2d');
+      graphChart = new Chart(canvasArea, {
+        type: 'line',
+        data: {
+          labels: xPoints,
+          datasets: [{
+            label: 'f(x)',
+            data: xPoints.map((x, i) => ({ x: x, y: yPoints[i] })),
+            borderColor: 'blue',
+            borderWidth: 2,
+            fill: false,
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              type: 'linear',
+              title: { display: true, text: 'x' }
+            },
+            y: {
+              title: { display: true, text: 'f(x)' }
+            }
+          }
+        }
+      });
+    }
+
+    function showInfo() {
+      const userEquation = document.getElementById('userInput').value;
+      const cleanedInput = userEquation.replace(/\s+/g, '');
+      const patternMatch = cleanedInput.match(/([+-]?\d*)x\^2([+-]?\d*)x([+-]?\d+)/);
+
+      if (!patternMatch) {
+        document.getElementById('resultInfo').innerText = "Only standard quadratic functions are supported.";
+        return;
+      }
+
+      let a = parseFloat(patternMatch[1] || "1");
+      let b = parseFloat(patternMatch[2] || "0");
+      let c = parseFloat(patternMatch[3] || "0");
+
+      let xVertex = -b / (2 * a);
+      let yVertex = a * xVertex * xVertex + b * xVertex + c;
+
+      let delta = b * b - 4 * a * c;
+      let zeroMessage;
+
+      if (delta > 0) {
+        let root1 = (-b + Math.sqrt(delta)) / (2 * a);
+        let root2 = (-b - Math.sqrt(delta)) / (2 * a);
+        zeroMessage = `Zeroes: x = ${root1.toFixed(2)}, x = ${root2.toFixed(2)}`;
+      } else if (delta === 0) {
+        let root = -b / (2 * a);
+        zeroMessage = `One real zero: x = ${root.toFixed(2)}`;
+      } else {
+        zeroMessage = "No real zeroes (complex roots)";
+      }
+
+      document.getElementById('resultInfo').innerText =
+        `Vertex: (${xVertex.toFixed(2)}, ${yVertex.toFixed(2)})\n${zeroMessage}`;
+    }
+  </script>
+</body>
+</html>
