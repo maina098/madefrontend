@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mother's Day</title>
+  <style>
+    body {
+      background-color: #ffe6eb;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      padding: 40px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    h1 {
+      color: #e75480;
+      font-size: 3em;
+    }
+
+    p {
+      font-size: 18px;
+      color: #333;
+      max-width: 700px;
+      margin: 20px auto;
+      line-height: 1.6;
+    }
+
+    .highlight {
+      background-color: #ffd6e0;
+      padding: 4px 8px;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #e75480;
+      color: white;
+      padding: 12px 25px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 30px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #cc3366;
+    }
+
+    .flower {
+      position: absolute;
+      animation: fall linear forwards;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-50px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Happy Mother's Day! ♥</h1>
+
+  <p>
+    Dear Mom,<br><br>
+    I just want to say thank you — for every little thing you do, for all the times you've put me first, and for always being there even when I didn’t say I needed you.
+    Your <span class="highlight">love</span>, your <span class="highlight">care</span>, and your <span class="highlight">patience</span> mean more to me than I can ever express.
+  </p>
+
+  <p>
+    A mother’s love is one of the most powerful things in the world. From our first steps to our hardest days, she's there — lifting us, guiding us, and loving us no matter what. 
+    She gives without expecting anything back, and her love shapes who we become. Today is a reminder of how lucky we are to have someone like that in our lives.
+    <br /> 
+    I know we are busy sometimes but we should never forget to give some time to her from our busy schedule and never forget to admire her. 
+  </p>
+
+  <p>
+    Love you mom,<br><em>Your Tannu</em>
+  </p>
+
+  <button onclick="startFlowerRain()">Celebrate Mother's Day</button>
+
+  <script>
+    const flowerEmojis = ["🌸", "🌼","🌷","🌹", "💐","🪻" ,"🌷", "🌺", "🌻"];
+
+    function startFlowerRain() {
+      const totalFlowers = 80;
+
+      for (let i = 0; i < totalFlowers; i++) {
+        const flower = document.createElement("div");
+        flower.textContent = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
+        flower.className = "flower";
+        flower.style.left = Math.random() * window.innerWidth + "px";
+
+    
+        const size = Math.random() * 24 + 16;
+        flower.style.fontSize = size + "px";
+
+        
+        const duration = Math.random() * 3 + 4; 
+        const delay = Math.random() * 2; 
+        flower.style.animationDuration = duration + "s";
+        flower.style.animationDelay = delay + "s";
+
+        flower.style.transform = `rotate(${Math.random() * 360}deg)`;
+        flower.style.opacity = 0;
+
+        document.body.appendChild(flower);
+
+        
+        setTimeout(() => {
+          flower.remove();
+        }, (duration + delay) * 1000);
+      }
+    }
+  </script>
+
+</body>
+</html>
