@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vibe Poem</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Georgia', serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      transition: background 2s ease;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    #poem {
+      position: relative;
+      z-index: 1;
+      white-space: pre-line;
+      text-align: center;
+      font-size: 1.8em;
+      line-height: 1.6em;
+      max-width: 80%;
+      opacity: 0;
+      animation: fadeIn 2s ease-in-out forwards, pulse 4s ease-in-out infinite;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+      50% { text-shadow: 0 0 30px rgba(255,255,255,0.6); }
+    }
+
+    button {
+      position: relative;
+      z-index: 1;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: rgba(255,255,255,0.3);
+    }
+  </style>
+</head>
+<body id="body">
+
+<canvas id="stars"></canvas>
+
+<div id="poem"></div>
+<button onclick="generatePoem(), playMusic();">Feel a New Vibe</button>
+  
+  
+
+<audio id="music" autoplay loop muted>
+  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_3e0e82d60d.mp3" type="audio/mpeg">
+</audio>
+
+
+<script>
+const canvas = document.getElementById('stars');
+const ctx = canvas.getContext('2d');
+let width, height, stars;
+
+function playMusic() {
+  const audio = document.getElementById("music");
+  audio.muted = false;
+  audio.play();
+}
+  
+function resizeCanvas() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+  stars = Array.from({ length: 100 }, () => ({
+    x: Math.random() * width,
+    y: Math.random() * height,
+    radius: Math.random() * 1.5,
+    velocity: Math.random() * 0.2 + 0.05
+  }));
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function drawStars() {
+  ctx.clearRect(0, 0, width, height);
+  ctx.fillStyle = 'white';
+  stars.forEach(star => {
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+    ctx.fill();
+    star.y += star.velocity;
+    if (star.y > height) star.y = 0;
+  });
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+
+const themes = {
+  midnight: {
+    words: ["stars", "moon", "whispers", "shadows", "silence"],
+    bg: "radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%)"
+  },
+  rain: {
+    words: ["raindrops", "windows", "echoes", "lonely street", "heartbeat"],
+    bg: "linear-gradient(180deg, #3a3d40, #18191a)"
+  },
+  dreams: {
+    words: ["clouds", "floating", "memories", "light", "drift"],
+    bg: "linear-gradient(180deg, #a18cd1 0%, #fbc2eb 100%)"
+  }
+};
+
+const templates = [
+  "In the {0} of {1},\n{2} speak(s) in {3}.",
+  "{1} fall(s) on {0},\nsome {2} wrapped in {3}.",
+  "We walk through {1},\nholding {0} and {3}.",
+];
+
+function generatePoem() {
+  const body = document.getElementById("body");
+  const poemDiv = document.getElementById("poem");
+  const themeKeys = Object.keys(themes);
+  const themeKey = themeKeys[Math.floor(Math.random() * themeKeys.length)];
+  const theme = themes[themeKey];
+
+  const words = theme.words.sort(() => 0.5 - Math.random()).slice(0, 4);
+  const template = templates[Math.floor(Math.random() * templates.length)];
+  const poem = template.replace(/{(\d)}/g, (_, i) => words[i]);
+
+  // Background
+  body.style.background = theme.bg;
+
+  // Animate poem text
+  poemDiv.style.opacity = 0;
+  void poemDiv.offsetWidth;
+  poemDiv.innerText = poem;
+  poemDiv.style.animation = "fadeIn 2s ease-in-out forwards, pulse 4s ease-in-out infinite";
+}
+generatePoem();
+</script>
+
+</body>
+</html>
