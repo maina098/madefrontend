@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacker Terminal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    
+    <style>
+      
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap'); /* Fira Code font */
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+            font-family: 'Bebas Neue';
+            color: white;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            gap: 20px;
+            padding: 20px;
+            letter-spacing:6px;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+        }
+
+        #terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            border-bottom: 0.9px solid rgba(0, 255, 255, 1.5);
+            background: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+            z-index: 0;
+        }
+
+        #terminal-title {
+            font-size: 1.2em;
+            color: white;
+            text-shadow: 0 0 3px cyan;
+            margin: 0;
+        }
+
+        #terminal-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        #terminal-output {
+            flex: 1;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-family: 'Bebas Neue'; /* Fira Code font applied here */
+            color: #00ffcc;
+            margin-bottom: 15px;
+            padding-right: 10px;
+            scrollbar-width: thin;
+            letter-spacing:1.2px;
+            
+        }
+
+        #input-container {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid rgba(0, 255, 255, 0.3);
+          
+        }
+
+        #prompt {
+            color: white;
+            margin-right: 10px;
+        }
+
+        #terminal-input {
+            background: transparent;
+            color: white;
+            border: none;
+            width: 100%;
+            font-size: 16px;
+            outline: none;
+            caret-color: cyan;
+            font-family: 'Bebas Neue'; /* Fira Code font applied here */
+        letter-spacing:3px;
+            
+           
+            
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            
+        }
+        
+.symbolA {
+  position: absolute;
+  top: 54%; /* Centraliza verticalmente */
+  left: 50%; /* Centraliza horizontalmente */
+  transform: translate(-50%, -50%); /* Ajusta para o centro exato */
+  font-size: 27rem; /* Tamanho do símbolo */
+ /* Cor do símbolo */
+  z-index: -1; /* Garante que o símbolo fique sobre o triângulo */
+  
+
+  opacity: 0.06;  
+}
+
+    </style>
+</head>
+<body>
+ <div class="symbolA">💀</div> 
+    <canvas id="bg-canvas"></canvas>
+    
+    <div id="terminal-header">
+        <h1 id="terminal-title">Hacker Terminal Subsystems</h1>        
+    </div>
+    
+    <div id="terminal-content">
+        <div id="terminal-output"></div>
+        <div id="input-container">
+            <span id="prompt">></span>
+            <input type="text" id="terminal-input" autofocus />
+        </div>
+    </div>
+
+    <script>
+        const terminalOutput = document.getElementById('terminal-output');
+        const terminalInput = document.getElementById('terminal-input');
+
+        function typingEffect(text, speed) {
+            return new Promise((resolve) => {
+                let i = 0;
+                function type() {
+                    if (i < text.length) {
+                        terminalOutput.innerHTML += text.charAt(i);
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                        i++;
+                        setTimeout(type, speed);
+                    } else {
+                        terminalOutput.innerHTML += '\n';
+                        resolve();
+                    }
+                }
+                type();
+            });
+        }
+
+document.addEventListener('DOMContentLoaded', async () => { 
+    await typingEffect("Initializing Hacker Terminal v7.3.2...", 20);
+    await typingEffect("Exploiting the Worldnet...", 90);
+    await typingEffect("Exploited sucessfull...", 20);
+    await typingEffect("Connecting to central core...", 90);
+    await typingEffect("Damn! You're connected ! ...", 20);
+    await typingEffect("Authenticating...", 120);
+    await typingEffect("Authentication successful !", 20);
+    await typingEffect("Loading interface subsystems...", 40);
+    await typingEffect("Loading complete. Terminal ready.", 40); 
+
+
+    await typingEffect("\n\n Try 'help' to see available commands.", 90); // 2 quebras de linha e 90ms
+});
+        terminalInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const command = terminalInput.value.trim();
+                
+                if (command) {
+                    terminalOutput.innerHTML += `\n> ${command}\n`;
+                    processCommand(command);
+                    terminalInput.value = '';
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                }
+            }
+        });
+
+        function processCommand(cmd) {
+            cmd = cmd.toLowerCase();
+            
+            if (cmd === 'help') {
+                terminalOutput.innerHTML += `
+Available commands:
+- help: Show this command list
+- clear: Clear the terminal
+- status: Show system status
+- time: Show current time
+- date: Show current date
+- about: System information
+- exit: Exit the terminal
+`;
+            } else if (cmd === 'clear') {
+                terminalOutput.innerHTML = '';
+            } else if (cmd === 'status') {
+                terminalOutput.innerHTML += `
+SYSTEM STATUS:
+█████████████████████ 100%
+System Cores: ONLINE
+Subsystems: FUNCTIONAL
+World Connection: STABLE
+`;
+            } else if (cmd === 'time') {
+                const now = new Date();
+                terminalOutput.innerHTML += `Current time: ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}\n`;
+            } else if (cmd === 'date') {
+                const now = new Date();
+                terminalOutput.innerHTML += `Current date: ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}\n`;
+            } else if (cmd === 'about') {
+                terminalOutput.innerHTML += `
+███████╗██╗  ██╗██╗   ██╗███╗   ██╗███████╗████████╗
+██╔════╝██║  ██║██║   ██║████╗  ██║██╔════╝╚══██╔══╝
+███████╗███████║██║   ██║██╔██╗ ██║█████╗     ██║   
+╚════██║██╔══██║██║   ██║██║╚██╗██║██╔══╝     ██║   
+███████║██║  ██║╚██████╔╝██║ ╚████║███████╗   ██║   
+╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝   
+Hacker Terminal v7.3.2 - Future of Hacking Intelligence-It is under Michael Mando 
+`;
+            } else {
+                terminalOutput.innerHTML += `\nUnrecognized command: '${cmd}'\n`;
+            }
+        }
+    </script>
+</body>
+</html>
