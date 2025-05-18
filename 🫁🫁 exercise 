@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Breathing exercise</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to top, #a0d8ef, #e0f7fa);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      color: #333;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    .circle {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5em;
+      animation: breathe 8s infinite;
+    }
+
+    @keyframes breathe {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.2); }
+      50% { transform: scale(1.4); }
+      75% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .affirmation {
+      margin-top: 30px;
+      font-size: 1.2em;
+      font-style: italic;
+      text-align: center;
+      max-width: 300px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <h1>Take a Deep Breath</h1>
+  <div class="circle" id="breatheText">Inhale</div>
+  <div class="affirmation" id="affirmation"></div>
+
+  <script>
+    const breatheText = document.getElementById('breatheText');
+    const affirmation = document.getElementById('affirmation');
+    const affirmations = [
+      "You are enough, exactly as you are.",
+      "Peace begins with a deep breath.",
+      "You are strong, calm, and resilient.",
+      "One breath at a time, one moment at a time.",
+      "Inhale confidence, exhale doubt."
+    ];
+
+    const steps = ["Inhale", "Hold", "Exhale", "Hold"];
+    let index = 0;
+
+    setInterval(() => {
+      breatheText.textContent = steps[index];
+      index = (index + 1) % steps.length;
+    }, 4000);
+
+    affirmation.textContent = affirmations[Math.floor(Math.random() * affirmations.length)];
+  </script>
+</body>
+</html>
