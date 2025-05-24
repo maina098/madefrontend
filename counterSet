@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Click Counter</title>
+<style>
+body {
+    text-align: center;
+    background-color: #3B82F6;
+}
+label{
+    font-size: 5rem;
+      background: linear-gradient(90deg, #3B82F6, white, #3B82F6);
+      background-size: 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 1s infinite linear;
+    }
+
+    @keyframes shine {
+      0% {
+        background-position: -100% 0;
+      }
+      100% {
+        background-position: 100% 0;
+      }
+    }
+#decrease-btn, #increase-btn, #reset-btn{
+    padding: 15px;
+    margin: 15px;
+    border: solid 1px white;
+    font-weight: bold;
+    color: white;
+    border-radius: 20px;
+    background-color: #3B82F6;
+    font-size:15px;
+    transition: transform 0.3s ease;
+    text-shadow: 0px 2px black;
+}
+#decrease-btn:active, #increase-btn:active, #reset-btn:active{
+    transform: scale(1.2);
+    color: #FFEFA1;
+    border:solid 1px #FFEFA1;
+}
+div{
+    margin-top:80px;
+}
+
+</style>
+    </head>
+    <body>
+    <div>
+   <label id="count-label">0</label>  <br>
+<button id="decrease-btn">decrease</button>
+
+ <button id="increase-btn">increase</button>
+ 
+    <button id="reset-btn">reset</button>
+    </div>
+   <script>
+    const countLabel = document.getElementById("count-label");
+    let count = 0;
+   
+document.getElementById("decrease-btn").onclick = function(){
+  count--;
+  countLabel.textContent = count;
+}
+
+document.getElementById("reset-btn").onclick = function(){
+count = 0;
+     countLabel.textContent = count;
+}
+
+document.getElementById("increase-btn").onclick = function(){
+    count++;
+     countLabel.textContent = count;
+}
+   </script>
+    </body>
+</html>
