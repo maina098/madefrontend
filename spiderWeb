@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Spiders on Web</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font: bold 100%/1 sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            -webkit-touch-callout: none;
+        }
+
+        .flex-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            background-image: url('https://dl.dropbox.com/scl/fi/79g85bxt4sz3yyeychypi/spider-web.jpeg?rlkey=s8uv99ctgxufx36r8km226lmv&st=5z3lk56f&dl=1');
+            background-size: cover;
+            background-position: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .scene {
+            background-color: rgba(255, 255, 255, 0.5);
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            overflow: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .svg-canvas {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .svg-canvas svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .instruction-text {
+            user-select: none;
+            pointer-events: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(1rem, 5vw, 1.5rem);
+            color: #000;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            z-index: 10;
+            transition: opacity 0.5s;
+        }
+
+        .instruction-text.hidden {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <section class="flex-container scene">
+        <figure class="svg-canvas">
+            <svg role="presentation"></svg>
+        </figure>
+        <p class="instruction-text">Tap anywhere!</p>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script>
+    (function() {
+        'use strict';
+
+        // Constants
+        const SPIDER_COUNT = 15;
+        const SPIDER_COLORS = ['#000000', '#1a1a1a', '#333333', '#4d4d4d', '#666666'];
+        const ANIMATION_DURATION_RANGE = { min: 10, max: 30 };
+        const INITIAL_SCALE_RANGE = { min: 0.2, max: 0.5 };
+        const MOVEMENT_OFFSETS = [-300, -250, -200, -150, -100, -50, 50, 100, 150, 200, 250, 300];
+        
+        // DOM Elements
+        const svgCanvas = document.querySelector('.svg-canvas svg');
+        const instructionElement = document.querySelector('.instruction-text');
+        
+        // State
+        const activeSpiders = [];
+        const interactionPosition = { x: 0, y: 0 };
+        const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        /**
+         * Initializes the application
+         */
+        function init() {
+            if (isReducedMotion) return;
+            
+            setupEventListeners();
+            updateViewBox();
+        }
+
+        /**
+         * Sets up event listeners
+         */
+        function setupEventListeners() {
+            svgCanvas.addEventListener('click', handleInteraction);
+            svgCanvas.addEventListener('touchstart', handleInteraction, { passive: false });
+            window.addEventListener('resize', updateViewBox);
+        }
+
+        /**
+         * Handles user interaction (click or touch)
+         * @param {Event} event - The interaction event
+         */
+        function handleInteraction(event) {
+            if (event.type === 'touchstart') {
+                event.preventDefault();
+            }
+
+            instructionElement.classList.add('hidden');
+            updateInteractionPosition(event);
+            createSpiders();
+        }
+
+        /**
+         * Updates the interaction position based on event type
+         * @param {Event} event - The interaction event
+         */
+        function updateInteractionPosition(event) {
+            interactionPosition.x = event.type === 'touchstart' ? 
+                event.touches[0].clientX : event.clientX;
+            interactionPosition.y = event.type === 'touchstart' ? 
+                event.touches[0].clientY : event.clientY;
+        }
+
+        /**
+         * Updates the SVG viewBox to match window dimensions
+         */
+        function updateViewBox() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            svgCanvas.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            
+            activeSpiders.forEach(spider => {
+                const currentX = parseFloat(spider.getAttribute('data-x')) || 0;
+                const currentY = parseFloat(spider.getAttribute('data-y')) || 0;
+                spider.setAttribute('transform', `translate(${currentX},${currentY})`);
+            });
+        }
+
+        /**
+         * Creates multiple spider elements
+         */
+        function createSpiders() {
+            for (let i = 0; i < SPIDER_COUNT; i++) {
+                const spiderElement = createSpiderElement();
+                svgCanvas.appendChild(spiderElement);
+                activeSpiders.push(spiderElement);
+                animateSpider(spiderElement, i);
+            }
+        }
+
+        /**
+         * Creates a single spider SVG element
+         * @returns {SVGElement} The created spider element
+         */
+        function createSpiderElement() {
+            const spiderPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            spiderPath.setAttribute('d', generateSpiderPathData());
+            spiderPath.style.fill = getRandomSpiderColor();
+            spiderPath.setAttribute('transform', `translate(${interactionPosition.x},${interactionPosition.y})`);
+            spiderPath.setAttribute('data-x', interactionPosition.x);
+            spiderPath.setAttribute('data-y', interactionPosition.y);
+            spiderPath.setAttribute('opacity', '0');
+            spiderPath.setAttribute('data-speed', (0.5 + Math.random() * 1.5).toFixed(2));
+            
+            return spiderPath;
+        }
+
+        /**
+         * Generates the SVG path data for the spider
+         * @returns {string} The SVG path data
+         */
+        function generateSpiderPathData() {
+            return `M0,0c0.499,-1.289 -0.146,-2.734 -1.435,-3.223c-1.289,-0.488 -2.734,0.146 -3.222,1.435l-3.379,8.794c-0.821,2.152 -0.312,4.585 1.32,6.207l5.967,5.967l-8.358,-2.786c-0.249,-0.083 -0.447,-0.281 -0.53,-0.53l-1.965,-5.905c-0.436,-1.31 -1.85,-2.017 -3.16,-1.58c-1.31,0.436 -2.017,1.85 -1.58,3.16l1.965,5.905c0.582,1.736 1.944,3.098 3.68,3.68l6.299,2.1l-6.289,2.1c-1.736,0.582 -3.098,1.944 -3.68,3.68l-1.975,5.904c-0.437,1.31 0.27,2.724 1.58,3.161c1.31,0.436 2.724,-0.271 3.16,-1.58l1.965,-5.905c0.083,-0.25 0.281,-0.447 0.53,-0.53l8.358,-2.786l-5.977,5.967c-1.622,1.632 -2.142,4.064 -1.31,6.206l3.379,8.795c0.499,1.289 1.933,1.923 3.222,1.434c1.289,-0.488 1.923,-1.933 1.435,-3.222l-3.379,-8.795c-0.114,-0.312 -0.041,-0.655 0.187,-0.884l3.358,-3.368c0.104,5.416 4.533,9.782 9.98,9.782c5.447,0 9.876,-4.355 9.98,-9.782l3.358,3.358c0.228,0.229 0.301,0.582 0.187,0.883l-3.379,8.795c-0.499,1.289 0.146,2.734 1.435,3.223c1.289,0.488 2.734,-0.146 3.222,-1.435l3.379,-8.784c0.821,-2.152 0.312,-4.585 -1.32,-6.206l-5.967,-5.967l8.358,2.786c0.249,0.083 0.447,0.28 0.53,0.53l1.965,5.905c0.436,1.309 1.85,2.016 3.16,1.58c1.31,-0.437 2.017,-1.851 1.58,-3.161l-1.965,-5.904c-0.582,-1.736 -1.944,-3.098 -3.68,-3.68l-6.299,-2.1l6.289,-2.1c1.736,-0.582 3.098,-1.944 3.68,-3.68l1.965,-5.905c0.436,-1.31 -0.271,-2.724 -1.58,-3.16c-1.31,-0.437 -2.724,0.27 -3.161,1.58l-1.964,5.905c-0.084,0.249 -0.281,0.447 -0.531,0.53l-8.358,2.786l5.967,-5.967c1.622,-1.622 2.142,-4.055 1.321,-6.207l-3.369,-8.794c-0.499,-1.289 -1.933,-1.934 -3.222,-1.435c-1.289,0.499 -1.923,1.934 -1.435,3.223l3.379,8.795c0.114,0.311 0.041,0.654 -0.187,0.883l-5.021,5.032l-0,-1.466c-0,-3.306 -1.934,-6.165 -4.73,-7.506c-0.946,-0.457 -1.924,0.343 -1.924,1.393l0,1.123c0,0.915 -0.748,1.663 -1.663,1.663c-0.915,0 -1.663,-0.748 -1.663,-1.663l-0,-1.123c-0,-1.05 -0.978,-1.84 -1.924,-1.393c-2.796,1.341 -4.73,4.2 -4.73,7.506l0,1.466l-5.021,-5.021c-0.228,-0.229 -0.301,-0.583 -0.187,-0.884l3.379,-8.795l-0,-0.01Z`;
+        }
+
+        /**
+         * Gets a random spider color from the available palette
+         * @returns {string} A hex color code
+         */
+        function getRandomSpiderColor() {
+            return SPIDER_COLORS[Math.floor(Math.random() * SPIDER_COLORS.length)];
+        }
+
+        /**
+         * Animates a spider element
+         * @param {SVGElement} spiderElement - The spider element to animate
+         * @param {number} index - The index of the spider (for staggered animation)
+         */
+        function animateSpider(spiderElement, index) {
+            const duration = getRandomDuration();
+            const movementOffsets = getScaledMovementOffsets();
+            
+            animateSpiderAppearance(spiderElement, index);
+            createSpiderMovementTimeline(spiderElement, duration, movementOffsets);
+        }
+
+        /**
+         * Animates the initial appearance of a spider
+         * @param {SVGElement} spiderElement - The spider element
+         * @param {number} index - The index for staggered delay
+         */
+        function animateSpiderAppearance(spiderElement, index) {
+            gsap.fromTo(spiderElement,
+                { opacity: 0, scale: 0 },
+                {
+                    opacity: 1,
+                    scale: getRandomInitialScale(),
+                    duration: 1,
+                    ease: 'elastic.out(1, 0.5)',
+                    delay: index * 0.1
+                }
+            );
+        }
+
+        /**
+         * Creates the movement timeline for a spider
+         * @param {SVGElement} spiderElement - The spider element
+         * @param {number} duration - Total animation duration
+         * @param {number[]} movementOffsets - Available movement offsets
+         */
+        function createSpiderMovementTimeline(spiderElement, duration, movementOffsets) {
+            const timeline = gsap.timeline({
+                onComplete: () => handleSpiderAnimationComplete(spiderElement)
+            });
+
+            addMovementSegments(timeline, spiderElement, duration, movementOffsets);
+            addRandomRotations(timeline, spiderElement, duration);
+        }
+
+        /**
+         * Handles completion of spider animation
+         * @param {SVGElement} spiderElement - The spider element
+         */
+        function handleSpiderAnimationComplete(spiderElement) {
+            if (Math.random() > 0.3) {
+                animateSpider(spiderElement, 0);
+            } else {
+                fadeOutAndRemoveSpider(spiderElement);
+            }
+        }
+
+        /**
+         * Fades out and removes a spider element
+         * @param {SVGElement} spiderElement - The spider element to remove
+         */
+        function fadeOutAndRemoveSpider(spiderElement) {
+            gsap.to(spiderElement, {
+                opacity: 0,
+                duration: 2,
+                onComplete: () => {
+                    svgCanvas.removeChild(spiderElement);
+                    const index = activeSpiders.indexOf(spiderElement);
+                    if (index > -1) activeSpiders.splice(index, 1);
+                }
+            });
+        }
+
+        /**
+         * Adds movement segments to the animation timeline
+         * @param {GSAPTimeline} timeline - The GSAP timeline
+         * @param {SVGElement} spiderElement - The spider element
+         * @param {number} duration - Total animation duration
+         * @param {number[]} movementOffsets - Available movement offsets
+         */
+        function addMovementSegments(timeline, spiderElement, duration, movementOffsets) {
+            const segmentCount = 3 + Math.floor(Math.random() * 4);
+            
+            for (let i = 0; i < segmentCount; i++) {
+                const segmentDuration = duration / segmentCount;
+                const distanceX = getRandomMovementDistance(movementOffsets);
+                const distanceY = getRandomMovementDistance(movementOffsets);
+                
+                timeline.to(spiderElement, {
+                    x: `+=${distanceX}`,
+                    y: `+=${distanceY}`,
+                    duration: segmentDuration,
+                    ease: 'sine.inOut',
+                    onUpdate: function() {
+                        const progress = this.progress();
+                        const currentX = parseFloat(spiderElement.getAttribute('data-x')) || 0;
+                        const currentY = parseFloat(spiderElement.getAttribute('data-y')) || 0;
+                        spiderElement.setAttribute('data-x', currentX + (distanceX / (segmentDuration * 60)) * progress);
+                        spiderElement.setAttribute('data-y', currentY + (distanceY / (segmentDuration * 60)) * progress);
+                    }
+                }, i > 0 ? '>+=0.1' : 0);
+            }
+        }
+
+        /**
+         * Adds random rotations to the animation timeline
+         * @param {GSAPTimeline} timeline - The GSAP timeline
+         * @param {SVGElement} spiderElement - The spider element to animate
+         * @param {number} duration - Total animation duration
+         */
+        function addRandomRotations(timeline, spiderElement, duration) {
+            timeline.to(spiderElement, {
+                rotation: 'random(-30, 30)',
+                scale: 'random(0.15, 0.35)',
+                duration: 'random(2, 5)',
+                repeat: Math.floor(duration / 3),
+                yoyo: true,
+                ease: 'sine.inOut'
+            }, 0);
+        }
+
+        /**
+         * Gets scaled movement offsets based on screen size
+         * @returns {number[]} Array of scaled movement offsets
+         */
+        function getScaledMovementOffsets() {
+            const minDimension = Math.min(window.innerWidth, window.innerHeight);
+            const scaleFactor = minDimension / 1000;
+            return MOVEMENT_OFFSETS.map(offset => offset * scaleFactor);
+        }
+
+        /**
+         * Gets a random animation duration
+         * @returns {number} Random duration in seconds
+         */
+        function getRandomDuration() {
+            return ANIMATION_DURATION_RANGE.min + 
+                Math.random() * (ANIMATION_DURATION_RANGE.max - ANIMATION_DURATION_RANGE.min);
+        }
+
+        /**
+         * Gets a random initial scale for spiders
+         * @returns {number} Random scale value
+         */
+        function getRandomInitialScale() {
+            return INITIAL_SCALE_RANGE.min + 
+                Math.random() * (INITIAL_SCALE_RANGE.max - INITIAL_SCALE_RANGE.min);
+        }
+
+        /**
+         * Gets a random movement distance from available offsets
+         * @param {number[]} offsets - Available movement offsets
+         * @returns {number} Random movement distance
+         */
+        function getRandomMovementDistance(offsets) {
+            return offsets[Math.floor(Math.random() * offsets.length)] * (1 + Math.random());
+        }
+
+        // Initialize the application
+        init();
+    })();
+</script>
+</body>
+</html>
