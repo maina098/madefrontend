@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> Quadratic Functions Explanation and Visualisier </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+        margin: 0;
+        padding: 20px;
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #0f2027, #2c5364);
+        color: #fff;
+        }
+        h1 {
+        text-align: center;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: #ffe082;
+        }
+        .container {
+        max-width: 900px;
+        margin: auto;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+        h2 {
+        color: #ffb74d;
+        margin-top: 30px;
+        }
+        p {
+        line-height: 1.6;
+        margin-bottom: 15px;
+        }
+        .highlight {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 5px 10px;
+        border-radius: 8px;
+        display: inline-block;
+        font-family: 'Courier New', monospace;
+        }
+        .summary {
+        background: #4caf50;
+        color: #fff;
+        padding: 10px;
+        border-radius: 10px;
+        font-weight: bold;
+        }
+        #canvas {
+        width: 100%;
+        height: 80vh;
+        background-color: #111;
+        display: block;
+        margin: 20px auto;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+        .controls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 10px;
+        }
+        .controls label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #ffeb3b;
+        }
+        .controls input[type=range] {
+        width: 100px;
+        }
+        #equation {
+        text-align: center;
+        font-size: 1.3em;
+        margin-top: 10px;
+        color: #90caf9;
+        }
+        a:link{color:yellow;}
+        a:visited, a:active{color:red;}
+        a:hover{color:orange}
+   </style>
+</head>
+  
+ 
+<body>
+    <h1>The Parabola Mystery:A Quadratic Tale of Symmetry and Curves</h1>
+    <div class="container">
+        <h2> The Equation</h2>
+        <p>
+        The <u><i> general</i></u> form of a <a href="https://en.wikipedia.org/wiki/Quadratic_function"> quadratic function </a> is <span class="highlight"> f(x)=ax2+bx+c</span> where a, b, and c are real numbers and a≠0.<br>
+        The <u><i> standard</i></u> form of a quadratic function is <span class="highlight">f(x)=a(x−h)2+k</span>.
+        <p>
+            A quadratic function can thus be expressed as <span class="highlight">y = ax² + bx + c</span>.
+            Here, <span class="highlight">a</span> coefficient controls the width and direction (i.e., whether the graph opens up or opens down), 
+            <span class="highlight">b</span> coefficient tilts the graph (i.e., controls the skew), and <span class="highlight">c</span> (constant term) shifts it up or down the y-axis. <br>
+            <br> <br><br>
+            <a href="https://dl.uncw.edu/digilib/mathematics/algebra/mat111hb/functions/manipulate/manipulate.html#sec2"> Learn more on <strong> shifting </strong> </a>
+            <br> <br> 
+            <i>Watch</i>: <a href="https://youtu.be/wW6O5uYwMZY?si=rzPSQc_DJh92gTAe" >
+            How to find the <emp> Ditection of a parabola</emp> </a>
+        </p>
+
+        <h2> Why a Parabola?</h2>
+        <p>
+            The <span class="highlight">x²</span> term <i> (squared variable) </i> means that as x increases or decreases, the change in y gets faster and faster (it accelerates), creating the curved "U" shape.
+            
+            The curve is <a href="https://study.com//learn/lesson/recognizing-symmetry-about-x-axis-y-axis.html#:~:text=A%20graph%20is%20symmetrical%20along,f%20(x%2C%20y).&text=The%20graph%20above%20depicts%20a%20line%20equation." >
+            symmetric</a> about a vertical line, called the <strong> <a href="https://www.cuemath.com/algebra/axis-of-symmetry/">
+            axis of symmetry</a></strong>. This is because, we know that a graph is symmetrical along the X-axis if it contains two points (x, y) and (x, -y) such that f (x, y) = f (x, -y) and squaring a positive and negative x gives the same y-value.
+            Hence, <emp> squaring a number creates a symmetric relationship:
+            both positive and negative x give the same y (since <span class="highlight">(-x)² = x²</span>).<emp>
+            This symmetry forms a curved "U" shape which is known as a <i> <b> <a href="https://study.com//learn/lesson/parabolic-shape.html#:~:text=A%20parabola%20is%20a%20curve,%3Dx%5E2%2B1."> Parabola </a></b> </i>.
+        
+            As x gets larger, the change in y accelerates because squaring makes big numbers even bigger. 
+            This makes the curve steep and creates the classic parabola.
+            <br> <br>
+           <i> Watch</i>: <a href="https://youtu.be/Tu_BcYfmKZo?si=JjetuarRKGa5g0bY">
+            Why Quadratics Make a Parabola </a>
+            
+        </p>
+
+        <h2>The Vertex</h2>
+        <p>
+            The turning point of the parabola is called the <strong>vertex</strong>, at:
+            <span class="highlight">h = -b / (2a)</span>,
+            <span class="highlight">k = a(h)² + b(h) + c</span>.
+        </p>
+        <p>
+          The <a href="https://www.cuemath.com/geometry/vertex-of-a-parabola/" >vertex</a>
+           is the point where the slope is zero and the curve switches from rising to falling or vice versa (i.e. slope of derivative behavior changes).<br>
+           A polynomial of degree n can have at most n-1  turning points.
+           There's NO strict maximum degree of the polynomial— the degree could be any number ≥ n.
+        </p>
+
+        <h2> The Roots (x-intercepts)</h2>
+        <p>
+            To find where the parabola crosses the x-axis (<span class="highlight">y = 0</span>), i.e. it's <strong><a href="https://www.cuemath.com/algebra/roots-of-quadratic-equation/" >roots </a></strong>
+            we use the quadratic formula:
+        </p>
+        <p>
+            <span class="highlight">x = (-b ± √(b² - 4ac)) / (2a)</span>
+        </p>
+        <p>
+        <ul>
+            <li> If the <strong><a href="https://www.nku.edu/~longa/classes/biomath/www.biology.arizona.edu/biomath/tutorials/Quadratic/Roots.html#:~:text=If%20the%20discriminant%20of%20a,not%20intersect%20the%20x%2Daxis." >discriminant</a></strong> (<span class="highlight">b² - 4ac</span>) is positive, there are two real roots.</li>
+         <li>    If it's zero, there's one real root (touching the x-axis).</li>
+          <li>  If it's negative, there are no real roots (the parabola floats above or below the x-axis).</li>
+        </ul>
+        </p>
+        <p>
+        <i><u> The <a href="https://www.cuemath.com/algebra/descartes-rule-of-signs/" >maximum number of roots</a> of a quadratic function is <strong>TWO</strong></u></i> 
+        </p>
+        <div class="summary">
+            In summary, quadratic functions form parabolas because of the squaring of x, which makes the change in y accelerate
+            and creates symmetry around a vertical axis!
+        </div>
+    </div>
+    
+    <h1>Quadratic Function Visualirer: <br>
+    <code> <strong> y = ax² + bx + c  </strong> </code> </h1>
+    <canvas id="canvas"></canvas>
+    <div id="equation">Equation: y = x²</div>
+
+    <div class="controls">
+        <label>a: <input type="range" id="a" min="-5" max="5" step="0.1" value="1"></label>
+        <label>b: <input type="range" id="b" min="-10" max="10" step="0.1" value="0"></label>
+        <label>c: <input type="range" id="c" min="-10" max="10" step="0.1" value="0"></label>
+    </div>
+    <footer style="text-align:center; padding:15px; font-size:14px; color:#FF7F7F; border-top:1px solid lightgreen; margin-top:30px;">
+    Created by Ushasi Bhattacharya | © 2025 Quadratic Functions Explanation and Visualisier | Developed for educational purposes
+    </footer>
+
+    <script>
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const aSlider = document.getElementById('a');
+      const bSlider = document.getElementById('b');
+      const cSlider = document.getElementById('c');
+      const equationDisplay = document.getElementById('equation');
+      
+      function resizeCanvas() {
+      canvas.width = canvas.clientWidth;
+      canvas.height = canvas.clientHeight;
+      }
+      
+      function drawQuadratic() {
+      resizeCanvas();
+      const a = parseFloat(aSlider.value);
+      const b = parseFloat(bSlider.value);
+      const c = parseFloat(cSlider.value);
+      
+      equationDisplay.textContent = `Equation: y = ${a.toFixed(1)}x² ${b>=0?'+':''}${b.toFixed(1)}x ${c>=0?'+':''}${c.toFixed(1)}`;
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#111";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      const scaleX = canvas.width / 20;  
+      const scaleY = canvas.height / 20;  
+      const originX = canvas.width / 2;
+      const originY = canvas.height / 2;
+      
+      ctx.strokeStyle = "#444";
+      ctx.lineWidth = 1;
+      for(let x = -canvas.width/2; x < canvas.width/2; x+=scaleX){
+      ctx.beginPath();
+      ctx.moveTo(originX + x, 0);
+      ctx.lineTo(originX + x, canvas.height);
+      ctx.stroke();
+      }
+      for(let y = -canvas.height/2; y < canvas.height/2; y+=scaleY){
+      ctx.beginPath();
+      ctx.moveTo(0, originY + y);
+      ctx.lineTo(canvas.width, originY + y);
+      ctx.stroke();
+      }
+      
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, originY);
+      ctx.lineTo(canvas.width, originY);
+      ctx.moveTo(originX, 0);
+      ctx.lineTo(originX, canvas.height);
+      ctx.stroke();
+      
+      ctx.strokeStyle = "#00ff99";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      let firstPoint = true;
+      for(let px = -originX; px <= originX; px+=1){
+      let x = px / scaleX;
+      let y = a*x*x + b*x + c;
+      let py = -y * scaleY;
+      if(firstPoint){
+      ctx.moveTo(originX + px, originY + py);
+      firstPoint = false;
+      } else {
+      ctx.lineTo(originX + px, originY + py);
+      }
+      }
+      ctx.stroke();
+      
+      const h = -b/(2*a);
+      const k = a*h*h + b*h + c;
+      ctx.fillStyle = "red";
+      ctx.beginPath();
+      ctx.arc(originX + h*scaleX, originY - k*scaleY, 5, 0, 2*Math.PI);
+      ctx.fill();
+      
+      ctx.strokeStyle = "yellow";
+      ctx.setLineDash([5,5]);
+      ctx.beginPath();
+      ctx.moveTo(originX + h*scaleX, 0);
+      ctx.lineTo(originX + h*scaleX, canvas.height);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      
+      const discriminant = b*b - 4*a*c;
+      if(discriminant >= 0 && a !== 0){
+      const sqrtDisc = Math.sqrt(discriminant);
+      const x1 = (-b + sqrtDisc) / (2*a);
+      const x2 = (-b - sqrtDisc) / (2*a);
+      ctx.fillStyle = "cyan";
+      ctx.beginPath();
+      ctx.arc(originX + x1*scaleX, originY, 5, 0, 2*Math.PI);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(originX + x2*scaleX, originY, 5, 0, 2*Math.PI);
+      ctx.fill();
+      }
+      }
+      
+      aSlider.addEventListener('input', drawQuadratic);
+      bSlider.addEventListener('input', drawQuadratic);
+      cSlider.addEventListener('input', drawQuadratic);
+      
+      window.addEventListener('resize', drawQuadratic);
+      
+      drawQuadratic();
+    </script>
+</body>
+</html>
