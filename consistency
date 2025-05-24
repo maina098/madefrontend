@@ -1,0 +1,131 @@
+<html>
+<head>
+  
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #444;
+            display: flex;
+            justify-content: center;
+            background-color: #f4f4f4;
+            padding-bottom: 15px;
+            padding-top: 15px;
+        }
+
+        .container {
+            max-width: 750px;
+            width: 90%;
+            
+            padding: 20px; 
+        
+        }
+
+        h1 {
+            color: #00008B; 
+            text-align: center;
+            font-size: 2em; 
+            margin-bottom: 20px;
+            line-height: 1.3; 
+        }
+
+        h2 {
+            color: #00008B; 
+            font-size: 1.5em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #ADD8E6; 
+            padding-bottom: 5px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+
+        strong {
+            color: #ff7f50; 
+        }
+
+        img.article-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            display: block;
+        }
+
+        .conclusion {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #e6e6fa; 
+            border-radius: 8px;
+            color: #555;
+        }
+
+        .conclusion p {
+             font-style: italic;
+             text-align: center;
+        }
+
+        .quote {
+            font-style: italic;
+            margin: 15px 0;
+            padding-left: 20px;
+            border-left: 3px solid #ADD8E6; 
+            color: #555;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.6em; 
+            }
+            h2 {
+                font-size: 1.3em;
+            }
+            p {
+                font-size: 1em;
+            }
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+         <h1>Consistency is key?</h1>
+
+        <img src="https://i.ibb.co/kCpfS9j/Diesel-Electric-Locomotive-Number-1500-Amidst-Lush-Greenery.png" alt="A train on its tracks, moving along its journey" class="article-image">
+
+        <p>Maya wanted to make apps. She always told herself, "You have to be consistent." To her, this meant she had to code every single day for her special project. <strong>Never missing a day, never having a bad day, or never slipping up</strong> – that’s what she aimed for. But her busy job and everyday problems made it hard to stick to her plan. She missed a day of coding, then another. She started to feel really bad about it. "Maybe trying to be perfect all the time isn’t the way," she thought, looking at her unfinished work. Then, a new idea popped into her head, and it felt good: <strong>real consistency isn't about being perfect. It's about how fast you get back on track.</strong></p>
+        <p>This idea changed everything for her. Maya learned that life isn’t a straight path; it’s full of ups and downs. Trying to be perfect all the time with her coding, her health, or her learning made her feel tired. The idea that <strong>how fast she got back to it—her 'comeback speed'—was what really mattered for consistency</strong> felt much nicer and more real, because she was a person, not a machine.</p>
+
+        <h2>Why Trying to Be "Perfectly" Consistent is So Hard</h2>
+
+        <p>Maya had always believed what people said: to be consistent, you had to do things every day, no matter what. If you missed a day, you failed. This made her feel down and want to give up many times. She remembered other times she tried to do things, but life got in the way. Missing a few days made her lose her drive, and she started to think she couldn’t do it.</p>
+        <p>Trying to be so strict felt like she was asking too much of herself. She once read something that she liked: "We are never off the path, just flowing with it." Even nature is like that. The sun isn't always the same, the seasons change, but nature keeps going in its own way. Why should she be different? The idea that <strong>"consistency isn’t perfection, it’s how fast you recover"</strong> really helped her, especially when she was tired of trying to be perfect.</p>
+
+        <h2>The Good Thing About Getting Back Up</h2>
+
+        <p>Thinking this new way made Maya feel so much lighter. It was okay to mess up; what was important was getting back to her computer. She found out many people felt the same. They used to worry about never missing a day, but now they saw that <strong>real strength is not letting a small slip-up make you quit altogether.</strong></p>
+        <p>It wasn’t about never having problems. It was about deciding to keep going. Someone called it "comeback speed," and she liked that. It meant getting back to what she was doing as fast as she could. This didn't mean she couldn't rest or had to push herself when she was too tired. It meant when she was ready, she wouldn’t let missed days stop her.</p>
+        <p class="quote">One day, Maya read a blog post from another coder. It said, "Realizing that consistency isn’t about never falling off, it's about bouncing back quickly, shifted everything. Coding feels lighter now and a lot more joyful." That was just how Maya felt.</p>
+        <p>This way of thinking let Maya be herself. It understood that getting sick, surprises, or just needing a break are all normal. Her goal changed from 'never miss a day' to 'always come back.' It was about trusting herself that even if she missed a day or two, she’d get back to what was important to her.</p>
+
+        <h2>Seeing Things in a New Light</h2>
+        <p>Maya knew that how often she did things still mattered for finishing her app. But what she focused on changed. It was less about being super strict every single day. It was more about showing up pretty regularly over time. It was about doing <em>enough</em> to keep going and see her project move forward, knowing that "enough" can be different for everyone and at different times.</p>
+        <p>This didn’t mean being disciplined wasn't good. It was. But when she saw consistency as getting back up quickly, it was easier to keep going and kinder to herself. It was about seeing problems, like the blogger said, and still moving on. She learned that <strong>missing a day doesn’t mean you failed; what really matters is how fast you get back to your coding and keep going.</strong></p>
+
+        <div class="conclusion">
+            <p><em>So, Maya learned to just breathe. That coding time she missed, that tricky problem she hadn’t solved yet, that quiet time she skipped – it didn’t mean she wasn’t trying. Getting back to it was what made her a winner. She started to like this kinder, real way to think about consistency. It wasn’t about trying to be perfect, which isn't real; it was about not giving up. It was about how fast she got back up, being nice to herself, and believing that <strong>you can always get back on track.</strong> This wasn't just a change in words; for Maya, it was a kinder and better way to work towards her goals.</em></p>
+        </div>
+    </div>
+</body>
+</html>
