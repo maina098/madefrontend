@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>10-Question Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    .quiz-box {
+      background: white;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+    .options label {
+      display: block;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #progress {
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    #review {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="quiz-box">
+  <div id="progress">Question 1 of 10</div>
+  <h2 id="question">Loading...</h2>
+  <div class="options" id="options"></div>
+  <button onclick="nextQuestion()">Next</button>
+  <div id="result"></div>
+  <div id="review"></div>
+</div>
+
+<script>
+  const quiz = [
+    { question: "Capital of France?", options: ["Berlin", "Madrid", "Paris", "Rome"], answer: 2 },
+    { question: "5 + 7 = ?", options: ["10", "11", "12", "13"], answer: 2 },
+    { question: "Which is a planet?", options: ["Mars", "Orion", "Sirius", "Polaris"], answer: 0 },
+    { question: "Fastest land animal?", options: ["Lion", "Cheetah", "Tiger", "Jaguar"], answer: 1 },
+    { question: "HTML stands for?", options: ["Hyper Text", "HighText Machine", "Home Tool", "Hyper Tool"], answer: 0 },
+    { question: "Which is not a language?", options: ["Python", "Ruby", "HTML", "CPU"], answer: 3 },
+    { question: "Water chemical formula?", options: ["H2O", "O2", "CO2", "H2"], answer: 0 },
+    { question: "Which is a search engine?", options: ["Google", "Yahoo", "Bing", "All"], answer: 3 },
+    { question: "Largest mammal?", options: ["Elephant", "Whale", "Giraffe", "Bear"], answer: 1 },
+    { question: "JavaScript runs on?", options: ["Server", "Browser", "Compiler", "Terminal"], answer: 1 }
+  ];
+
+  let currentQuestion = 0;
+  let score = 0;
+  const userAnswers = [];
+
+  function loadQuestion() {
+    const q = quiz[currentQuestion];
+    document.getElementById('question').textContent = q.question;
+    document.getElementById('progress').textContent = `Question ${currentQuestion + 1} of ${quiz.length}`;
+    const optionsDiv = document.getElementById('options');
+    optionsDiv.innerHTML = "";
+    q.options.forEach((opt, i) => {
+      const label = document.createElement('label');
+      label.innerHTML = `<input type="radio" name="option" value="${i}"> ${opt}`;
+      optionsDiv.appendChild(label);
+    });
+  }
+
+  function nextQuestion() {
+    const selected = document.querySelector('input[name="option"]:checked');
+    if (!selected) {
+      alert("Please select an answer.");
+      return;
+    }
+
+    const selectedIndex = parseInt(selected.value);
+    userAnswers.push(selectedIndex);
+
+    if (selectedIndex === quiz[currentQuestion].answer) {
+      score++;
+    }
+
+    currentQuestion++;
+    if (currentQuestion < quiz.length) {
+      loadQuestion();
+    } else {
+      showResult();
+    }
+  }
+
+  function showResult() {
+    const quizBox = document.querySelector('.quiz-box');
+    document.getElementById('result').innerHTML = `<h3>Your score: ${score} / ${quiz.length}</h3>`;
+
+    let reviewHTML = `<h3>Review Answers:</h3><ol>`;
+    quiz.forEach((q, i) => {
+      const correct = q.options[q.answer];
+      const userAns = q.options[userAnswers[i]];
+      const color = userAnswers[i] === q.answer ? 'green' : 'red';
+      reviewHTML += `<li><strong>${q.question}</strong><br>
+        Your answer: <span style="color:${color}">${userAns}</span><br>
+        Correct answer: <strong>${correct}</strong></li><br>`;
+    });
+    reviewHTML += `</ol>`;
+    document.getElementById('review').innerHTML = reviewHTML;
+
+    document.getElementById('options').style.display = 'none';
+    document.querySelector('button').style.display = 'none';
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
