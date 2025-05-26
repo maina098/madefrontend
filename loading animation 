@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <title>Loading Animation</title>
+  <style>
+    body {
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #00f0ff;
+      letter-spacing: 2px;
+    }
+
+    .loader {
+      border: 10px solid #333;
+      border-top: 10px solid #00f0ff;
+      border-radius: 50%;
+      width: 200px;
+      height: 200px;
+      animation: spin 1s linear infinite;
+      margin-bottom:10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #button-box {
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background: #00f0ff;
+      color: #111;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 5px;
+    }
+
+    #text-box {
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      display: none;
+      max-width: 600px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="title">Loading...</h1>
+  <div class="loader" id="loader"></div>
+
+  <div id="button-box">
+    <button onclick="showText()">Do not Click me!</button>
+  </div>
+
+  <div id="text-box">
+    <h2>Wow..Thanks!</h2>
+    <p>Finally after all the day, Someone like you clicked me,Never Listen to the button,Well anyways Here is a poem for.no not JUST For U!</p>
+    <br />
+    <h2>My Little Passage to U</h2>
+    <p>In this great world of sololearn</p>
+    <p>A Bright Learner comes right in turn</p>
+    <p>From Java to C++, he stands as a Programmer</p>
+    <p>With the Logical Thinking,just like a sharp hammer</p>
+    <br />
+    <p>So here it is,bold sololearn crew </p>
+    <p>Wish you all dreames comes true</p>
+    <p>Never give up,never stop</p>
+    <p>Maybe one day, you may become top!</p>
+    <br />
+    <h2>Thats my poem for u, Have a Nice Day!</h2>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+  <script>
+function showText(){
+  alert("You had Defeated the Button");
+  Swal.fire({
+                icon: 'success',
+                title: 'Access Granted!',
+                text: 'You now have the access to Mino!.',
+            });    
+                 document.getElementById('title').style.display = 'none';
+      document.getElementById('loader').style.display = 'none';
+      document.getElementById('button-box').style.display = 'none';
+
+      
+      document.getElementById('text-box').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
