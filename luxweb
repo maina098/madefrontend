@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Web</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS will go here */
+        :root {
+            --primary: #e3e;
+            --secondary: #111;
+            --accent: #e3e;
+            --dark: #333;
+            --light: #4bcFFc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+  .logo{
+    font-size: 75px;
+    line-height: -5lvh;
+    text-decoration-line: underline;
+    color: #111;
+    text-shadow: 0 0 10px, 0 0 20px, 0 0 40px cyan ;
+    animation: logo 4s infinite;
+    
+  }
+  @keyframes logo{
+    10%{transform:rotate(10deg);}
+ 
+  }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), #500014);
+            color: var(--light);
+            padding: 2rem 5%;
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .header-content {
+            z-index: 2;
+            max-width: 600px;
+        }
+        
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color:#111 ;
+            color: #1bc;
+            padding: 12px 30px;
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px 15px rgba(0,0,0,2.9);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .floating-element {
+            position: absolute;
+            background-color: var(--accent);
+            opacity: 0.2;
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+            }
+        }
+        
+        /* Gallery Section */
+        .gallery {
+            padding: 5rem;
+            background-color: var(--light);
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            aspect-ratio: 3/4;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-10px);
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 2rem 1rem 1rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-caption {
+            transform: translateY(0);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 5rem;
+            background: linear-gradient(to right, var(--light), var(--accent), var(--light));
+        }
+        
+        .feature-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            width: 300px;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: var(--light);
+            padding: 3rem 5%;
+            text-align: center;
+        }
+        
+        .social-links {
+            margin: 2rem 0;
+        }
+        
+        .social-links a {
+            color: var(--light);
+            font-size: 1.5rem;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: var(--secondary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .gallery, .features {
+                padding: 3rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+  
+  
+  
+  
+    <header>
+      
+  <div id="logo" class="logo">ZINICH</div>  
+  
+      
+        <div class="header-content">
+            <h1>Unveil Your Creativity</h1>
+            <p class="tagline">Discover the art of passion and elegance in every moment</p>
+            <a href="#explore" class="btn">Explore Desire</a>
+        </div>
+        
+        <div class="floating-elements" id="floatingElements"></div>
+    </header>
+    
+    <section class="gallery" id="explore">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 1rem;">The Art of Passion</h2>
+        <p style="text-align: center; max-width: 700px; margin: 0 auto;">Experience beauty in its most intimate form through our curated collection</p>
+        
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <!-- Replace with actual image -->
+                <img src="https://i.ibb.co/zTCL8YM9/wall3.png" alt="Sensual image 1">
+                <div class="gallery-caption">
+                    <h3>Midnight Whispers</h3>
+                    <p>The art of subtle seduction</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://i.ibb.co/LzVfvWty/wall4.png"  alt="Sensual image 2">
+                <div class="gallery-caption">
+                    <h3>Golden Hour</h3>
+                    <p>Warmth in every touch</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://i.ibb.co/n8PwHS9P/wall5.png"  alt="Sensual image 3">
+                <div class="gallery-caption">
+                    <h3>Silk & Shadows</h3>
+                    <p>Contrasts that excite</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="features">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 1rem;">Experience Luxury</h2>
+        <p style="text-align: center; max-width: 700px; margin: 0 auto;">Indulge in our exclusive offerings designed to awaken your senses</p>
+        
+        <div class="feature-cards">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-spa"></i>
+                </div>
+                <h3>Sensual Wellness</h3>
+                <p>Treatments that pamper both body and soul, awakening your deepest senses.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h3>Intimate Photography</h3>
+                <p>Capture your beauty in its most authentic and alluring form.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3>Passion Coaching</h3>
+                <p>Rediscover intimacy and connection through expert guidance.</p>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <h2 style="margin-bottom: 1rem;">Luxe & Passion</h2>
+        <p>Elevating sensuality through art and experience</p>
+        
+        <div class="social-links">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-pinterest"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fas fa-envelope"></i></a>
+        </div>
+        
+        <p>&copy; 2025 ZINICH. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // Create floating elements
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('floatingElements');
+            const colors = ['#1bC', '#FFD700', '#4ece'];
+            
+            for (let i = 0; i < 15; i++) {
+                const element = document.createElement('div');
+                element.classList.add('floating-element');
+                
+                // Random properties
+                const size = Math.random() * 100 + 50;
+                const posX = Math.random() * window.innerWidth;
+                const posY = Math.random() * window.innerHeight + window.innerHeight;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const delay = Math.random() * 15;
+                const duration = 15 + Math.random() * 20;
+                
+                element.style.width = `${size}px`;
+                element.style.height = `${size}px`;
+                element.style.left = `${posX}px`;
+                element.style.top = `${posY}px`;
+                element.style.backgroundColor = color;
+                element.style.animationDelay = `${delay}s`;
+                element.style.animationDuration = `${duration}s`;
+                
+                container.appendChild(element);
+            }
+            
+            // Parallax effect for header content
+            window.addEventListener('scroll', function() {
+                const scrollPosition = window.scrollY;
+                const headerContent = document.querySelector('.header-content');
+                
+                if (scrollPosition < window.innerHeight) {
+                    headerContent.style.transform = `translateY(${scrollPosition * 0.3}px)`;
+                }
+            });
+            
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
