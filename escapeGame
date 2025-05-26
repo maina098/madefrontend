@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vibe Master’s Secret Mission</title>
+<style>
+  body {
+    background: #121212;
+    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  }
+  h1 {
+    text-align: center;
+    color: #ffcc00;
+    margin-bottom: 10px;
+  }
+  #gameText {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+  }
+  .choice-btn {
+    background: #222;
+    color: #ffcc00;
+    border: 2px solid #ffcc00;
+    padding: 12px 20px;
+    margin: 8px 4px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s;
+    width: 100%;
+  }
+  .choice-btn:hover {
+    background: #ffcc00;
+    color: #121212;
+  }
+  #choices {
+    display: flex;
+    flex-direction: column;
+  }
+  #answerInput {
+    padding: 10px;
+    font-size: 1rem;
+    width: calc(100% - 22px);
+    border-radius: 5px;
+    border: none;
+    margin-bottom: 10px;
+  }
+  #submitAnswer {
+    background: #ffcc00;
+    border: none;
+    color: #121212;
+    padding: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+  }
+  #submitAnswer:hover {
+    background: #e6b800;
+  }
+</style>
+</head>
+<body>
+
+<h1>Vibe Master’s Secret Mission</h1>
+<div id="gameText"></div>
+
+<div id="choices"></div>
+
+<script>
+  const gameText = document.getElementById('gameText');
+  const choicesDiv = document.getElementById('choices');
+
+  // Game states and text
+  const states = {
+    start: {
+      text: `You sneak into the lair’s hallway.  
+There are two paths:
+1. The Silent Shadow Hall – Dark, quiet, but full of hidden traps.  
+2. The Bright Guarded Corridor – Well-lit, guards patrol here, but fewer traps.
+Which path do you take? (Choose 1 or 2)`,
+      choices: [
+        { text: "1. Silent Shadow Hall", next: 'shadowHall' },
+        { text: "2. Bright Guarded Corridor", next: 'guardedCorridor' }
+      ]
+    },
+    shadowHall: {
+      text: `You choose The Silent Shadow Hall — quiet and tricky.
+
+As you move carefully, you spot three objects ahead:
+1. A loose tile that might hide a trap.  
+2. A shadowy figure lurking in the corner.  
+3. A faint glowing button on the wall.
+
+What do you do?`,
+      choices: [
+        { text: "1. Step carefully over the loose tile", next: 'looseTile' },
+        { text: "2. Approach the shadowy figure silently", next: 'shadowFigure' },
+        { text: "3. Press the glowing button", next: 'glowingButton' }
+      ]
+    },
+    guardedCorridor: {
+      text: `The Bright Guarded Corridor is well-lit but patrolled by guards.  
+This path is risky but less trap-filled.
+
+(For now, this path is blocked — try the Silent Shadow Hall.)`,
+      choices: [
+        { text: "Go back and choose the Silent Shadow Hall", next: 'shadowHall' }
+      ]
+    },
+    looseTile: {
+      text: `You carefully step over the loose tile, avoiding any traps.  
+You continue forward but find nothing new. You must keep moving.`,
+      choices: [
+        { text: "Press the glowing button ahead", next: 'glowingButton' }
+      ]
+    },
+    shadowFigure: {
+      text: `You approach the shadowy figure quietly.  
+It vanishes into smoke! You’re left alone but alert.`,
+      choices: [
+        { text: "Press the glowing button on the wall", next: 'glowingButton' }
+      ]
+    },
+    glowingButton: {
+      text: `You press the glowing button.  
+A hidden door slides open, revealing a secret passage!  
+You slip inside quietly.
+
+The passage leads to a room with blinking gadgets and a big safe with a keypad.
+
+You hear footsteps approaching!`,
+      choices: [
+        { text: "1. Try to hack the safe quickly", next: 'hackSafe' },
+        { text: "2. Hide behind a nearby console", next: 'hideConsole' },
+        { text: "3. Prepare to confront whoever is coming", next: 'confrontGuard' }
+      ]
+    },
+    hackSafe: {
+      text: `You rush to the safe and start hacking the keypad.  
+Suddenly, the keypad beeps — access granted!  
+Inside, you find the glowing Vibe Crystal pulsating with energy.
+
+But footsteps grow louder, a guard appears at the door!`,
+      choices: [
+        { text: "1. Grab the crystal and run", next: 'runWithCrystal' },
+        { text: "2. Use a gadget to create a distraction", next: 'useGadget' },
+        { text: "3. Hide behind the safe", next: 'hideBehindSafe' }
+      ]
+    },
+    hideConsole: {
+      text: `You hide behind a console as footsteps approach.  
+The guard scans the room but leaves without noticing you.
+
+You quietly take the Vibe Crystal from the safe nearby (secretly).`,
+      choices: [
+        { text: "Move to the exit door", next: 'exitDoor' }
+      ]
+    },
+    confrontGuard: {
+      text: `You prepare yourself to confront the guard.
+
+But the guard notices you immediately!  
+You barely escape with your life, no crystal this time.`,
+      choices: [
+        { text: "Try again", next: 'start' }
+      ]
+    },
+    runWithCrystal: {
+      text: `You grab the crystal and make a run for it!  
+The guard chases you but you slip through the shadows.
+
+You reach a locked door with a riddle:  
+“I speak without a mouth and hear without ears.  
+I have nobody, but I come alive with wind. What am I?”`,
+      choices: [
+        { text: "Type your answer below", input: true }
+      ]
+    },
+    useGadget: {
+      text: `You use a gadget to create a distraction!  
+Guards rush out of the room, giving you time to grab the crystal.
+
+You head to the locked door with a riddle:  
+“I speak without a mouth and hear without ears.  
+I have nobody, but I come alive with wind. What am I?”`,
+      choices: [
+        { text: "Type your answer below", input: true }
+      ]
+    },
+    hideBehindSafe: {
+      text: `You hide behind the safe, holding your breath.  
+The guard enters, looks around, then leaves.
+
+You quietly take the Vibe Crystal and approach the exit door.
+
+You face a riddle:  
+“I speak without a mouth and hear without ears.  
+I have nobody, but I come alive with wind. What am I?”`,
+      choices: [
+        { text: "Type your answer below", input: true }
+      ]
+    },
+    exitDoor: {
+      text: `You reach the exit door with the Vibe Crystal in hand.  
+But it’s locked with a riddle:  
+“I speak without a mouth and hear without ears.  
+I have nobody, but I come alive with wind. What am I?”`,
+      choices: [
+        { text: "Type your answer below", input: true }
+      ]
+    },
+    correctAnswer: {
+      text: `Correct! The door slides open smoothly.  
+You step out into the fresh air — mission complete!  
+The Vibe Crystal is safe, and you’ve escaped without a scratch.
+
+Mission accomplished, Vibe Master!`,
+      choices: [
+        { text: "Play again", next: 'start' }
+      ]
+    },
+    wrongAnswer: {
+      text: `That’s not the right answer. Try again!  
+“I speak without a mouth and hear without ears.  
+I have nobody, but I come alive with wind. What am I?”`,
+      choices: [
+        { text: "Type your answer below", input: true }
+      ]
+    }
+  };
+
+  let currentState = 'start';
+
+  function renderState(stateKey) {
+    currentState = stateKey;
+    const state = states[stateKey];
+
+    gameText.innerHTML = state.text;
+    choicesDiv.innerHTML = '';
+
+    if (state.choices) {
+      state.choices.forEach(choice => {
+        if (choice.input) {
+          // Show input box and submit button
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.id = 'answerInput';
+          input.placeholder = 'Type your answer here...';
+
+          const btn = document.createElement('button');
+          btn.id = 'submitAnswer';
+          btn.textContent = 'Submit Answer';
+          btn.onclick = () => {
+            const ans = input.value.trim().toLowerCase();
+            if (ans === 'echo') {
+              renderState('correctAnswer');
+            } else {
+              renderState('wrongAnswer');
+            }
+          };
+
+          choicesDiv.appendChild(input);
+          choicesDiv.appendChild(btn);
+        } else {
+          const btn = document.createElement('button');
+          btn.className = 'choice-btn';
+          btn.textContent = choice.text;
+          btn.onclick = () => renderState(choice.next);
+          choicesDiv.appendChild(btn);
+        }
+      });
+    }
+  }
+
+  renderState(currentState);
+</script>
+
+</body>
+</html>
