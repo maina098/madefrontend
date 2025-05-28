@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>20 Most Powerful Paradoxes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #e6e6e6, #ffffff);
+      color: #333;
+      padding: 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+ 
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .paradox {
+      background: #f3f3f3;
+      
+      box-shadow: 8px 8px 16px #c5c5c5, -8px -8px 16px #ffffff;
+      border:1px solid #000;
+      margin-bottom: 1rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .title {
+      padding: 1.2rem 1.5rem;
+      cursor: pointer;
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: 1.15rem;
+      color: #222;
+      
+      position: relative;
+    }
+
+    .title::after {
+      content: "+";
+      position: absolute;
+      right: 20px;
+      font-size: 1.5rem;
+      
+      transition: transform 0.3s ease;
+    }
+
+    .paradox.active .title::after {
+      content: "−";
+    }
+
+    .description {
+      max-height: 0;
+      padding: 0 1.5rem;
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.6;
+      border-top:3px solid #ddd;
+      transition: max-height 0.4s ease, padding 0.4ms ease;
+      overflow: hidden;
+    }
+
+    .paradox.active .description {
+      max-height: 400px;
+      padding: 0.5rem 1.5rem 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>20 Most Powerful Paradoxes of Life</h1>
+ <p style="font-size: 0.9rem; text-align: right; margin-bottom: 1.5rem; color: #666;">
+  <strong style="font-family: 'Playfair Display', serif;font-size:1rem;">Hello</strong> — <em>hello says hello</em>
+</p>
+    <div class="paradox"><div class="title">1. The Growth Paradox</div><div class="description">Growth takes a much longer time coming than you think, and then it happens much faster than you ever would have thought.</div></div>
+    <div class="paradox"><div class="title">2. The Persuasion Paradox</div><div class="description">The most persuasive people don’t argue—they observe, listen, and ask questions. Argue less, persuade more.</div></div>
+    <div class="paradox"><div class="title">3. The Effort Paradox</div><div class="description">You have to put in more effort to make something appear effortless.</div></div>
+    <div class="paradox"><div class="title">4. The Wisdom Paradox</div><div class="description">“The more I learn, the more I realize how much I don’t know.” — Albert Einstein</div></div>
+    <div class="paradox"><div class="title">5. The Productivity Paradox</div><div class="description">Work longer, get less done.</div></div>
+    <div class="paradox"><div class="title">6. The Speed Paradox</div><div class="description">You have to slow down to speed up. Slowing down gives you the time to be deliberate with your actions.</div></div>
+    <div class="paradox"><div class="title">7. The Money Paradox</div><div class="description">You have to lose money in order to make money.</div></div>
+    <div class="paradox"><div class="title">8. The News Paradox</div><div class="description">The more news you consume, the less well-informed you are.</div></div>
+    <div class="paradox"><div class="title">9. The Icarus Paradox</div><div class="description">Icarus crafted wings—but flew too close to the sun, so they melted and he fell to his death. What makes you successful can lead to your downfall.</div></div>
+    <div class="paradox"><div class="title">10. The Failure Paradox</div><div class="description">You have to fail more to succeed more.</div></div>
+    <div class="paradox"><div class="title">11. The Shrinking Paradox</div><div class="description">In order to grow, sometimes you need to shrink.</div></div>
+    <div class="paradox"><div class="title">12. The Tony Robbins Paradox</div><div class="description">In investing, the willingness to admit you have no competitive advantage can be the ultimate competitive advantage.</div></div>
+    <div class="paradox"><div class="title">13. The Death Paradox</div><div class="description">Know your death in order to truly live your life.</div></div>
+    <div class="paradox"><div class="title">14. The Say No Paradox</div><div class="description">Take on less, accomplish more.</div></div>
+    <div class="paradox"><div class="title">15. The Talking Paradox</div><div class="description">“We have two ears and one mouth so that we can listen twice as much as we speak.” — Epictetus</div></div>
+    <div class="paradox"><div class="title">16. The Connectedness Paradox</div><div class="description">More connectedness, less connected.</div></div>
+    <div class="paradox"><div class="title">17. The Control Paradox</div><div class="description">More controlling, less control.</div></div>
+    <div class="paradox"><div class="title">18. The Looking Paradox</div><div class="description">You may have to stop looking in order to find what you are looking for.</div></div>
+    <div class="paradox"><div class="title">19. The Constant Change Paradox</div><div class="description">“When you are finished changing, you are finished.” — Benjamin Franklin</div></div>
+    <div class="paradox"><div class="title">20. The Fear Paradox</div><div class="description">The thing we fear the most is often the thing we most need to do.</div></div>
+
+  </div>
+
+  <script>
+    const paradoxes = document.querySelectorAll('.paradox');
+    paradoxes.forEach(p => {
+      p.querySelector('.title').addEventListener('click', () => {
+        paradoxes.forEach(el => {
+          if (el !== p) el.classList.remove('active');
+        });
+        p.classList.toggle('active');
+      });
+    });
+  </script>
+</body>
+</html>
