@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <style>
+        /* Basic Reset and Body Styling */
+        body {
+            font-family: 'Inter', sans-serif; /* Using Inter as requested */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5; /* Light grey background */
+            color: #333;
+            padding: 20px; /* Add some padding for mobile */
+            box-sizing: border-box; /* Include padding in element's total width and height */
+        }
+
+        /* Game Container */
+        .game-container {
+            background-color: #ffffff;
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Soft shadow */
+            padding: 30px;
+            text-align: center;
+            max-width: 90%; /* Fluid width for responsiveness */
+            width: 400px; /* Max width for larger screens */
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 2.2em; /* Larger title */
+        }
+
+        /* Game Board */
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 10px;
+            width: 300px; /* Fixed width for the board itself */
+            height: 300px; /* Fixed height for the board itself */
+            margin: 0 auto 30px;
+            background-color: #ecf0f1; /* Light background for board grid */
+            border-radius: 10px;
+            overflow: hidden; /* Ensures rounded corners apply to grid */
+        }
+
+        /* Cells */
+        .cell {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            font-size: 3.5em; /* Large font for X/O */
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px; /* Rounded corners for cells */
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            user-select: none; /* Prevent text selection */
+            color: #34495e; /* Darker grey for X/O */
+        }
+
+        .cell:hover {
+            background-color: #e0e0e0;
+            transform: scale(1.02);
+        }
+
+        .cell.x {
+            color: #e74c3c; /* Red for X */
+        }
+
+        .cell.o {
+            color: #3498db; /* Blue for O */
+        }
+
+        /* Message Display */
+        #message {
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            min-height: 1.5em; /* Reserve space to prevent layout shift */
+            color: #2980b9; /* A nice blue for messages */
+            font-weight: bold;
+        }
+
+        /* Reset Button */
+        #resetButton {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background: linear-gradient(145deg, #2ecc71, #27ae60); /* Green gradient */
+            color: white;
+            border: none;
+            border-radius: 10px; /* Rounded corners */
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+            outline: none; /* Remove outline on focus */
+        }
+
+        #resetButton:hover {
+            background: linear-gradient(145deg, #27ae60, #2ecc71); /* Invert gradient on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #resetButton:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .game-container {
+                padding: 20px;
+                max-width: 100%; /* Use full width on very small screens */
+                border-radius: 0; /* No rounded corners on very small screens for full width */
+                box-shadow: none; /* No shadow on very small screens */
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .board {
+                width: 280px; /* Adjust board size for smaller screens */
+                height: 280px;
+                grid-gap: 8px;
+            }
+
+            .cell {
+                font-size: 3em;
+            }
+
+            #message {
+                font-size: 1.2em;
+            }
+
+            #resetButton {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Tic-Tac-Toe</h1>
+        <div id="message">Player X's Turn</div>
+        <div class="board" id="gameBoard">
+            <div class="cell" data-cell-index="0"></div>
+            <div class="cell" data-cell-index="1"></div>
+            <div class="cell" data-cell-index="2"></div>
+            <div class="cell" data-cell-index="3"></div>
+            <div class="cell" data-cell-index="4"></div>
+            <div class="cell" data-cell-index="5"></div>
+            <div class="cell" data-cell-index="6"></div>
+            <div class="cell" data-cell-index="7"></div>
+            <div class="cell" data-cell-index="8"></div>
+        </div>
+        <button id="resetButton">Reset Game</button>
+    </div>
+
+    <script>
+        // Get references to DOM elements
+        const gameBoard = document.getElementById('gameBoard');
+        const cells = document.querySelectorAll('.cell');
+        const messageDisplay = document.getElementById('message');
+        const resetButton = document.getElementById('resetButton');
+
+        // Game state variables
+        let board = ['', '', '', '', '', '', '', '', '']; // Represents the 3x3 board
+        let currentPlayer = 'X'; // Current player, starts with X
+        let gameActive = true; // Flag to indicate if the game is still active
+
+        // Winning conditions (indices of cells that form a win)
+        const winningConditions = [
+            [0, 1, 2], // Top row
+            [3, 4, 5], // Middle row
+            [6, 7, 8], // Bottom row
+            [0, 3, 6], // Left column
+            [1, 4, 7], // Middle column
+            [2, 5, 8], // Right column
+            [0, 4, 8], // Diagonal from top-left to bottom-right
+            [2, 4, 6]  // Diagonal from top-right to bottom-left
+        ];
+
+        /**
+         * Handles a cell click event.
+         * @param {Event} clickedCellEvent - The click event object.
+         */
+        function handleCellClick(clickedCellEvent) {
+            // Get the clicked cell element
+            const clickedCell = clickedCellEvent.target;
+            // Get the index of the clicked cell from its data-cell-index attribute
+            const clickedCellIndex = parseInt(clickedCell.getAttribute('data-cell-index'));
+
+            // If the cell is already filled or the game is not active, do nothing
+            if (board[clickedCellIndex] !== '' || !gameActive) {
+                return;
+            }
+
+            // Update the game state (board array) and the UI
+            board[clickedCellIndex] = currentPlayer;
+            clickedCell.textContent = currentPlayer;
+            clickedCell.classList.add(currentPlayer.toLowerCase()); // Add 'x' or 'o' class for styling
+
+            // Check if the current move resulted in a win or a draw
+            handleResultValidation();
+        }
+
+        /**
+         * Checks for win or draw conditions after each move.
+         */
+        function handleResultValidation() {
+            let roundWon = false;
+            // Iterate through all winning conditions
+            for (let i = 0; i < winningConditions.length; i++) {
+                const winCondition = winningConditions[i];
+                // Get the values of the three cells in the current winning condition
+                let a = board[winCondition[0]];
+                let b = board[winCondition[1]];
+                let c = board[winCondition[2]];
+
+                // If any cell is empty, this condition is not met yet
+                if (a === '' || b === '' || c === '') {
+                    continue;
+                }
+                // If all three cells have the same player's mark, it's a win
+                if (a === b && b === c) {
+                    roundWon = true;
+                    break; // A win is found, no need to check further
+                }
+            }
+
+            // If a player won
+            if (roundWon) {
+                messageDisplay.textContent = `Player ${currentPlayer} has Won!`;
+                gameActive = false; // End the game
+                return;
+            }
+
+            // If there's no win and the board is full, it's a draw
+            let roundDraw = !board.includes(''); // True if no empty cells
+            if (roundDraw) {
+                messageDisplay.textContent = `It's a Draw!`;
+                gameActive = false; // End the game
+                return;
+            }
+
+            // If no win or draw, switch to the next player
+            changePlayer();
+        }
+
+        /**
+         * Switches the current player from X to O, or O to X.
+         */
+        function changePlayer() {
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            messageDisplay.textContent = `Player ${currentPlayer}'s Turn`;
+        }
+
+        /**
+         * Resets the game to its initial state.
+         */
+        function handleResetGame() {
+            board = ['', '', '', '', '', '', '', '', '']; // Clear the board array
+            gameActive = true; // Set game to active
+            currentPlayer = 'X'; // Reset current player to X
+            messageDisplay.textContent = `Player ${currentPlayer}'s Turn`; // Update message
+
+            // Clear the content and styling of all cells
+            cells.forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('x', 'o');
+            });
+        }
+
+        // Add event listeners
+        // Add click listener to each cell
+        cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+        // Add click listener to the reset button
+        resetButton.addEventListener('click', handleResetGame);
+
+        // Initial setup on window load (optional, but good practice for larger apps)
+        window.onload = function() {
+            handleResetGame(); // Ensure game is in a clean state on load
+        };
+    </script>
+</body>
+</html>
+
