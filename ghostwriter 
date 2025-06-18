@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ghostwriter: The Spiral Draft</title>
+  <link href="https://fonts.googleapis.com/css2?family=Spectral&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #f7f4ec;
+      font-family: 'Spectral', serif;
+      margin: 0;
+      padding: 3rem 1rem;
+      color: #1e1e1e;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      border: 1px solid #ccc;
+    }
+
+    .ornament {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #922;
+    }
+
+    h2 {
+      text-align: center;
+      text-transform: uppercase;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 2rem;
+      color: #444;
+    }
+
+    .first-paragraph::first-letter {
+      float: left;
+      font-size: 4rem;
+      line-height: 1;
+      margin-right: 0.5rem;
+      font-weight: bold;
+      color: #a22020;
+      background: #f4e7e7;
+      padding: 0.2rem 0.5rem;
+      border: 1px solid #a22020;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      text-align: justify;
+      margin-bottom: 1.5rem;
+    }
+
+    @media(max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="ornament">✵✦✵</div>
+    <h2></h2>
+    <p class="first-paragraph">
+      <b>The Spiral Draft</b> is not just a story—it's a reflection folded into the ink. In the world of fragmented narratives and forgotten characters, the line between creator and creation blurs into a haunting spiral. The story builds like a whisper, drawing you closer to the margins of fiction, until you realize you're not just reading it. You’re part of it.
+    </p>
+    <p>
+      This world exists not only in words, but in pauses, redactions, drafts that never saw light. The character named Nox was believed to be a ghostwriter—but who was truly writing whom? And in Aranya’s arrival, we see the first ripple of rebellion: the reader becoming a writer, the silence turning into voice.
+    </p>
+    <p>
+      As each chapter unfolds, the draft reshapes itself. What you thought was certain becomes ephemeral. A name reappears. A loop closes. And the story... writes back.
+    </p>
+    <div class="ornament">✵✦✵</div>
+  </div>
+
+</body>
+</html>
