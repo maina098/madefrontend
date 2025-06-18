@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Professional e-Commerce Store</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      padding: 20px;
+      position: relative;
+    }
+
+    .section {
+      margin-bottom: 50px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #222;
+    }
+
+    .section-header i {
+      font-size: 1rem;
+      color: #888;
+    }
+
+    .slider {
+      display: flex;
+      overflow-x: auto;
+      gap: 16px;
+      scroll-snap-type: x mandatory;
+    }
+
+    .slider::-webkit-scrollbar {
+      display: none;
+    }
+
+    .slider-item {
+      min-width: 170px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      padding: 12px;
+      transition: transform 0.2s ease-in-out;
+      scroll-snap-align: start;
+    }
+
+    .slider-item:hover {
+      transform: translateY(-3px);
+    }
+
+    .slider-item img {
+      width: 100%;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    .price {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .price img {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+
+    .like {
+      color: #bbb;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .like.liked {
+      color: #e74c3c;
+    }
+
+    .description {
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: #666;
+    }
+
+    .card-slider-item {
+      min-width: 200px;
+      height: 120px;
+      border-radius: 12px;
+      background: #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 500;
+      font-size: 1rem;
+      color: #444;
+    }
+
+    .circle-slider {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+
+    .circle-slider::-webkit-scrollbar {
+      display: none;
+    }
+
+    .circle-item {
+      text-align: center;
+    }
+
+    .circle-item img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .circle-item span {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.75rem;
+      color: #555;
+    }
+
+    .overlay-icons {
+      position: fixed;
+      right: 20px;
+      bottom: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      z-index: 1000;
+    }
+
+    .overlay-icons i {
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 12px;
+      font-size: 20px;
+      color: #333;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .overlay-icons i:hover {
+      transform: scale(1.1);
+    }
+    
+    
+    
+    
+    
+    
+    
+    .overlay-icons {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 999;
+    }
+
+    .overlay-icons img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid #555;
+      background-color: white;
+      object-fit: cover;
+    }
+    
+    
+    
+    
+  </style>
+</head>
+<body>
+
+  <!-- Circle Category Section -->
+  <div class="section">
+    <div class="circle-slider">
+      <div class="circle-item">
+        <img src="https://png.pngtree.com/png-clipart/20231021/original/pngtree-salmon-sushi-roll-inside-rice-top-view-japanese-dishes-delicious-asian-png-image_13395024.png" alt="Sushi"/>
+        <span>Sushi</span>
+      </div>
+      <div class="circle-item">
+        <img src="https://static.vecteezy.com/system/resources/thumbnails/026/158/954/small/a-slice-of-hot-pizza-with-stretchy-cheese-slice-of-fresh-italian-classic-original-pepperoni-pizza-generative-ai-png.png" alt="Pizza"/>
+        <span>Pizza</span>
+      </div>
+      <div class="circle-item">
+        <img src="https://png.pngtree.com/png-vector/20240602/ourmid/pngtree-biggest-burger-transparent-picture-png-image_12606363.png" alt="Burgers"/>
+        <span>Burgers</span>
+      </div>
+      <div class="circle-item">
+        <img src="https://www.pngall.com/wp-content/uploads/4/Taco-PNG-Image.png" alt="Taco"/>
+        <span>Taco</span>
+      </div>
+      <div class="circle-item">
+        <img src="https://static.vecteezy.com/system/resources/previews/047/408/817/non_2x/french-fries-high-quality-image-isolated-png.png" alt="Fries"/>
+        <span>Fries</span>
+      </div>
+      <div class="circle-item">
+        <img src="https://static.vecteezy.com/system/resources/thumbnails/021/027/227/small/apple-pie-transparent-png.png" alt="Pie"/>
+        <span>Pie</span>
+      </div>
+      <div class="circle-item">
+        <img src="https://static.vecteezy.com/system/resources/thumbnails/047/429/595/small/refreshing-glass-of-cola-with-ice-cubes-splashing-out-perfect-for-representing-a-cool-beverage-or-drink-advertisement-png.png" alt="Soda"/>
+        <span>Soda</span>
+      </div>
+      <div class="circle-item">
+        <img src="https://static.vecteezy.com/system/resources/thumbnails/050/176/636/small/hot-dog-isolated-on-transparent-background-png.png" alt="Hotdogs"/>
+        <span>Hotdogs</span>
+      </div>
+      <div class="circle-item">
+        <img src="https://png.pngtree.com/png-clipart/20241129/original/pngtree-some-donuts-isolated-on-white-transparent-background-png-image_17415613.png" alt="Donuts"/>
+        <span>Donuts</span>
+      </div>
+      <div class="circle-item">
+        <img src="https://static.vecteezy.com/system/resources/thumbnails/035/320/517/small/ai-generated-fresh-fruits-in-a-basket-isolated-on-transparent-background-png.png" alt="Vegetables"/>
+        <span>Vegetables</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Products Section -->
+  <div class="section">
+    <div class="section-header">
+      <span>Featured Products</span>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+    <div class="slider">
+      <div class="slider-item">
+        <img src="https://via.placeholder.com/160" alt="Product">
+        <div class="info-bar">
+          <span class="price">
+            <img src="https://static.vecteezy.com/system/resources/thumbnails/023/588/193/small/coin-with-dollar-sign-golden-dollar-symbol-gold-coin-3d-stack-of-gold-coins-icon-isolated-symbol-png.png" alt="coin"> $29.99
+          </span>
+          <i class="fas fa-heart like"></i>
+        </div>
+        <div class="description">Limited stock available</div>
+      </div>
+      <div class="slider-item">
+        <img src="https://via.placeholder.com/160" alt="Product">
+        <div class="info-bar">
+          <span class="price"><img src="https://static.vecteezy.com/system/resources/thumbnails/023/588/193/small/coin-with-dollar-sign-golden-dollar-symbol-gold-coin-3d-stack-of-gold-coins-icon-isolated-symbol-png.png" alt="coin"> $19.99</span>
+          <i class="fas fa-heart like"></i>
+        </div>
+        <div class="description">Best seller</div>
+      </div>
+      <div class="slider-item">
+        <img src="https://via.placeholder.com/160" alt="Product">
+        <div class="info-bar">
+          <span class="price"><img src="https://static.vecteezy.com/system/resources/thumbnails/023/588/193/small/coin-with-dollar-sign-golden-dollar-symbol-gold-coin-3d-stack-of-gold-coins-icon-isolated-symbol-png.png" alt="coin"> $39.99</span>
+          <i class="fas fa-heart like"></i>
+        </div>
+        <div class="description">New arrival</div>
+      </div>
+      <div class="slider-item">
+        <img src="https://via.placeholder.com/160" alt="Product">
+        <div class="info-bar">
+          <span class="price"><img src="https://static.vecteezy.com/system/resources/thumbnails/023/588/193/small/coin-with-dollar-sign-golden-dollar-symbol-gold-coin-3d-stack-of-gold-coins-icon-isolated-symbol-png.png" alt="coin"> $14.99</span>
+          <i class="fas fa-heart like"></i>
+        </div>
+        <div class="description">Great deal</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Slider Section -->
+  <div class="section">
+    <div class="slider">
+    <img src="https://img.freepik.com/premium-vector/trendy-minimalistic-food-delivery-service-online-food-order-application-banner-design-template_420121-273.jpg?semt=ais_hybrid&w=740" width="164px" height="124px" alt="">
+      
+      
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxVHnd5kjCpKSPWYG6LkwjCiLZu8eypwZVSZrPMoHUUQ&s=10" width="184px" height="124px" alt="">
+      
+      
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6mmx1U-VpT0LtlBCXk6yPBgYqXLt3zRfbpdlQLis3GQ&s=10" width="184px" height="124px" alt="">
+      
+    </div>
+  </div>
+
+  <!-- Top Picks Section -->
+  <div class="section">
+    <div class="section-header">
+      <span>Top Picks</span>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+    <div class="circle-slider">
+      <div class="circle-item">
+        <img src="https://download.logo.wine/logo/Burger_King/Burger_King-Logo.wine.png" alt="user"/>
+        <span>Burger King</span>
+      </div>
+      <div class="circle-item">
+        <img src="https://www.logo.wine/a/logo/Target_Corporation/Target_Corporation-Logo.wine.svg" alt="user"/>
+        <span>Target</span>
+      </div>
+      <div class="circle-item">
+        <img src="https://download.logo.wine/logo/Arby's/Arby's-Logo.wine.png" alt="user"/>
+        <span>Arby's</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hot Deals Section -->
+  <div class="section">
+    <div class="section-header">
+      <span>Hot Deals</span>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+    <div class="slider">
+      <div class="slider-item">
+        <img src="https://via.placeholder.com/160" alt="Product">
+        <div class="info-bar">
+          <span class="price"><img src="https://static.vecteezy.com/system/resources/thumbnails/023/588/193/small/coin-with-dollar-sign-golden-dollar-symbol-gold-coin-3d-stack-of-gold-coins-icon-isolated-symbol-png.png" alt="coin"> $59.99</span>
+          <i class="fas fa-heart like"></i>
+        </div>
+        <div class="description">Flash sale</div>
+      </div>
+      <div class="slider-item">
+        <img src="https://via.placeholder.com/160" alt="Product">
+        <div class="info-bar">
+          <span class="price"><img src="https://static.vecteezy.com/system/resources/thumbnails/023/588/193/small/coin-with-dollar-sign-golden-dollar-symbol-gold-coin-3d-stack-of-gold-coins-icon-isolated-symbol-png.png" alt="coin"> $39.99</span>
+          <i class="fas fa-heart like"></i>
+        </div>
+        <div class="description">Weekend deal</div>
+      </div>
+      <div class="slider-item">
+        <img src="https://via.placeholder.com/160" alt="Product">
+        <div class="info-bar">
+          <span class="price"><img src="https://static.vecteezy.com/system/resources/thumbnails/023/588/193/small/coin-with-dollar-sign-golden-dollar-symbol-gold-coin-3d-stack-of-gold-coins-icon-isolated-symbol-png.png" alt="coin"> $89.99</span>
+          <i class="fas fa-heart like"></i>
+        </div>
+        <div class="description">Just dropped</div>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+   <!-- Hot Deals Section -->
+  <div class="section">
+    <div class="section-header">
+      <span>Shopping Products</span>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+    <div class="slider">
+      <div class="slider-item">
+        <img src="https://via.placeholder.com/160" alt="Product">
+        <div class="info-bar">
+          <span class="price"><img src="https://static.vecteezy.com/system/resources/thumbnails/023/588/193/small/coin-with-dollar-sign-golden-dollar-symbol-gold-coin-3d-stack-of-gold-coins-icon-isolated-symbol-png.png" alt="coin"> $59.99</span>
+          <i class="fas fa-heart like"></i>
+        </div>
+        <div class="description">Flash sale</div>
+      </div>
+      <div class="slider-item">
+        <img src="https://via.placeholder.com/160" alt="Product">
+        <div class="info-bar">
+          <span class="price"><img src="https://static.vecteezy.com/system/resources/thumbnails/023/588/193/small/coin-with-dollar-sign-golden-dollar-symbol-gold-coin-3d-stack-of-gold-coins-icon-isolated-symbol-png.png" alt="coin"> $39.99</span>
+          <i class="fas fa-heart like"></i>
+        </div>
+        <div class="description">Weekend deal</div>
+      </div>
+      <div class="slider-item">
+        <img src="https://via.placeholder.com/160" alt="Product">
+        <div class="info-bar">
+          <span class="price"><img src="https://static.vecteezy.com/system/resources/thumbnails/023/588/193/small/coin-with-dollar-sign-golden-dollar-symbol-gold-coin-3d-stack-of-gold-coins-icon-isolated-symbol-png.png" alt="coin"> $89.99</span>
+          <i class="fas fa-heart like"></i>
+        </div>
+        <div class="description">Just dropped</div>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  
+  
+  
+
+  <!-- Overlay Attached Icons -->
+  <div class="overlay-icons">
+    <img src="https://www.creativefabrica.com/wp-content/uploads/2020/02/10/Delivery-Logo-Graphics-1-12.jpg" alt="Biking Icon">
+    <img src="https://cdn-icons-png.flaticon.com/512/6361/6361288.png" width="7px" height="7px" alt="Gift Icon">
+  </div>
+  
+  <script>
+    document.querySelectorAll('.like').forEach(icon => {
+      icon.addEventListener('click', () => {
+        icon.classList.toggle('liked');
+      });
+    });
+  </script>
+
+</body>
+</html>
