@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<head>
+  <title>CSS Position Properties</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .container {
+      position: relative;
+      height: 250px;
+      border: 2px solid black;
+      margin: 30px auto;
+      padding: 10px;
+      width: 90%;
+      background-color: white;
+      overflow: auto;
+    }
+
+    .box {
+      width: 200px;
+      padding: 10px;
+      color: white;
+      font-weight: bold;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .static {
+      background-color: gray;
+      position: static;
+    }
+
+    .relative {
+      background-color: green;
+      position: relative;
+      top: 20px;
+      left: 20px;
+    }
+
+    .absolute-container {
+      position: relative;
+    }
+
+    .absolute {
+      background-color: blue;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    .sticky {
+      background-color: orange;
+      position: sticky;
+      top: 0;
+    }
+
+    .fixed {
+      background-color: red;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .another {
+      background-color: black;
+    }
+
+    .spacer {
+      height: 1000px;
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CSS Position Property Examples</h1>
+
+  <div class="container">
+    <div class="section-title">Static Position</div>
+    <div class="box static">Position: static</div>
+    <div class="box another">Another Box</div>
+  </div>
+
+  
+  <div class="container">
+    <div class="section-title">Relative Position</div>
+    <div class="box relative">Position: relative</div>
+    <div class="box another">Another Box</div>
+  </div>
+
+  
+  <div class="container absolute-container">
+    <div class="section-title">Absolute Position</div>
+    <div class="box absolute">Position: absolute</div>
+    <div class="box another">Another Box</div>
+  </div>
+
+  
+  <div class="container" style="height: 300px; overflow-y: scroll;">
+    <div class="section-title">Sticky Position</div>
+    <div class="box sticky">Position: sticky</div>
+    <div class="box another">Another Box</div>
+    <div class="spacer"></div>
+  </div>
+
+ 
+  <div class="box fixed">Position: fixed</div>
+  <div style="height: 200px;"></div> 
+
+</body>
+</html>
