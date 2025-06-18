@@ -1,0 +1,387 @@
+    <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Coin Collector Upgraded</title>
+  <style>
+    html, body {
+      overflow: hidden;
+      margin: 0px;
+      padding: 0px;
+      height: 100%;
+      width: 100%;
+    }
+
+    canvas {
+      display: block;
+      background-color: #24263F;
+    }
+  </style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let mouse = { x: canvas.width/2, y: canvas.height/2 };
+let score = 0;
+//let highscore = localStorage.getItem("highscorecoincollector") || 0;
+let highscore = 0;
+let gameOver = false;
+let gameStarted = false;
+let showStartScreen = true;
+let player = {
+  x: canvas.width/2, y: canvas.height/2,
+  size: 60, color: 'cyan',
+  vx: 0, vy: 0,
+  knockback: { x: 0, y: 0 }
+};
+
+let coin = {
+  x: Math.random()*canvas.width,
+  y: Math.random()*canvas.height,
+  size: 20, color: 'gold'
+};
+
+let enemies = [];
+let particles = [];
+
+function spawnCoin() {
+  coin.x = Math.random() * (canvas.width - coin.size);
+  coin.y = Math.random() * (canvas.height - coin.size);
+}
+
+function spawnEnemy() {
+  let size = 50;
+  let edge = Math.floor(Math.random() * 4);
+  let x = edge === 0 ? -size : edge === 1 ? canvas.width : Math.random() * canvas.width;
+  let y = edge === 2 ? -size : edge === 3 ? canvas.height : Math.random() * canvas.height;
+
+  enemies.push({
+    x, y, size, color: 'red',
+    state: 'attacking',
+    stateTimer: 0,
+    dashCooldown: 0,
+    laserDelay: 0,
+    laserTarget: null
+  });
+}
+
+function drawEyes(x, y, angle, state) {
+  const eyeRadius = 6;
+  const pupilRadius = 2.5;
+  const eyeOffsetX = [12, 28];
+  const eyeY = y + 18;
+
+  eyeOffsetX.forEach(eyeXOffset => {
+    let eyeX = x + eyeXOffset;
+    ctx.beginPath();
+    ctx.arc(eyeX, eyeY, eyeRadius, 0, Math.PI * 2);
+    ctx.fillStyle = state === "vulnerable" ? "#333" : "white";
+    ctx.fill();
+
+    if (state === "attacking") {
+      let pupilX = eyeX + Math.cos(angle) * 3;
+      let pupilY = eyeY + Math.sin(angle) * 3;
+      ctx.beginPath();
+      ctx.arc(pupilX, pupilY, pupilRadius, 0, Math.PI * 2);
+      ctx.fillStyle = "red";
+      ctx.fill();
+    }
+  });
+}
+
+
+function drawEnemy(enemy) {
+  ctx.fillStyle = enemy.color;
+  ctx.fillRect(enemy.x, enemy.y, enemy.size, enemy.size);
+
+  const dx = player.x - enemy.x;
+  const dy = player.y - enemy.y;
+  const angle = Math.atan2(dy, dx);
+  drawEyes(enemy.x, enemy.y, angle, enemy.state);
+
+  if (enemy.state === 'attacking' && enemy.laserTarget) {
+    const isGlowing = enemy.laserDelay >= 15;
+    ctx.strokeStyle = isGlowing ? "red" : "rgba(255,0,0,0.3)";
+    ctx.lineWidth = isGlowing ? 2 : 1;
+    [enemy.x + 12, enemy.x + 28].forEach(ex => {
+      ctx.beginPath();
+      ctx.moveTo(ex, enemy.y + 18);
+      ctx.lineTo(enemy.laserTarget.x, enemy.laserTarget.y);
+      ctx.stroke();
+    });
+  }
+}
+function updateEnemy(enemy, dt) {
+  enemy.stateTimer += dt;
+  enemy.dashCooldown -= dt;
+
+  if (!enemy.vx) enemy.vx = 0;
+  if (!enemy.vy) enemy.vy = 0;
+
+  if (enemy.stateTimer > 2500) {
+    enemy.state = enemy.state === "attacking" ? "vulnerable" : "attacking";
+    enemy.stateTimer = 0;
+  }
+
+  if (enemy.state === "attacking") {
+    const dx = player.x + player.size / 2 - (enemy.x + enemy.size / 2);
+    const dy = player.y + player.size / 2 - (enemy.y + enemy.size / 2);
+    const dist = Math.hypot(dx, dy);
+
+    if (enemy.dashCooldown <= 0 && dist > 0) {
+      const speed = 12;
+      enemy.vx = (dx / dist) * speed;
+      enemy.vy = (dy / dist) * speed;
+      enemy.dashCooldown = 700;
+    }
+  } else {
+    enemy.vx *= 0.9;
+    enemy.vy *= 0.9;
+  }
+
+  enemy.x += enemy.vx;
+  enemy.y += enemy.vy;
+}
+
+function drawSquare(p) {
+  ctx.fillStyle = p.color;
+  ctx.fillRect(p.x, p.y, p.size, p.size);
+
+  const eyeRadius = 10, pupilRadius = 4;
+  const offsetY = 15, eyeOffsetX = [15, p.size - 25];
+
+  for (let i = 0; i < 2; i++) {
+    const eyeX = p.x + eyeOffsetX[i];
+    const eyeY = p.y + offsetY;
+    ctx.beginPath();
+    ctx.arc(eyeX, eyeY, eyeRadius, 0, Math.PI * 2);
+    ctx.fillStyle = "white";
+    ctx.fill();
+
+    const dx = mouse.x - eyeX, dy = mouse.y - eyeY;
+    const angle = Math.atan2(dy, dx);
+    const pupilX = eyeX + Math.cos(angle) * 4;
+    const pupilY = eyeY + Math.sin(angle) * 4;
+
+    ctx.beginPath();
+    ctx.arc(pupilX, pupilY, pupilRadius, 0, Math.PI * 2);
+    ctx.fillStyle = "black";
+    ctx.fill();
+  }
+}
+
+function drawCoin() {
+  ctx.beginPath();
+  ctx.arc(coin.x + coin.size/2, coin.y + coin.size/2, coin.size/2, 0, Math.PI * 2);
+  ctx.fillStyle = coin.color;
+  ctx.fill();
+}
+
+function updatePlayer(dt) {
+  // Knockback decay
+  player.knockback.x *= 0.9;
+  player.knockback.y *= 0.9;
+
+  // Velocity toward touch
+  player.vx = (mouse.x - player.x - player.size/2) * 0.1 + player.knockback.x;
+  player.vy = (mouse.y - player.y - player.size/2) * 0.1 + player.knockback.y;
+
+  player.x += player.vx;
+  player.y += player.vy;
+}
+
+function pointToLineDistance(px, py, x1, y1, x2, y2) {
+  const A = px - x1;
+  const B = py - y1;
+  const C = x2 - x1;
+  const D = y2 - y1;
+  const dot = A * C + B * D;
+  const lenSq = C * C + D * D;
+  const param = lenSq !== 0 ? dot / lenSq : -1;
+  const xx = x1 + param * C;
+  const yy = y1 + param * D;
+  const dx = px - xx;
+  const dy = py - yy;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+function update() {
+  if (gameOver) {
+    gameStarted = false;
+    showStartScreen = true;
+    return;
+  }
+
+
+  updatePlayer(16);
+
+  // Coin collect
+  let dx = (player.x + player.size/2) - (coin.x + coin.size/2);
+  let dy = (player.y + player.size/2) - (coin.y + coin.size/2);
+  let dist = Math.hypot(dx, dy);
+  if (dist < (player.size/2 + coin.size/2)) {
+    score++;
+    if (score > highscore){
+        highscore = score;
+  //      localStorage.setItem("highscorecoincollector", highscore)
+    }
+    spawnCoin();
+  }
+
+  enemies.forEach(e => updateEnemy(e, 16));
+
+  enemies = enemies.filter(enemy => {
+  const dx = (enemy.x + enemy.size/2) - (player.x + player.size/2);
+  const dy = (enemy.y + enemy.size/2) - (player.y + player.size/2);
+  const dist = Math.sqrt(dx * dx + dy * dy);
+
+  if (dist < (enemy.size/2 + player.size/2)) {
+    if (enemy.state === "vulnerable") {
+      const norm = Math.sqrt(dx*dx + dy*dy);
+      player.knockback.x = -(dx / norm) * 4;
+      player.knockback.y = -(dy / norm) * 4;
+      spawnParticles(enemy.x + enemy.size/2, enemy.y + enemy.size/2, "red");
+      return false;
+    } else {
+      gameOver = true;
+    }
+  }
+  return true;
+});
+}
+
+function resetGame() {
+  score = 0;
+  enemies = [];
+  particles = [];
+  spawnCoin();
+  player.x = canvas.width / 2;
+  player.y = canvas.height / 2;
+  player.knockback = { x: 0, y: 0 };
+  gameOver = false;
+}
+
+function spawnParticles(x, y, color) {
+  for (let i = 0; i < 12; i++) {
+    particles.push({
+      x, y,
+      vx: Math.cos(i * Math.PI / 6) * (Math.random() * 3 + 2),
+      vy: Math.sin(i * Math.PI / 6) * (Math.random() * 3 + 2),
+      alpha: 1,
+      color
+    });
+  }
+}
+
+function updateParticles() {
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.alpha -= 0.03;
+  });
+  particles = particles.filter(p => p.alpha > 0);
+}
+
+function drawParticles() {
+  particles.forEach(p => {
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+}
+
+function drawScore() {
+  const targetX = canvas.width / 2;
+  const targetY = canvas.height / 4;
+
+  ctx.font = "bold 80px sans-serif";
+  ctx.fillStyle = getRGBColor(performance.now() / 5);
+  ctx.textAlign = "center";
+  ctx.fillText(score, targetX, targetY - 100);
+
+}
+
+function drawStartScreen() {
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+
+  ctx.font = "bold 60px sans-serif";
+  ctx.fillStyle = getRGBColor(performance.now() / 5);
+  ctx.textAlign = "center";
+  ctx.fillText("Coin Collector", centerX, centerY - 100);
+
+  ctx.font = "20px sans-serif";
+  ctx.fillText("Made by Vaibhav", centerX, centerY - 60);
+
+  ctx.font = "bold 40px sans-serif";
+  ctx.fillText("Touch to Start", centerX, centerY + 40);
+
+  ctx.font = "30px sans-serif";
+  ctx.fillText("Highscore: " + highscore, centerX, centerY + 90);
+}
+
+function getRGBColor(t) {
+  const r = Math.floor(128 + 127 * Math.sin(t * 0.002));
+  const g = Math.floor(128 + 127 * Math.sin(t * 0.002 + 2));
+  const b = Math.floor(128 + 127 * Math.sin(t * 0.002 + 4));
+  return `rgb(${r},${g},${b})`;
+}
+
+function gameLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (showStartScreen) {
+    drawStartScreen();
+  } else {
+    update();
+    updateParticles();
+    drawSquare(player);
+    drawCoin();
+    enemies.forEach(drawEnemy);
+    drawParticles();
+    drawScore();
+  }
+
+  requestAnimationFrame(gameLoop);
+}
+
+window.addEventListener('mousemove', e => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+});
+
+window.addEventListener('touchmove', e => {
+  if (e.touches.length > 0) {
+    mouse.x = e.touches[0].clientX;
+    mouse.y = e.touches[0].clientY;
+  }
+}, {passive: false});
+
+window.addEventListener('mousedown', startGame);
+window.addEventListener('touchstart', startGame);
+
+function startGame() {
+  if (!gameStarted) {
+    resetGame();
+    gameStarted = true;
+    showStartScreen = false;
+  }
+}
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+setInterval(() => { if (enemies.length < 10) spawnEnemy(); }, 3000);
+gameLoop();
+</script>
+</body>
+</html>
