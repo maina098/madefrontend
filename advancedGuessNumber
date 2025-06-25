@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>🎯 Number Guessing Game</title>
+  <style>
+    body {
+      font-family: 'Arial';
+      text-align: center;
+      background: #e0f7fa;
+      color: #006064;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #004d40;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+    }
+
+    #message {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .level-btn {
+      background-color: #4db6ac;
+      color: white;
+    }
+
+    .guess-btn {
+      background-color: #00796b;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎯 Number Guessing Game</h1>
+  <p>Choose a level:</p>
+
+  <button class="level-btn" onclick="startGame(10)">Easy (1–10)</button>
+  <button class="level-btn" onclick="startGame(50)">Medium (1–50)</button>
+  <button class="level-btn" onclick="startGame(100)">Hard (1–100)</button>
+
+  <div id="gameArea" style="display:none;">
+    <p>Guess the number between <span id="min">1</span> and <span id="max">10</span> 🔢</p>
+    <input type="number" id="guessInput" />
+    <button class="guess-btn" onclick="checkGuess()">Guess ✅</button>
+    <p id="message"></p>
+    <p>Attempts: <span id="attempts">0</span></p>
+  </div>
+
+  <script>
+    let target = 0;
+    let attempts = 0;
+    let maxRange = 10;
+
+    function startGame(max) {
+      maxRange = max;
+      target = Math.floor(Math.random() * max) + 1;
+      attempts = 0;
+      document.getElementById("min").textContent = 1;
+      document.getElementById("max").textContent = max;
+      document.getElementById("attempts").textContent = 0;
+      document.getElementById("message").textContent = '';
+      document.getElementById("guessInput").value = '';
+      document.getElementById("gameArea").style.display = "block";
+    }
+
+    function checkGuess() {
+      const guess = Number(document.getElementById("guessInput").value);
+      if (!guess || guess < 1 || guess > maxRange) {
+        document.getElementById("message").textContent = "❗ Enter a number between 1 and " + maxRange;
+        return;
+      }
+
+      attempts++;
+      document.getElementById("attempts").textContent = attempts;
+
+      if (guess === target) {
+        document.getElementById("message").textContent = "🎉 Correct! You guessed it in " + attempts + " tries!";
+      } else if (guess < target) {
+        document.getElementById("message").textContent = "🔼 Too low! Try again.";
+      } else {
+        document.getElementById("message").textContent = "🔽 Too high! Try again.";
+      }
+    }
+  </script>
+
+</body>
+</html>
