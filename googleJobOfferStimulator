@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Job Offer - Google</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+      text-align: center;
+    }
+
+    img.logo {
+      width: 150px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      color: #4285F4;
+    }
+
+    input, textarea, select, button {
+      width: 90%;
+      max-width: 400px;
+      padding: 10px;
+      margin: 10px auto;
+      display: block;
+      font-size: 16px;
+    }
+
+    #hrSection, #resultSection {
+      display: none;
+      margin-top: 30px;
+    }
+
+    #certificate {
+      border: 2px dashed #34A853;
+      padding: 20px;
+      background-color: #eaffea;
+      margin-top: 20px;
+    }
+
+    .highlight {
+      color: #0F9D58;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🔹 Company Logo -->
+  <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" class="logo" alt="Google Logo">
+  <h1>Apply for a Job at Google</h1>
+
+  <!-- 🔹 Application Form -->
+  <div id="formSection">
+    <input type="text" id="name" placeholder="Your Full Name" required>
+    <input type="email" id="email" placeholder="Your Email" required>
+    <select id="role">
+      <option value="" disabled selected>Select Job Role</option>
+      <option>Software Developer</option>
+      <option>Data Analyst</option>
+      <option>UI/UX Designer</option>
+      <option>HR Manager</option>
+    </select>
+    <textarea id="reason" placeholder="Why do you need this job?" rows="4" required></textarea>
+    <button onclick="startProcess()">Submit Application</button>
+  </div>
+
+  <!-- 🔹 HR Call Simulation -->
+  <div id="hrSection">
+    <h2>📞 HR is calling...</h2>
+    <p>(Call ends in 2 seconds...)</p>
+    <audio id="hrAudio" autoplay>
+      <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+
+  <!-- 🔹 Result Section -->
+  <div id="resultSection">
+    <div id="certificate">
+      <h2>🎉 Congratulations!</h2>
+      <p>You have been selected as a <span class="highlight" id="selectedRole"></span> at <span class="highlight">Google</span>!</p>
+      <p><strong>Joining Date:</strong> <span id="joiningDate"></span></p>
+      <p><strong>Monthly Salary:</strong> ₹<span id="salary"></span></p>
+      <p>We appreciate your interest and welcome you aboard!</p>
+    </div>
+  </div>
+
+  <script>
+    function startProcess() {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const role = document.getElementById("role").value;
+      const reason = document.getElementById("reason").value.trim();
+
+      if (!name || !email || !role || !reason) {
+        alert("Please fill in all the fields!");
+        return;
+      }
+
+      // Hide form, show HR call section
+      document.getElementById("formSection").style.display = "none";
+      document.getElementById("hrSection").style.display = "block";
+
+      const audio = document.getElementById("hrAudio");
+      audio.play();
+
+      // End call after 2 seconds
+      setTimeout(() => {
+        audio.pause();
+        audio.currentTime = 0;
+        document.getElementById("hrSection").style.display = "none";
+        document.getElementById("resultSection").style.display = "block";
+
+        const salary = generateSalary(role);
+        const today = new Date();
+        const joinDate = today.toLocaleDateString();
+
+        document.getElementById("selectedRole").innerText = role;
+        document.getElementById("salary").innerText = salary.toLocaleString();
+        document.getElementById("joiningDate").innerText = joinDate;
+
+      }, 2000); // 2 seconds
+    }
+
+    function generateSalary(role) {
+      let min = 0, max = 0;
+      switch (role) {
+        case "Software Developer":
+          min = 250000; max = 400000;
+          break;
+        case "Data Analyst":
+          min = 180000; max = 300000;
+          break;
+        case "UI/UX Designer":
+          min = 150000; max = 250000;
+          break;
+        case "HR Manager":
+          min = 120000; max = 200000;
+          break;
+      }
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+  </script>
+
+</body>
+</html>
