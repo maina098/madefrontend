@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+  <title>Honoring Our Healing Heroes</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      background-color: #f0f0f0; 
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      text-align: center;
+      padding: 80px 20px 50px;
+      color: #222;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      background: linear-gradient(to right, #007cf0, #00dfd8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeIn 1.5s ease-in;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      margin-top: 10px;
+      color: #555;
+      animation: fadeIn 2s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(-10px); 
+      }
+      to {
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 40px;
+      padding: 60px 40px;
+      width: 100%;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px 25px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease;
+      opacity: 0;
+      transform: translateY(30px);
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15), 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.03);
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15), 0 0 20px rgba(0, 0, 0, 0.1);
+      border-top-right-radius: 60px;
+      border-bottom-left-radius: 60px;
+      border-top-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
+
+    .emoji {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      color: #0077b6;
+      font-size: 1.4rem;
+    }
+
+    .card p {
+      color: #333;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    @keyframes float {
+      0%, 100% { 
+        transform: translateY(0); 
+      }
+      50% { 
+        transform: translateY(-8px); 
+      }
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      font-size: 1rem;
+      color: #444;
+      background: #fff;
+      backdrop-filter: blur(5px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Honoring Our Healing Heroes 💖</h1>
+    <p>Celebrating the dedication, compassion, and courage of doctors everywhere.</p>
+  </header>
+
+  <section class="card-container">
+    <div class="card">
+      <div class="emoji">🩺</div>
+      <h3>Compassionate Care</h3>
+      <p>Thank you for comforting us in moments of fear with steady hands and kind hearts.</p>
+    </div>
+
+    <div class="card">
+      <div class="emoji">💉</div>
+      <h3>Medical Marvels</h3>
+      <p>Your dedication and knowledge bring hope and healing to every patient you treat.</p>
+    </div>
+
+    <div class="card">
+      <div class="emoji">🏥</div>
+      <h3>Service Above Self</h3>
+      <p>Through long hours and emergencies, you never stop showing up for us.</p>
+    </div>
+
+    <div class="card">
+      <div class="emoji">👏</div>
+      <h3>Unseen Heroes</h3>
+      <p>We may not see every act of care, but we feel the impact in every life you touch.</p>
+    </div>
+
+    <div class="card">
+      <div class="emoji">🌟</div>
+      <h3>You Make a Difference</h3>
+      <p>Because of you, so many get a second chance. You are our real-world superheroes.</p>
+    </div>
+
+    <div class="card">
+  <div class="emoji">🙏</div>
+  <h3>Thank You</h3>
+  <p>Thank you for your care, your courage, and your endless heart.</p>
+</div>
+  </section>
+
+  <footer>
+    &copy; 2025 Doctor's Day Celebration | Made with ❤️ for our Doctors
+  </footer>
+
+  <script>
+    const cards = document.querySelectorAll('.card');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target); 
+        }
+      });
+    }, { threshold: 0.2 });
+
+    cards.forEach(card => observer.observe(card));
+  </script>
+
+</body>
+</html>
