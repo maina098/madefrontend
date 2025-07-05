@@ -1,0 +1,200 @@
+
+   
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Page Title</title>
+        <link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
+<style>
+
+*{
+    margin:0;
+    padding:0;
+}
+body {
+    background-color:#000;
+    height:100vh;
+    width:100vw;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  background:url('https://i.pinimg.com/736x/81/55/03/81550360fbeb537a101771b7885b1dcf.jpg');
+  background-size:100%;
+  background-repeat:no-repeat;
+  color:white;
+  position:fixed;
+  left:0;
+  top:0;
+  text-align:center;}
+.im1{
+    height:25vh;
+    width:50vw;
+    position:fixed;
+    bottom:0;
+    left:0;
+}
+/*
+.im2{
+    height:25vh;
+    width:50vw;
+    position:fixed;
+    bottom:0;
+    left:50vw;
+}
+.im3{
+    height:25vh;
+    width:50vw;
+    position:fixed;
+    bottom:25vh;
+    left:0;
+}
+
+.im4{
+    height:25vh;
+    width:50vw;
+    position:fixed;
+    bottom:25vh;
+    left:50vw;
+}
+
+.im5{
+    height:25vh;
+    width:50vw;
+    position:fixed;
+    bottom:50vh;
+    left:0;
+}
+
+.im6{
+    height:25vh;
+    width:50vw;
+    position:fixed;
+    bottom:50vh;
+    left:50vw;
+}
+
+*/
+.lyrics{
+    text-align:center;
+}
+.song{
+   font-family:'chewy';
+   font-size:x-large;
+   display:flex;
+   align-items:center;
+   justify-content:center;
+   color:#fff;
+}
+.song{
+    display:none;
+}
+p{
+    display:block;
+    margin-left:30px;
+    margin-right:30px;
+    animation:appear 0.6s linear 1;
+}
+@keyframes appear{
+    from{
+        opacity:0;
+        margin-top:80px;
+    }
+    to{
+        opacity:1;
+        margin-top:0px;
+    }
+}
+audio{
+    display:none;
+}
+.bubble{
+    height:75vh;
+    width:100vw;
+    position:fixed;
+    left:0;
+    bottom:0;
+    background-image:url("https://i.pinimg.com/originals/cf/40/0e/cf400ed10d2897cd18762def1d775a7f.gif");
+    background-size:50%;
+}
+</style>
+
+    </head>
+    <body onclick ="">
+    
+    <div class="bubble"></div>
+    
+        <div class="lyrics">
+            <p id="p1" class="song">
+            I’m sorry but, don’t wanna talk.
+            </p>
+            <p id="p2" class="song">
+                I need a moment before I go, it’s nothing personal.
+            </p>
+            <p id="p3" class="song">
+                I draw the blinds, they don’t need to see me cry.
+            </p>
+            <p id="p4" class="song">
+                Cause even if they understand, they don’t understand.
+            </p>
+            <p id="p5" class="song">
+                So then, when I’m finished, I’m all 'bout my business and ready to save the world.
+            </p>
+            <p id="p6" class="song">
+                I’m taking my misery, make it my bitch, can’t be everyone’s favorite girl.
+            </p>
+            <p id="p7" class="song">
+                So take aim and fire away, I’ve never been so wide awake.
+            </p>
+            <p id="p8" class="song">
+                No, nobody but me can keep me safe.
+            </p>
+            <p id="p9" class="song">
+            And I’m on my way.
+            </p>
+            <p id="p10" class="song">
+                The blood moon is on the rise, the fire burning in my eyes.
+            </p>
+            <p id="p11" class="song">
+            No, nobody but me can keep me safe, and I’m on my way
+            </p>
+            <p id="p12" class="song">
+                Music🎶
+            </p>
+            
+        </div>
+        <audio id = "audio" controls autoplay loop>
+        <source src = "https://www.dropbox.com/scl/fi/13e16ieos7tf595cr54qc/VID-20250702-WA0016.mp4?rlkey=e3eqtdrpx348nhoap20d3ha0m&st=yxwpainb&&raw=1">
+    </audio>
+
+<script>
+
+
+alert("wait a little 😊🌸")
+window.onload = () =>{
+alert("🌸🌸Click anywhere to start 🌸🌸")
+var time =[4,7,5,7,6,5,6,4,2.5,7-1.5,8-2];
+var i = 1;
+var t = 0;
+function timer(){
+    document.getElementById("p"+i).style.display = "block";
+    t+=0.5;
+    if(t==time[i-1]){
+document.getElementById("p"+i).style.display = "none";
+        i+=1;
+        t = 0;
+    }
+}
+
+function start(){
+  setInterval(timer,500);
+}
+window.addEventListener('click', function () {
+    
+    var audio = document.getElementById("audio");
+    audio.play();
+    start();
+});
+}
+</script>
+    </body>
+</html>
