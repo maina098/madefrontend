@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nature Parallax</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow-x: hidden;
+      font-family: sans-serif;
+    }
+
+    /* Parallax background section */
+    .parallax {
+      position: relative;
+      height: 100vh;
+      background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1350&q=80');
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-shadow: 0 0 5px rgba(0,0,0,0.7);
+    }
+
+    .parallax h1 {
+      font-size: 4rem;
+      margin: 0;
+    }
+
+    .content {
+      padding: 60px 20px;
+      background: #fff;
+      text-align: center;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <section class="parallax">
+    <h1>Embrace the Wilderness</h1>
+  </section>
+
+  <section class="content">
+    <h2>About Nature</h2>
+    <p>
+      Our planet is a breathtaking tapestry of mountains, forests, rivers, and oceans.
+      Parallax scrolling gives a sense of depth, as if you're journeying through the scene.
+    </p>
+    <p>
+      Scroll down to add more sections or layers. Each `.parallax` section with
+      a different background image creates immersive visual variety.
+    </p>
+  </section>
+
+  <section class="parallax" style="background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1350&q=80');">
+    <h1>Discover Serenity</h1>
+  </section>
+
+  <section class="content">
+    <h2>Take a Pause</h2>
+    <p>
+      This layout uses **CSS only** to achieve the parallax effect — no JavaScript needed.
+      The background image is fixed while the content scrolls normally :contentReference[oaicite:2]{index=2}.
+    </p>
+  </section>
+
+</body>
+</html>
