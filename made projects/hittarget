@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bow Game with Clouds & Hit Animation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #111;
+    }
+    canvas {
+      display: block;
+      touch-action: none;
+      background: #222;
+    }
+    #menu {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+    #menu h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+    #menu button {
+      padding: 12px 24px;
+      font-size: 18px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 20px;
+      color: white;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+<div id="menu">
+  <h1>🏹 Hit The Target</h1>
+  <button onclick="startGame()">Start Game</button>
+</div>
+
+<div id="score">Score: 0</div>
+<canvas id="game"></canvas>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+const menu = document.getElementById("menu");
+const scoreEl = document.getElementById("score");
+
+// Canvas full screen
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let score = 0;
+let gameStarted = false;
+let arrows = [];
+let explosions = [];
+let clouds = [];
+
+// Bow setup
+let bow = {
+  x: 100,
+  y: canvas.height / 2,
+  angle: 0,
+  pulling: false,
+  power: 0,
+  size: 30
+};
+
+let gravity = 0.15;
+let drag = 0.995;
+let lastTouch = { x: bow.x, y: bow.y };
+
+// Target setup
+let target = {
+  x: canvas.width - 120,
+  y: canvas.height / 2,
+  radius: 18
+};
+
+// Background
+const backgroundImage = new Image();
+backgroundImage.src = "https://files.catbox.moe/odturw.jpg";  
+
+// Clouds
+const cloudImage = new Image();
+cloudImage.src = "https://gallery.yopriceville.com/var/resizes/Free-Clipart-Pictures/Cloud-PNG/Fluffy_Cloud_Transparent_PNG_Clip_Art.png?m=1629830702"; // You can replace with other transparent PNG
+
+for (let i = 0; i < 3; i++) {
+  clouds.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * 150,
+    speed: 0.3 + Math.random() * 0.5,
+    size: 60 + Math.random() * 40
+  });
+}
+
+function startGame() {
+  menu.style.display = "none";
+  gameStarted = true;
+}
+
+// Input
+canvas.addEventListener("touchstart", startPull);
+canvas.addEventListener("touchmove", updateTouch);
+canvas.addEventListener("touchend", releaseArrow);
+canvas.addEventListener("mousedown", startPull);
+canvas.addEventListener("mousemove", updateTouch);
+canvas.addEventListener("mouseup", releaseArrow);
+
+function updateTouch(e) {
+  let x = e.touches ? e.touches[0].clientX : e.clientX;
+  let y = e.touches ? e.touches[0].clientY : e.clientY;
+  lastTouch = { x, y };
+  if (bow.pulling) {
+    let dx = bow.x - x;
+    let dy = bow.y - y;
+    bow.angle = Math.atan2(dy, dx);
+    bow.power = Math.min(Math.sqrt(dx * dx + dy * dy) / 10, 10);
+  }
+}
+
+function startPull(e) {
+  if (!gameStarted) return;
+  bow.pulling = true;
+  updateTouch(e);
+}
+
+function releaseArrow() {
+  if (bow.pulling) {
+    arrows.push({
+      x: bow.x,
+      y: bow.y,
+      dx: Math.cos(bow.angle) * bow.power,
+      dy: Math.sin(bow.angle) * bow.power,
+      wasHit: false
+    });
+    bow.pulling = false;
+  }
+}
+
+// Drawing functions
+function drawTarget() {
+  ctx.fillStyle = "red";
+  ctx.beginPath();
+  ctx.arc(target.x, target.y, target.radius, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = "white";
+  ctx.beginPath();
+  ctx.arc(target.x, target.y, target.radius * 0.66, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = "blue";
+  ctx.beginPath();
+  ctx.arc(target.x, target.y, target.radius * 0.33, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawBow() {
+  ctx.save();
+  ctx.translate(bow.x, bow.y);
+  ctx.rotate(bow.angle);
+  ctx.strokeStyle = "#8B4513";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(0, 0, bow.size, -Math.PI / 2, Math.PI / 2);
+  ctx.stroke();
+
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, -bow.size);
+  ctx.lineTo(bow.pulling ? -10 : 0, 0);
+  ctx.lineTo(0, bow.size);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawArrow(arrow) {
+  ctx.save();
+  ctx.translate(arrow.x, arrow.y);
+  ctx.rotate(Math.atan2(arrow.dy, arrow.dx));
+  ctx.fillStyle = "gray";
+  ctx.fillRect(0, -1.5, 16, 3);
+  ctx.fillStyle = "black";
+  ctx.beginPath();
+  ctx.moveTo(16, -4);
+  ctx.lineTo(20, 0);
+  ctx.lineTo(16, 4);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawTrajectory() {
+  let steps = 30;
+  let x = bow.x;
+  let y = bow.y;
+  let dx = Math.cos(bow.angle) * bow.power;
+  let dy = Math.sin(bow.angle) * bow.power;
+  ctx.beginPath();
+  ctx.strokeStyle = "yellow";
+  ctx.setLineDash([4, 4]);
+  for (let i = 0; i < steps; i++) {
+    dx *= drag;
+    dy *= drag;
+    dy += gravity;
+    x += dx;
+    y += dy;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+function drawClouds() {
+  clouds.forEach(cloud => {
+    ctx.drawImage(cloudImage, cloud.x, cloud.y, cloud.size, cloud.size * 0.6);
+    cloud.x += cloud.speed;
+    if (cloud.x > canvas.width) {
+      cloud.x = -cloud.size;
+      cloud.y = Math.random() * 150;
+    }
+  });
+}
+
+function drawExplosions() {
+  for (let i = explosions.length - 1; i >= 0; i--) {
+    let ex = explosions[i];
+    ctx.beginPath();
+    ctx.arc(ex.x, ex.y, ex.radius, 0, 2 * Math.PI);
+    ctx.fillStyle = `rgba(255, ${ex.color}, 0, ${ex.alpha})`;
+    ctx.fill();
+    ex.radius += 2;
+    ex.alpha -= 0.05;
+    if (ex.alpha <= 0) explosions.splice(i, 1);
+  }
+}
+
+function updateArrows() {
+  for (let i = arrows.length - 1; i >= 0; i--) {
+    let a = arrows[i];
+    a.dy += gravity;
+    a.dx *= drag;
+    a.dy *= drag;
+    a.x += a.dx;
+    a.y += a.dy;
+    drawArrow(a);
+
+    if (a.wasHit) continue;
+
+    let dx = a.x - target.x;
+    let dy = a.y - target.y;
+    let dist = Math.sqrt(dx * dx + dy * dy);
+
+    if (dist < target.radius) {
+      a.wasHit = true;
+      if (dist < target.radius * 0.33) score += 5;
+      else if (dist < target.radius * 0.66) score += 2;
+      else score += 1;
+
+      const minY = 100;
+      const maxY = canvas.height - 100;
+      target.y = Math.random() * (maxY - minY) + minY;
+
+      explosions.push({ x: target.x, y: target.y, radius: 10, alpha: 1, color: 100 + Math.floor(Math.random() * 155) });
+      arrows.splice(i, 1);
+    }
+  }
+  scoreEl.innerText = "Score: " + score;
+}
+
+function gameLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (!gameStarted) return requestAnimationFrame(gameLoop);
+
+  drawClouds();
+  drawExplosions();
+  drawTarget();
+  drawBow();
+  if (bow.pulling) drawTrajectory();
+  updateArrows();
+
+  requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+function gameLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (!gameStarted) return requestAnimationFrame(gameLoop);
+
+  // 👇 draw background
+  ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+
+  drawClouds();
+  drawExplosions();
+  drawTarget();
+  drawBow();
+  if (bow.pulling) drawTrajectory();
+  updateArrows();
+
+  requestAnimationFrame(gameLoop);
+}
+</script>
+</body>
+</html>
+ 
