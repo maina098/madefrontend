@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Page Title</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+      color: #e8d7a8;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 15px;
+      line-height: 1.5;
+    }
+
+    section {
+      background: #252525;
+      border-radius: 16px;
+      padding: 25px 20px;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #ffd93b;
+      margin-bottom: 18px;
+      letter-spacing: 0.05em;
+      text-align: center;
+    }
+
+    .quotes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+
+    .quote-card {
+      background: linear-gradient(145deg, #3a3a3a, #1c1c1c);
+      border-radius: 12px;
+      padding: 18px 22px;
+      color: #f9e68a;
+      font-style: italic;
+      font-weight: 600;
+      transition: transform 0.3s ease;
+    }
+
+    .quote-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .author {
+      text-align: center;
+      margin-top: 20px;
+      color: #ffd93b;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    @media (max-width: 400px) {
+      section h2 {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="quotes">
+    <h2>Words of Wisdom</h2>
+    <div class="quotes-list">
+      <div class="quote-card">
+        <p>"To succeed in your mission, you must have single-minded devotion to your goal."</p>
+      </div>
+      <div class="quote-card">
+        <p>"Great dreams of great dreamers are always transcended."</p>
+      </div>
+      <div class="quote-card">
+        <p>"Creativity is seeing the same thing but thinking differently."</p>
+      </div>
+      <div class="quote-card">
+        <p>"Climbing to the top demands strength, whether it is to the top of Mount Everest or top of your career."</p>
+      </div>
+      <div class="quote-card">
+        <p>"If you fail, never give up because F.A.I.L. means 'First Attempt In Learning'."</p>
+      </div>
+      <div class="quote-card">
+        <p>"Look at the sky. We are not alone. The whole universe is friendly to us and conspires only to give the best to those who dream and work."</p>
+      </div>
+      <div class="quote-card">
+        <p>"Learning gives creativity, creativity leads to thinking, thinking provides knowledge, knowledge makes you great."</p>
+      </div>
+      <div class="quote-card">
+        <p>"Don’t take rest after your first victory because if you fail in second, more lips are waiting to say that your first victory was just luck."</p>
+      </div>
+      <div class="quote-card">
+        <p>"Excellence is a continuous process and not an accident."</p>
+      </div>
+      <div class="quote-card">
+        <p>"You have to build the courage to face challenges and continue working towards your goal."</p>
+      </div>
+      <div class="quote-card">
+        <p>"Dream before your dreams can come true"</p>
+      </div>
+    </div>
+
+    <p class="author">All quotes by — A.P.J. Abdul Kalam</p>
+  </section>
+
+</body>
+</html>
