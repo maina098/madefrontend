@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savory Bistro | Fine Dining Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+        .menu-item:hover .menu-details {
+            transform: translateY(0);
+        }
+        .menu-details {
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="scroll-smooth font-sans bg-gray-50 text-gray-800">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white shadow-md z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-orange-600">Savory Bistro</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="text-gray-700 hover:text-orange-600 transition">Home</a>
+                    <a href="#menu" class="text-gray-700 hover:text-orange-600 transition">Menu</a>
+                    <a href="#about" class="text-gray-700 hover:text-orange-600 transition">About</a>
+                    <a href="#contact" class="text-gray-700 hover:text-orange-600 transition">Contact</a>
+                </div>
+                <button id="mobile-menu-button" class="md:hidden text-gray-700">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden bg-white pb-4">
+                <a href="#home" class="block px-4 py-2 text-gray-700 hover:text-orange-600">Home</a>
+                <a href="#menu" class="block px-4 py-2 text-gray-700 hover:text-orange-600">Menu</a>
+                <a href="#about" class="block px-4 py-2 text-gray-700 hover:text-orange-600">About</a>
+                <a href="#contact" class="block px-4 py-2 text-gray-700 hover:text-orange-600">Contact</a>
+                <div class="px-4 py-2">
+                    <button class="bg-orange-600 text-white px-4 py-2 rounded-md w-full hover:bg-orange-700 transition">
+                        Reserve Table
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-20 md:pt-0">
+        <div class="relative h-screen flex items-center justify-center">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0d2cd009-6e3c-4ceb-9b15-bfc31c78dc2b.png" alt="Elegant restaurant interior with warm lighting, white tablecloths, and wine glasses" 
+                 class="absolute inset-0 w-full h-full object-cover opacity-70"/>
+            <div class="absolute inset-0 bg-black opacity-40"></div>
+            <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+                <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">Savory Bistro</h1>
+                <p class="text-xl md:text-2xl text-white mb-8">Experience the art of fine dining in the heart of the city</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#menu" class="bg-orange-600 text-white px-8 py-3 rounded-md text-lg hover:bg-orange-700 transition">View Menu</a>
+                    <a href="#contact" class="bg-white text-orange-600 px-8 py-3 rounded-md text-lg hover:bg-gray-100 transition">Reservations</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Our Menu</h2>
+                <div class="w-20 h-1 bg-orange-600 mx-auto"></div>
+                <p class="text-gray-600 mt-4 max-w-2xl mx-auto">Crafted with passion using only the finest ingredients</p>
+            </div>
+            
+            <div class="flex flex-wrap mb-12 justify-center">
+                <button class="menu-category px-6 py-2 mx-2 mb-2 rounded-full border border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white transition" data-category="starters">Starters</button>
+                <button class="menu-category px-6 py-2 mx-2 mb-2 rounded-full border border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white transition" data-category="mains">Main Courses</button>
+                <button class="menu-category px-6 py-2 mx-2 mb-2 rounded-full border border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white transition" data-category="desserts">Desserts</button>
+                <button class="menu-category px-6 py-2 mx-2 mb-2 rounded-full border border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white transition" data-category="drinks">Drinks</button>
+            </div>
+            
+            <!-- Starters -->
+            <div class="menu-section grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="starters-menu">
+                <div class="menu-item bg-gray-50 rounded-lg overflow-hidden shadow-md relative h-64">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/81080fbf-bcc9-41a9-830e-fb0bcc617cfd.png" alt="Artisanal bread basket with assorted dips and spreads" class="w-full h-full object-cover"/>
+                    <div class="absolute inset-0 bg-black opacity-0 hover:opacity-30 transition"></div>
+                    <div class="menu-details absolute bottom-0 left-0 right-0 bg-white p-4">
+                        <h3 class="font-bold text-lg">Artisanal Bread Basket</h3>
+                        <p class="text-gray-600 mb-2">Freshly baked selection with olive oil & balsamic</p>
+                        <p class="text-orange-600 font-bold">$8.50</p>
+                    </div>
+                </div>
+                <div class="menu-item bg-gray-50 rounded-lg overflow-hidden shadow-md relative h-64">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/4515cd63-77f0-458c-8aee-23ca0d1a0ce9.png" alt="Caprese salad with fresh mozzarella, tomatoes, and basil" class="w-full h-full object-cover"/>
+                    <div class="absolute inset-0 bg-black opacity-0 hover:opacity-30 transition"></div>
+                    <div class="menu-details absolute bottom-0 left-0 right-0 bg-white p-4">
+                        <h3 class="font-bold text-lg">Classic Caprese</h3>
+                        <p class="text-gray-600 mb-2">Fresh mozzarella, heirloom tomatoes, basil</p>
+                        <p class="text-orange-600 font-bold">$12.00</p>
+                    </div>
+                </div>
+                <div class="menu-item bg-gray-50 rounded-lg overflow-hidden shadow-md relative h-64">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e50baf09-defd-46bc-b875-a474d157ac07.png" alt="Crispy fried calamari with lemon wedges and aioli dip" class="w-full h-full object-cover"/>
+                    <div class="absolute inset-0 bg-black opacity-0 hover:opacity-30 transition"></div>
+                    <div class="menu-details absolute bottom-0 left-0 right-0 bg-white p-4">
+                        <h3 class="font-bold text-lg">Crispy Calamari</h3>
+                        <p class="text-gray-600 mb-2">With lemon aioli and herb garnish</p>
+                        <p class="text-orange-600 font-bold">$14.50</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mains (hidden by default) -->
+            <div class="menu-section hidden grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="mains-menu">
+                <!-- Main course items would go here -->
+                <div class="menu-item bg-gray-50 rounded-lg overflow-hidden shadow-md relative h-64">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b0a49019-5911-4737-84b4-e250d430dfdf.png" alt="Grilled ribeye steak with roasted vegetables and potato puree" class="w-full h-full object-cover"/>
+                    <div class="absolute inset-0 bg-black opacity-0 hover:opacity-30 transition"></div>
+                    <div class="menu-details absolute bottom-0 left-0 right-0 bg-white p-4">
+                        <h3 class="font-bold text-lg">Ribeye Steak</h3>
+                        <p class="text-gray-600 mb-2">16oz prime cut with roasted vegetables</p>
+                        <p class="text-orange-600 font-bold">$32.00</p>
+                    </div>
+                </div>
+                <div class="menu-item bg-gray-50 rounded-lg overflow-hidden shadow-md relative h-64">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/5bf63b6d-19b8-40d2-994d-b03f650be818.png" alt="Seafood linguine pasta with shrimp, mussels, and clams in white wine sauce" class="w-full h-full object-cover"/>
+                    <div class="absolute inset-0 bg-black opacity-0 hover:opacity-30 transition"></div>
+                    <div class="menu-details absolute bottom-0 left-0 right-0 bg-white p-4">
+                        <h3 class="font-bold text-lg">Seafood Linguine</h3>
+                        <p class="text-gray-600 mb-2">Shrimp, mussels, clams in white wine sauce</p>
+                        <p class="text-orange-600 font-bold">$26.50</p>
+                    </div>
+                </div>
+                <div class="menu-item bg-gray-50 rounded-lg overflow-hidden shadow-md relative h-64">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/93b0658f-e5d8-496f-8310-ccda07c3319c.png" alt="Vegetable risotto with seasonal mushrooms and truffle oil" class="w-full h-full object-cover"/>
+                    <div class="absolute inset-0 bg-black opacity-0 hover:opacity-30 transition"></div>
+                    <div class="menu-details absolute bottom-0 left-0 right-0 bg-white p-4">
+                        <h3 class="font-bold text-lg">Mushroom Risotto</h3>
+                        <p class="text-gray-600 mb-2">Arborio rice with seasonal mushrooms</p>
+                        <p class="text-orange-600 font-bold">$22.00</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- View Full Menu Button -->
+            <div class="text-center mt-12">
+                <button class="bg-orange-600 text-white px-8 py-3 rounded-md text-lg hover:bg-orange-700 transition">
+                    View Full Menu
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Our Story</h2>
+                <div class="w-20 h-1 bg-orange-600 mx-auto"></div>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row items-center">
+                <div class="lg:w-1/2 mb-8 lg:mb-0 lg:pr-8">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/08e5b29a-0fe9-4f14-8af7-cbaf2b419c20.png" alt="Chef preparing food in a modern restaurant kitchen with copper pans" 
+                         class="rounded-lg shadow-xl w-full"/>
+                </div>
+                <div class="lg:w-1/2">
+                    <h3 class="text-2xl font-bold mb-4">A Culinary Journey</h3>
+                    <p class="text-gray-600 mb-4">Founded in 2010, Savory Bistro began as a small neighborhood eatery with big dreams. Our chef and founder, Marco Bellini, brings over 20 years of international culinary experience to every dish.</p>
+                    <p class="text-gray-600 mb-6">We pride ourselves on using locally-sourced ingredients and traditional cooking techniques to create modern interpretations of classic dishes. Our menu changes seasonally to showcase the freshest flavors.</p>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="flex items-center">
+                            <div class="bg-orange-100 p-3 rounded-full mr-3">
+                                <i class="fas fa-utensils text-orange-600"></i>
+                            </div>
+                            <span class="font-medium">Seasonal Menus</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="bg-orange-100 p-3 rounded-full mr-3">
+                                <i class="fas fa-seedling text-orange-600"></i>
+                            </div>
+                            <span class="font-medium">Local Produce</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="bg-orange-100 p-3 rounded-full mr-3">
+                                <i class="fas fa-wine-glass-alt text-orange-600"></i>
+                            </div>
+                            <span class="font-medium">Extensive Wine List</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="bg-orange-100 p-3 rounded-full mr-3">
+                                <i class="fas fa-star text-orange-600"></i>
+                            </div>
+                            <span class="font-medium">Award-Winning</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-4">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e9823a6a-0c53-4406-9ba6-f62ab0ca2938.png" alt="Food & Wine Magazine Best New Restaurant award" class="h-12 object-contain"/>
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/7d084542-7b85-4622-ba51-9a5f9771bfdf.png" alt="AAA Four Diamond Award logo" class="h-12 object-contain"/>
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d3a20cb4-da80-4919-8209-518c2c160eff.png" alt="Local food critics choice badge" class="h-12 object-contain"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Meet Our Team</h2>
+                <div class="w-20 h-1 bg-orange-600 mx-auto"></div>
+                <p class="text-gray-600 mt-4 max-w-2xl mx-auto">The talented individuals who make Savory Bistro special</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Chef -->
+                <div class="text-center">
+                    <div class="w-48 h-48 mx-auto mb-4 rounded-full overflow-hidden border-4 border-orange-100">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/81b76a21-a122-490d-854c-8e3480143d57.png" alt="Headshot of Master Chef Marco Bellini in chef whites" class="w-full h-full object-cover"/>
+                    </div>
+                    <h3 class="text-xl font-bold">Marco Bellini</h3>
+                    <p class="text-orange-600 mb-2">Master Chef & Owner</p>
+                    <p class="text-gray-600 text-sm">20+ years culinary experience across Europe and Asia</p>
+                </div>
+                
+                <!-- Sous Chef -->
+                <div class="text-center">
+                    <div class="w-48 h-48 mx-auto mb-4 rounded-full overflow-hidden border-4 border-orange-100">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/efb30307-8c05-407c-af3b-a7d36ba2f54a.png" alt="Headshot of Sous Chef Alicia Chavez smiling in kitchen" class="w-full h-full object-cover"/>
+                    </div>
+                    <h3 class="text-xl font-bold">Alicia Chavez</h3>
+                    <p class="text-orange-600 mb-2">Sous Chef</p>
+                    <p class="text-gray-600 text-sm">Specializes in Latin and Mediterranean fusion cuisine</p>
+                </div>
+                
+                <!-- Pastry Chef -->
+                <div class="text-center">
+                    <div class="w-48 h-48 mx-auto mb-4 rounded-full overflow-hidden border-4 border-orange-100">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/07bdfee7-aaea-4473-99ac-2469734854e2.png" alt="Headshot of Pastry Chef Sophie Laurent with desserts" class="w-full h-full object-cover"/>
+                    </div>
+                    <h3 class="text-xl font-bold">Sophie Laurent</h3>
+                    <p class="text-orange-600 mb-2">Pastry Chef</p>
+                    <p class="text-gray-600 text-sm">French-trained master of delicate desserts</p>
+                </div>
+                
+                <!-- Sommelier -->
+                <div class="text-center">
+                    <div class="w-48 h-48 mx-auto mb-4 rounded-full overflow-hidden border-4 border-orange-100">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/40e2f3a5-8292-4e90-b1b1-a218de476cbb.png" alt="Headshot of Sommelier James Wilson holding a wine bottle" class="w-full h-full object-cover"/>
+                    </div>
+                    <h3 class="text-xl font-bold">James Wilson</h3>
+                    <p class="text-orange-600 mb-2">Sommelier</p>
+                    <p class="text-gray-600 text-sm">Certified wine expert with encyclopedic knowledge</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-16 bg-orange-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">What Our Guests Say</h2>
+                <div class="w-20 h-1 bg-orange-600 mx-auto"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-md">
+                    <div class="flex mb-4 text-orange-500">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 italic mb-4">"The seafood linguine was absolutely divine - the perfect balance of flavors. Service was impeccable!"</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/76506a31-7e1b-417c-a5d5-6eac515aba0c.png" alt="Portrait of satisfied customer Sarah Johnson" class="w-full h-full object-cover"/>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Sarah Johnson</h4>
+                  
