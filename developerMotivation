@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Motivational Journey - Mobile Optimized</title>
+  <style>
+    /* Base and reset */
+    html, body {
+      margin: 0; padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(120deg, #1e1e2f, #3e3e5e);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      user-select: none;
+      flex-direction: column;
+      text-align: center;
+      padding: 15px 12px;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      touch-action: manipulation;
+      transition: background 2.5s ease;
+    }
+
+    .background-animation {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      animation: float linear infinite;
+      opacity: 0.7;
+      filter: drop-shadow(0 0 2px white);
+      transition: background-color 2.5s ease;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    .container {
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 15px;
+      padding: 20px 25px;
+      box-shadow: 0 0 30px rgba(255,255,255,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      min-height: 280px;
+      max-width: 100vw;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .character {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 20px #ffd700aa;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 1.3s ease, transform 1.3s ease;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .character.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .text-box {
+      font-size: 1.8rem;
+      font-weight: 700;
+      min-height: 120px;
+      line-height: 1.3;
+      color: #ffd700;
+      text-shadow: 0 0 8px #ffd700bb;
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+      animation-fill-mode: forwards;
+      max-width: 90vw;
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .text-box.show {
+      opacity: 1;
+      animation: bounceIn 1s ease forwards, glowPulse 2.5s ease infinite alternate;
+      transform: translateY(0) scale(1);
+    }
+
+    @keyframes bounceIn {
+      0% { transform: translateY(40px) scale(0.8); opacity: 0; }
+      60% { transform: translateY(-15px) scale(1.05); opacity: 1; }
+      80% { transform: translateY(5px) scale(0.95); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    @keyframes glowPulse {
+      0% { text-shadow: 0 0 5px #ffd700aa, 0 0 10px #ffd700aa; }
+      100% { text-shadow: 0 0 20px #ffd700ff, 0 0 30px #ffd700ff; }
+    }
+
+    .controls {
+      width: 100%;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    button#nextBtn {
+      width: 100%;
+      max-width: 320px;
+      background: #ffd700;
+      border: none;
+      padding: 14px 0;
+      font-size: 1.3rem;
+      font-weight: 700;
+      border-radius: 35px;
+      cursor: pointer;
+      color: #1e1e2f;
+      box-shadow: 0 4px 15px #ffd700cc;
+      transition: background 0.3s ease;
+      user-select: none;
+      user-drag: none;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    button#nextBtn:hover:not(:disabled) {
+      background: #fff347;
+    }
+
+    button#nextBtn:disabled {
+      background: #bbb;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .end-message {
+      font-size: 2.3rem;
+      margin-top: 25px;
+      color: #ffd700;
+      opacity: 0;
+      transition: opacity 2.5s ease;
+      user-select: none;
+      font-weight: 700;
+      text-shadow: 0 0 10px #ffd700cc;
+    }
+
+    .end-message.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="background-animation" id="bg"></div>
+
+  <main class="container" role="main" aria-live="polite" aria-label="Motivational messages">
+    <img src="" alt="Motivational character" class="character" id="character" />
+    <div class="text-box" id="text"></div>
+  </main>
+
+  <div class="controls">
+    <button id="nextBtn" aria-label="Show next motivational message">Next ▶️</button>
+  </div>
+
+  <div class="end-message" id="end" aria-live="assertive" role="alert">...To Be Continued 🔥</div>
+
+  <audio id="bgMusic" autoplay loop preload="auto" volume="0.25" >
+    <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_89f91c89f9.mp3?filename=relaxing-piano-ambient-10835.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    const data = [
+      {
+        text: "Life is a journey, not a race.",
+        img: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=140&q=80",
+        bg: "linear-gradient(120deg, #243949, #517fa4)",
+        circleColor: "rgba(255, 255, 255, 0.06)"
+      },
+      {
+        text: "Every failure is a step forward.",
+        img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=140&q=80",
+        bg: "linear-gradient(120deg, #8e0e00, #1f1c18)",
+        circleColor: "rgba(255, 120, 120, 0.06)"
+      },
+      {
+        text: "Your time is now.",
+        img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=140&q=80",
+        bg: "linear-gradient(120deg, #654ea3, #eaafc8)",
+        circleColor: "rgba(200, 150, 255, 0.06)"
+      },
+      {
+        text: "Believe in yourself.",
+        img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=140&q=80",
+        bg: "linear-gradient(120deg, #56ab2f, #a8e063)",
+        circleColor: "rgba(150, 255, 150, 0.06)"
+      },
+      {
+        text: "You are stronger than you think.",
+        img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=140&q=80",
+        bg: "linear-gradient(120deg, #2c3e50, #4ca1af)",
+        circleColor: "rgba(120, 200, 255, 0.06)"
+      },
+      {
+        text: "Every great story takes time.",
+        img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=140&q=80",
+        bg: "linear-gradient(120deg, #4776e6, #8e54e9)",
+        circleColor: "rgba(180, 150, 255, 0.06)"
+      },
+      {
+        text: "Embrace the struggle — it builds you.",
+        img: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=140&q=80",
+        bg: "linear-gradient(120deg, #134e5e, #71b280)",
+        circleColor: "rgba(100, 200, 150, 0.06)"
+      },
+      {
+        text: "Dream big. Start small. Act now.",
+        img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=140&q=80",
+        bg: "linear-gradient(120deg, #ff9966, #ff5e62)",
+        circleColor: "rgba(255, 180, 150, 0.06)"
+      },
+      {
+        text: "Even the darkest night ends in dawn.",
+        img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=140&q=80",
+        bg: "linear-gradient(120deg, #232526, #414345)",
+        circleColor: "rgba(255, 255, 255, 0.06)"
+      },
+      {
+        text: "Your future self is watching. Don’t give up.",
+        img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=140&q=80",
+        bg: "linear-gradient(120deg, #8360c3, #2ebf91)",
+        circleColor: "rgba(180, 255, 200, 0.06)"
+      },
+      {
+        text: "Every second you doubt yourself, you're wasting magic.",
+        img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=140&q=80",
+        bg: "linear-gradient(120deg, #dd5e89, #f7bb97)",
+        circleColor: "rgba(255, 200, 200, 0.06)"
+      },
+      {
+        text: "You're not behind — you're building your own path.",
+        img: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=140&q=80",
+        bg: "linear-gradient(120deg, #06beb6, #48b1bf)",
+        circleColor: "rgba(150, 255, 255, 0.06)"
+      },
+      {
+        text: "Take the risk — or lose the chance.",
+        img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=140&q=80",
+        bg: "linear-gradient(120deg, #f7971e, #ffd200)",
+        circleColor: "rgba(255, 255, 150, 0.06)"
+      },
+      {
+        text: "This is your sign: Keep Going.",
+        img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=140&q=80",
+        bg: "linear-gradient(120deg, #43cea2, #185a9d)",
+        circleColor: "rgba(150, 220, 255, 0.06)"
+      },
+      {
+        text: "You’ve got this 💪",
+        img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=140&q=80",
+        bg: "linear-gradient(120deg, #f7971e, #ffd200)",
+        circleColor: "rgba(255, 240, 150, 0.08)"
+      }
+    ];
+
+    const textBox = document.getElementById('text');
+    const character = document.getElementById('character');
+    const nextBtn = document.getElementById('nextBtn');
+    const endMessage = document.getElementById('end');
+    const bgMusic = document.getElementById('bgMusic');
+    const bg = document.getElementById('bg');
+    const body = document.body;
+
+    let index = 0;
+    let autoPlayInterval = null;
+    const intervalTime = 7000; // 7 seconds
+
+    // Create floating circles, keep references for color change
+    const circles = [];
+    for (let i = 0; i < 30; i++) {
+      const circle = document.createElement('div');
+      circle.classList.add('circle');
+      circle.style.left = `${Math.random() * 100}%`;
+      circle.style.width = circle.style.height = `${30 + Math.random() * 100}px`;
+      circle.style.animationDuration = `${8 + Math.random() * 7}s`;
+      circle.style.animationDelay = `${-Math.random() * 10}s`;
+      bg.appendChild(circle);
+      circles.push(circle);
+    }
+
+    function updateBackgroundAndCircles(bgGradient, circleColor) {
+      // Animate body background gradient change (CSS transition handles smooth)
+      body.style.background = bgGradient;
+
+      // Update all circles color
+      circles.forEach(c => {
+        c.style.background = circleColor;
+      });
+    }
+
+    function showMessage(i) {
+      if (i >= data.length) {
+        // End of quotes
+        textBox.classList.remove('show');
+        character.classList.remove('show');
+        nextBtn.disabled = true;
+        clearInterval(autoPlayInterval);
+        setTimeout(() => {
+          endMessage.classList.add('show');
+          bgMusic.volume = 0.1;
+        }, 800);
+        return;
+      }
+
+      // Change background and circles
+      updateBackgroundAndCircles(data[i].bg, data[i].circleColor);
+
+      // Hide first
+      textBox.classList.remove('show');
+      character.classList.remove('show');
+
+      // Wait transition before updating content
+      setTimeout(() => {
+        textBox.textContent = data[i].text;
+        character.src = data[i].img;
+        character.alt = `Character for quote: "${data[i].text}"`;
+
+        // Show with animations
+        textBox.classList.add('show');
+        character.classList.add('show');
+      }, 600);
+    }
+
+    // Next button click: show next and reset autoplay timer
+    nextBtn.addEventListener('click', () => {
+      showMessage(index);
+      index++;
+      resetAutoPlay();
+    });
+
+    // Auto-play setup
+    function startAutoPlay() {
+      autoPlayInterval = setInterval(() => {
+        if (index >= data.length) {
+          clearInterval(autoPlayInterval);
+          return;
+        }
+        showMessage(index);
+        index++;
+      }, intervalTime);
+    }
+
+    function resetAutoPlay() {
+      clearInterval(autoPlayInterval);
+      startAutoPlay();
+    }
+
+    // Initialize first message
+    showMessage(index);
+    index++;
+    startAutoPlay();
+
+    // Optional: control music volume via keyboard (M to mute/unmute)
+    document.addEventListener('keydown', e => {
+      if (e.key.toLowerCase() === 'm') {
+        if(bgMusic.paused){
+          bgMusic.play();
+        } else {
+          bgMusic.pause();
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
