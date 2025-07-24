@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Simple Lie Detector</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #121212;
+    color: #eee;
+    text-align: center;
+    padding: 2rem;
+  }
+  input, button {
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+    margin: 1rem 0.5rem 2rem;
+    border-radius: 8px;
+    border: none;
+  }
+  input {
+    width: 70%;
+  }
+  button {
+    cursor: pointer;
+    background: #4caf50;
+    color: #fff;
+  }
+  #result {
+    font-size: 2rem;
+    margin-top: 1rem;
+  }
+  .truth {
+    color: #4caf50;
+  }
+  .lie {
+    color: #f44336;
+  }
+</style>
+</head>
+<body>
+  <h1>Simple Lie Detector</h1>
+  <input id="statement" placeholder="Type your statement here..." />
+  <button onclick="detectLie()">Detect Lie</button>
+  <div id="result"></div>
+
+  <script>
+    function detectLie() {
+      const input = document.getElementById('statement').value.trim();
+      const resultDiv = document.getElementById('result');
+      if (!input) {
+        resultDiv.textContent = 'Please enter a statement.';
+        resultDiv.className = '';
+        return;
+      }
+
+      // Simple random "Truth" or "Lie"
+      const verdict = Math.random() < 0.5 ? 'Truth' : 'Lie';
+
+      // Show verdict with color
+      resultDiv.textContent = verdict;
+      resultDiv.className = verdict.toLowerCase();
+    }
+  </script>
+</body>
+</html>
