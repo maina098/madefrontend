@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hacking Terminal</title>
+  <style>
+    body {
+      background-color: black;
+      color: #00ff00;
+      font-family: 'Courier New', Courier, monospace;
+      padding: 20px;
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #terminal {
+      white-space: pre-wrap;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      background-color: #00ff00;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      50% { background-color: transparent; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="terminal">Initializing Quantum HackOS v3.1...\n</div><span class="cursor"></span>
+
+  <script>
+    const terminal = document.getElementById("terminal");
+
+    const commands = [
+      "Establishing secure connection...",
+      "Bypassing firewall...",
+      "Accessing internal network...",
+      "Decrypting data packets...",
+      "Injecting payload...",
+      "Downloading secret files...",
+      "Upload complete. Covering tracks...",
+      "Exiting system...\n",
+      "Hack successful. Session terminated."
+    ];
+
+    let i = 0;
+    let char = 0;
+
+    function typeCommand() {
+      if (i < commands.length) {
+        if (char < commands[i].length) {
+          terminal.textContent += commands[i][char];
+          char++;
+          setTimeout(typeCommand, 40);
+        } else {
+          terminal.textContent += '\n';
+          i++;
+          char = 0;
+          setTimeout(typeCommand, 500);
+        }
+      }
+    }
+
+    setTimeout(typeCommand, 1000); // Start typing after 1s
+  </script>
+
+</body>
+</html>
