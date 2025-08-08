@@ -1,0 +1,134 @@
+<!-- Created by Anderson maina-->
+
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matrix Multiplier</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }.container {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  width: 100%;
+  max-width: 600px;
+  backdrop-filter: blur(10px);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: 600;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  resize: vertical;
+  font-size: 16px;
+  font-family: monospace;
+}
+
+button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background-color: #4ade80;
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #22c55e;
+}
+
+pre {
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 15px;
+  border-radius: 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-top: 20px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>💡 Matrix Multiplication (Einstein Notation)</h2>
+    <label for="matrixA">Matrix A:</label>
+    <textarea id="matrixA">[[1, 2], [3, 4]]</textarea><label for="matrixB">Matrix B:</label>
+<textarea id="matrixB">[[5, 6], [7, 8]]</textarea>
+
+<button onclick="compute()">🚀 Multiply Matrices</button>
+
+<pre id="result">Result will appear here...</pre>
+
+  </div>  <script>
+    function einsteinC(matrixA, matrixB, i, j, n) {
+      let cij = 0;
+      for (let k = 0; k < n; k++) {
+        cij += matrixA[i][k] * matrixB[k][j];
+      }
+      return cij;
+    }
+
+    function multiplyMatrices(matrixA, matrixB) {
+      const rowsA = matrixA.length;
+      const colsA = matrixA[0].length;
+      const rowsB = matrixB.length;
+      const colsB = matrixB[0].length;
+
+      if (colsA !== rowsB) {
+        throw new Error("Matrix multiplication undefined");
+      }
+
+      const result = [];
+      for (let i = 0; i < rowsA; i++) {
+        result[i] = [];
+        for (let j = 0; j < colsB; j++) {
+          result[i].push(einsteinC(matrixA, matrixB, i, j, colsA));
+        }
+      }
+      return result;
+    }
+
+    function compute() {
+      const resultBox = document.getElementById("result");
+      try {
+        const matrixA = JSON.parse(document.getElementById("matrixA").value);
+        const matrixB = JSON.parse(document.getElementById("matrixB").value);
+        const result = multiplyMatrices(matrixA, matrixB);
+        resultBox.textContent = JSON.stringify(result, null, 2);
+      } catch (err) {
+        resultBox.textContent = "❌ Error: " + err.message;
+      }
+    }
+  </script></body>
+</html>
