@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Realistic Soccer Ball</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #0d0d1f;
+    }
+    canvas {
+      display: block;
+    }
+    #score{
+        position : absolute ;
+        background:linear-gradient(90deg , rgb(10,240,130,0.8) , rgb(0,0,0,0));
+        width:100px;
+        height 30px;
+        top:20px;
+        left:20px;
+        color:#fff;
+        text-align:center;
+        font-size:25px;
+        z-index:69
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas"></canvas>
+  <div id="score">0</div>
+  <script>
+    var score = 0;
+    
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.querySelector("#score")
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // ⚽️ الكرة
+    const ball = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      radius: 70,         // ⬅️ أكبر حجم
+      vx: 0,
+      vy: 0,
+      gravity: 0.3,      // ⬅️ واقعية
+      bounce: -0.65,      // ⬅️ ارتداد منطقي
+      friction: 0.98,
+      rotation: 0         // ⬅️ دوران
+    };
+
+    // ❄️ الثلج
+    const snowflakes = [];
+    const snowCount = 100;
+    for (let i = 0; i < snowCount; i++) {
+      snowflakes.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2 + 1,
+        speedY: Math.random() * 1 + 0.5,
+        opacity: Math.random() * 0.5 + 0.3
+      });
+    }
+
+    function drawSnowflakes() {
+      ctx.save();
+      ctx.fillStyle = "#ffffff";
+      for (let flake of snowflakes) {
+        ctx.beginPath();
+        ctx.globalAlpha = flake.opacity;
+        ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+      ctx.globalAlpha = 1;
+    }
+
+    function updateSnowflakes() {
+      for (let flake of snowflakes) {
+        flake.y += flake.speedY;
+        if (flake.y > canvas.height) {
+          flake.y = 0;
+          flake.x = Math.random() * canvas.width;
+        }
+      }
+    }
+
+    function updateBall() {
+      ball.vy += ball.gravity;
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+      
+      scoreEl.innerText = score;
+      if(score > 0)scoreEl.style.background = 'linear-gradient(90deg , rgb(10,240,130,0.8) , rgb(0,0,0,0))'
+     
+      // تدوير بسيط حسب السرعة
+      ball.rotation += ball.vx * 0.02;
+
+      ball.vx *= ball.friction;
+
+      // ارتداد من الأرض
+      if (ball.y + ball.radius > canvas.height) {
+        ball.y = canvas.height - ball.radius;
+        ball.vy *= ball.bounce;
+        score =0;
+        scoreEl.style.background = 'linear-gradient(90deg , rgb(250,70,70,0.85) , rgb(0,0,0,0)'
+      }
+
+      // ارتداد من الجوانب
+      if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) {
+        ball.vx *= -1;
+        if (ball.x - ball.radius < 0) ball.x = ball.radius;
+        if (ball.x + ball.radius > canvas.width) ball.x = canvas.width - ball.radius;
+      }
+    }
+
+    function drawBall() {
+      ctx.save();
+ 
+      ctx.translate(ball.x, ball.y);
+      ctx.rotate(ball.rotation); // دوران
+      ctx.font = "120px serif"; // ⬅️ حجم الإيموجي
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("⚽️", 0, 0);
+      ctx.restore();
+    }
+
+    function clearCanvas() {
+      ctx.fillStyle = "rgb(4,6,22)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function draw() {
+      clearCanvas();
+      drawSnowflakes();
+      drawBall();
+      updateSnowflakes();
+      updateBall();
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+    
+canvas.addEventListener("click", (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const clickX = e.clientX - rect.left;
+  const clickY = e.clientY - rect.top;
+
+  const dx = clickX - ball.x;
+  const dy = clickY - ball.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (distance <= ball.radius * 1.2) {
+    const force = (1 - distance / (ball.radius * 1.2)) * 25;
+    const angle = Math.atan2(dy, dx);
+    score +=1;
+    // إذا كانت السرعة الرأسية للأسفل كبيرة، نعدلها
+    if (ball.vy > 5) {
+      ball.vy = -force;  // اجعلها بالقوة الجديدة (صعود)
+    } else {
+      ball.vy -= force;  // نضيف القوة إلى السرعة الحالية (تساعد القفز)
+    }
+
+    ball.vx = -Math.cos(angle) * force;
+  }
+});
+
+  </script>
+</body>
+</html>
