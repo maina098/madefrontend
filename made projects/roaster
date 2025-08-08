@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Kika's Cute Roast Café 💖</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #ffe0f0, #ffc0cb);
+      font-family: 'Comic Sans MS', cursive;
+      color: #d10074;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      font-size: 36px;
+      color: #ff69b4;
+      text-shadow: 1px 1px #fff;
+      animation: popin 0.5s ease-in-out;
+    }
+    @keyframes popin {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    input {
+      padding: 10px;
+      border: 8px solid #ffaad4;
+      border-radius: 10px;
+      font-size: 18px;
+      background: #fff0f5;
+      margin-top: 15px;
+      text-align: center;
+    }
+    button {
+      margin-top: 15px;
+      padding: 12px 25px;
+      background: #ff6eb4;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #ffb6c1;
+      transition: transform 0.2s;
+    }
+    button:hover {
+      transform: scale(1.1);
+    }
+    .roast {
+      margin-top: 30px;
+      font-size: 20px;
+      color: #b30059;
+      background: #fff;
+      display: inline-block;
+      padding: 25px;
+      border-radius: 90px;
+      box-shadow: 0 0 15px pink;
+      animation: sparkle 0.5s ease;
+      max-width: 80%;
+    }
+    @keyframes sparkle {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <h1>💖 Kia's Cute inspiration+roast💅</h1>
+ <h2> <p>Enter your name and receive a motivation or a roast😈</p></h2>
+  <input type="text" id="target" placeholder="Type a name ">
+  <br>
+  <button onclick="serveRoast()">Serve  🍰</button>
+  <div class="roast" id="roastText"></div>
+
+  <script>
+    const cuteRoasts = [
+      "{name}, your brain is on airplane mode ✈️ permanently.",
+      "{name}, you're like glitter in soup — sparkly and unnecessary.",
+      "Aww {name}, you're not dumb... just very, very special.",
+      "{name}, you light up the room... like a power cut.",
+      "You're not annoying, {name}. You're just a professional at it.",
+      "{name}, you bring more red flags than a carnival 🚩.",
+      "Even Google can't find your logic, {name}.",
+      "{name}, you're the loading screen of every conversation ⏳.",
+      "You shine like a disco potato, {name}.",
+      "{name}, your ideas are like bubbles — cute, but always popping.",
+      "{name}, you're not lazy. You're on energy-saving mode.",
+      "Your confidence is impressive, {name}. Your decisions? Not so much.",
+      "{name}, you're like an expired cupcake — sweet but dangerous.",
+      "You're the sparkle in every awkward silence, {name}.",
+      "{name}, you’re the plot twist nobody asked for.",
+      "Aww {name}, you're trying. That's adorable 🥲.",
+      "{name}, your brain has more tabs open than your browser.",
+      "You're not a main character, {name}. You're background glitter ✨.",
+      "{name}, you're like a fairy tale… with a confusing ending.",
+      "You glow, {name}… like a battery at 2% 🔋.",
+      "{name}, you're the glitch in this cute matrix 💻.",
+      "{name}, you bring drama like glitter — impossible to clean up.",
+      "You're not a problem, {name}. You're a full system crash.",
+      "If roasting was an art, {name} would be the canvas 🎨.",
+      "{name}, you're what happens when sass meets WiFi lag."
+    ];
+
+    function serveRoast() {
+      let name = document.getElementById("target").value || "Bestie";
+      let roast = cuteRoasts[Math.floor(Math.random() * cuteRoasts.length)];
+      roast = roast.replaceAll("{name}", name);
+      const r = document.getElementById("roastText");
+      r.innerText = roast;
+      r.style.animation = "none";
+      void r.offsetWidth;
+      r.style.animation = "sparkle 4s ease";
+    }
+  </script>
+</body>
+</html>
