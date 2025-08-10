@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html><head><title>Bottle Rush Mobile</title><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"></head>
+<body style="margin:0;padding:0;background:#2c3e50;overflow:hidden;font-family:monospace;touch-action:none">
+<canvas id="c" style="display:block;background:linear-gradient(to right,#87ceeb 0%,#98fb98 100%)"></canvas>
+<div id="controls" style="position:absolute;bottom:20px;width:100%;display:flex;justify-content:space-between;padding:0 20px;box-sizing:border-box">
+<div style="display:flex;flex-direction:column;gap:10px">
+<button id="up" style="width:60px;height:60px;border:3px solid #fff;background:#27ae60;border-radius:10px;color:#fff;font-size:20px;font-weight:bold">↑</button>
+<button id="down" style="width:60px;height:60px;border:3px solid #fff;background:#e74c3c;border-radius:10px;color:#fff;font-size:20px;font-weight:bold">↓</button>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<button id="left" style="width:60px;height:60px;border:3px solid #fff;background:#3498db;border-radius:10px;color:#fff;font-size:20px;font-weight:bold">←</button>
+<button id="right" style="width:60px;height:60px;border:3px solid #fff;background:#3498db;border-radius:10px;color:#fff;font-size:20px;font-weight:bold">→</button>
+</div>
+</div>
+<script>
+// Made By PKAutuly02
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+function resize(){
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+}
+resize();window.addEventListener('resize',resize);
+let W=()=>canvas.width,H=()=>canvas.height,
+car={x:100,y:H()/2,w:60,h:40,speed:0,angle:0,gas:100},
+bottles=[],score=0,best=0,keys={},roadOffset=0,gameOver=0;
+function drawPixelCar(){
+ctx.save();ctx.translate(car.x+car.w/2,car.y+car.h/2);ctx.rotate(car.angle);ctx.translate(-car.w/2,-car.h/2);
+ctx.fillStyle='#f39c12';ctx.fillRect(8,0,44,40);
+ctx.fillStyle='#e67e22';ctx.fillRect(10,2,40,36);
+ctx.fillStyle='#d35400';ctx.fillRect(12,4,36,32);
+ctx.fillStyle='#2c3e50';ctx.fillRect(0,8,20,24);
+ctx.fillStyle='#34495e';ctx.fillRect(2,10,16,20);
+ctx.fillStyle='#87ceeb';ctx.fillRect(18,6,22,12);
+ctx.fillStyle='#5dade2';ctx.fillRect(20,8,18,8);
+ctx.fillStyle='#3498db';ctx.fillRect(22,9,14,6);
+ctx.fillStyle='#27ae60';ctx.fillRect(15,22,20,12);
+ctx.fillStyle='#2ecc71';ctx.fillRect(17,24,16,8);
+ctx.fillStyle='#1a252f';ctx.fillRect(52,4,8,10);ctx.fillRect(52,26,8,10);
+ctx.fillStyle='#2c3e50';ctx.fillRect(54,6,4,6);ctx.fillRect(54,28,4,6);
+ctx.fillStyle='#7f8c8d';ctx.fillRect(55,7,2,4);ctx.fillRect(55,29,2,4);
+ctx.fillStyle='#ecf0f1';ctx.fillRect(4,18,8,4);
+ctx.fillStyle='#f1c40f';ctx.fillRect(6,19,4,2);
+ctx.fillStyle='#e74c3c';ctx.fillRect(40,2,8,4);ctx.fillRect(40,34,8,4);
+ctx.fillStyle='#c0392b';ctx.fillRect(42,3,4,2);ctx.fillRect(42,35,4,2);
+ctx.restore();
+}
+function drawRoad(){
+ctx.fillStyle='#2c3e50';
+for(let i=0;i<W();i+=20){
+let wave=Math.sin((i-roadOffset)*0.02)*80;
+ctx.fillRect(i,H()/2-100+wave,20,200);
+ctx.fillStyle='#f1c40f';ctx.fillRect(i+8,H()/2-2+wave,4,4);ctx.fillStyle='#2c3e50';
+}
+}
+function spawnBottle(){
+if(Math.random()<0.015){
+let wave=Math.sin((-roadOffset)*0.02)*80;
+bottles.push({x:W()+20,y:H()/2-80+Math.random()*160+wave,collected:0});
+}
+}
+function drawBottles(){
+bottles.forEach((b,i)=>{
+if(b.collected)return;
+ctx.fillStyle='#27ae60';ctx.fillRect(b.x,b.y,20,8);
+ctx.fillStyle='#2ecc71';ctx.fillRect(b.x+1,b.y+1,18,6);
+ctx.fillStyle='#16a085';ctx.fillRect(b.x,b.y,5,8);
+ctx.fillStyle='#1abc9c';ctx.fillRect(b.x+1,b.y+1,3,6);
+if(b.x<car.x+car.w&&b.x+20>car.x&&b.y<car.y+car.h&&b.y+8>car.y&&!b.collected){
+b.collected=1;score+=10;car.gas=Math.min(100,car.gas+20);
+}
+b.x-=4;if(b.x<-20)bottles.splice(i,1);
+});
+}
+function update(){
+if(gameOver)return;
+car.gas-=0.08;
+if(car.gas<=0){gameOver=1;if(score>best)best=score;return;}
+let wave=Math.sin((-roadOffset)*0.02)*80;
+if(car.y<H()/2-90+wave||car.y>H()/2+50+wave){car.gas-=0.4;}
+if(keys.up||keys.ArrowUp)car.angle-=0.05;
+if(keys.down||keys.ArrowDown)car.angle+=0.05;
+if(keys.right||keys.ArrowRight)car.speed=Math.min(6,car.speed+0.2);
+if(keys.left||keys.ArrowLeft)car.speed=Math.max(-2,car.speed-0.2);
+car.speed*=1;
+car.x+=Math.cos(car.angle)*car.speed;
+car.y+=Math.sin(car.angle)*car.speed;
+car.x=Math.max(50,Math.min(W()-car.w-50,car.x));
+car.y=Math.max(0,Math.min(H()-car.h,car.y));
+roadOffset+=1.5;
+spawnBottle();
+}
+function draw(){
+ctx.clearRect(0,0,W(),H());
+drawRoad();
+drawPixelCar();
+drawBottles();
+let fontSize=Math.min(W()/40,20);
+ctx.fillStyle='#fff';ctx.font=fontSize+'px monospace';
+ctx.fillText('Score: '+score,10,fontSize+10);
+ctx.fillText('Best: '+best,10,fontSize*2+20);
+ctx.fillStyle=car.gas>30?'#27ae60':'#e74c3c';
+let barW=Math.min(W()/8,120);
+ctx.fillRect(W()-barW-10,10,barW,25);
+ctx.fillStyle='#2c3e50';ctx.fillRect(W()-barW-8,12,barW-4,21);
+ctx.fillStyle=car.gas>30?'#2ecc71':'#c0392b';
+ctx.fillRect(W()-barW-6,14,(barW-8)*car.gas/100,17);
+ctx.fillStyle='#fff';ctx.font=(fontSize*0.8)+'px monospace';
+ctx.fillText('Gas',W()-50,28);
+if(gameOver){
+ctx.fillStyle='rgba(0,0,0,0.8)';ctx.fillRect(0,0,W(),H());
+ctx.fillStyle='#fff';ctx.font=Math.min(W()/20,32)+'px monospace';
+let gameOverText='GAME OVER';
+ctx.fillText(gameOverText,W()/2-ctx.measureText(gameOverText).width/2,H()/2-20);
+ctx.font=fontSize+'px monospace';
+let restartText='Tap anywhere to restart';
+ctx.fillText(restartText,W()/2-ctx.measureText(restartText).width/2,H()/2+20);
+let scoreText='Final Score: '+score;
+ctx.fillText(scoreText,W()/2-ctx.measureText(scoreText).width/2,H()/2+50);
+}
+}
+function reset(){
+car={x:100,y:H()/2,w:60,h:40,speed:0,angle:0,gas:100};
+bottles=[];score=0;roadOffset=0;gameOver=0;
+}
+['up','down','left','right'].forEach(dir=>{
+document.getElementById(dir).addEventListener('touchstart',e=>{
+e.preventDefault();keys[dir]=1;
+});
+document.getElementById(dir).addEventListener('touchend',e=>{
+e.preventDefault();keys[dir]=0;
+});
+document.getElementById(dir).addEventListener('mousedown',e=>{
+e.preventDefault();keys[dir]=1;
+});
+document.getElementById(dir).addEventListener('mouseup',e=>{
+e.preventDefault();keys[dir]=0;
+});
+});
+document.addEventListener('keydown',e=>{
+keys[e.key]=1;
+if((e.key==' '||e.key=='Enter')&&gameOver)reset();
+});
+document.addEventListener('keyup',e=>keys[e.key]=0);
+document.addEventListener('touchstart',e=>{
+if(gameOver){reset();e.preventDefault();}
+});
+document.addEventListener('click',e=>{
+if(gameOver)reset();
+});
+function gameLoop(){update();draw();requestAnimationFrame(gameLoop);}
+gameLoop();
+// Made By PKAutuly02
+</script>
+</body></html>
