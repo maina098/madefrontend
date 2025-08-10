@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Fell Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+        
+        .game-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .stock-display {
+            font-size: 24px;
+            margin: 20px 0;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .stock-price {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2ecc71;
+            margin: 10px 0;
+        }
+        
+        .stock-chart {
+            height: 150px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #3498db;
+            transition: all 0.5s ease;
+        }
+        
+        .controls {
+            margin: 20px 0;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        
+        .stat-box {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            min-width: 100px;
+        }
+        
+        .crash {
+            animation: crashFlash 0.5s infinite;
+        }
+        
+        @keyframes crashFlash {
+            0% { background-color: white; }
+            50% { background-color: #ffcccc; }
+            100% { background-color: white; }
+        }
+        
+        .game-over {
+            font-size: 24px;
+            color: #e74c3c;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Stock Fell Game</h1>
+        <p>Sell your stocks before they crash to make a profit!</p>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div>Cash</div>
+                <div id="cash">$10,000</div>
+            </div>
+            <div class="stat-box">
+                <div>Stocks</div>
+                <div id="stocks">100</div>
+            </div>
+            <div class="stat-box">
+                <div>Profit</div>
+                <div id="profit">$0</div>
+            </div>
+        </div>
+        
+        <div class="stock-display">
+            <div>Current Price</div>
+            <div class="stock-price" id="price">$100.00</div>
+            <div id="change">+0.00%</div>
+        </div>
+        
+        <div class="stock-chart">
+            <div class="chart-line" id="chart-line"></div>
+        </div>
+        
+        <div class="controls">
+            <button id="buy-btn">Buy (10)</button>
+            <button id="sell-btn">Sell All</button>
+            <button id="start-btn">Start Game</button>
+        </div>
+        
+        <div id="message"></div>
+    </div>
+
+    <script>
+        // Game variables
+        let cash = 10000;
+        let stocks = 100;
+        let stockPrice = 100;
+        let gameActive = false;
+        let gameInterval;
+        let priceHistory = [];
+        const maxHistory = 30;
+        
+        // DOM elements
+        const cashDisplay = document.getElementById('cash');
+        const stocksDisplay = document.getElementById('stocks');
+        const profitDisplay = document.getElementById('profit');
+        const priceDisplay = document.getElementById('price');
+        const changeDisplay = document.getElementById('change');
+        const chartLine = document.getElementById('chart-line');
+        const buyBtn = document.getElementById('buy-btn');
+        const sellBtn = document.getElementById('sell-btn');
+        const startBtn = document.getElementById('start-btn');
+        const messageDisplay = document.getElementById('message');
+        const gameContainer = document.querySelector('.game-container');
+        
+        // Event listeners
+        buyBtn.addEventListener('click', buyStocks);
+        sellBtn.addEventListener('click', sellStocks);
+        startBtn.addEventListener('click', startGame);
+        
+        // Update displays
+        function updateDisplays() {
+            cashDisplay.textContent = `$${cash.toFixed(2)}`;
+            stocksDisplay.textContent = stocks;
+            const profit = (stocks * stockPrice) + cash - 10000;
+            profitDisplay.textContent = `$${profit.toFixed(2)}`;
+            priceDisplay.textContent = `$${stockPrice.toFixed(2)}`;
+            
+            // Update chart
+            updateChart();
+        }
+        
+        // Update the chart visualization
+        function updateChart() {
+            // Add current price to history
+            priceHistory.push(stockPrice);
+            if (priceHistory.length > maxHistory) {
+                priceHistory.shift();
+            }
+            
+            // Find min and max for scaling
+            const minPrice = Math.min(...priceHistory);
+            const maxPrice = Math.max(...priceHistory);
+            const range = Math.max(1, maxPrice - minPrice);
+            
+            // Clear previous chart
+            chartLine.innerHTML = '';
+            
+            // Draw new chart
+            priceHistory.forEach((price, index) => {
+                const point = document.createElement('div');
+                point.style.position = 'absolute';
+                point.style.bottom = `${((price - minPrice) / range) * 100}%`;
+                point.style.left = `${(index / (maxHistory - 1)) * 100}%`;
+                point.style.width = '2px';
+                point.style.height = '2px';
+                point.style.backgroundColor = '#3498db';
+                chartLine.appendChild(point);
+                
+                // Connect points with lines
+                if (index > 0) {
+                    const line = document.createElement('div');
+                    line.style.position = 'absolute';
+                    line.style.bottom = `${((priceHistory[index-1] - minPrice) / range) * 100}%`;
+                    line.style.left = `${((index-1) / (maxHistory - 1)) * 100}%`;
+                    
+                    const nextBottom = `${((price - minPrice) / range) * 100}%`;
+                    const nextLeft = `${(index / (maxHistory - 1)) * 100}%`;
+                    
+                    const angle = Math.atan2(
+                        parseFloat(nextBottom) - parseFloat(line.style.bottom),
+                        parseFloat(nextLeft) - parseFloat(line.style.left)
+                    ) * 180 / Math.PI;
+                    
+                    const length = Math.sqrt(
+                        Math.pow(parseFloat(nextLeft) - parseFloat(line.style.left), 2) +
+                        Math.pow(parseFloat(nextBottom) - parseFloat(line.style.bottom), 2)
+                    );
+                    
+                    line.style.width = `${length}%`;
+                    line.style.height = '2px';
+                    line.style.backgroundColor = '#3498db';
+                    line.style.transformOrigin = '0 0';
+                    line.style.transform = `rotate(${angle}deg)`;
+                    
+                    chartLine.appendChild(line);
+                }
+            });
+        }
+        
+        // Buy stocks function
+        function buyStocks() {
+            const quantity = 10;
+            const cost = quantity * stockPrice;
+            
+            if (cash >= cost) {
+                cash -= cost;
+                stocks += quantity;
+                updateDisplays();
+                showMessage(`Bought ${quantity} stocks at $${stockPrice.toFixed(2)} each`);
+            } else {
+                showMessage("Not enough cash!", true);
+            }
+        }
+        
+        // Sell stocks function
+        function sellStocks() {
+            if (stocks > 0) {
+                const proceeds = stocks * stockPrice;
+                cash += proceeds;
+                showMessage(`Sold ${stocks} stocks at $${stockPrice.toFixed(2)} each for $${proceeds.toFixed(2)}`);
+                stocks = 0;
+                updateDisplays();
+                
+                if (gameActive) {
+                    endGame(true);
+                }
+            } else {
+                showMessage("You don't have any stocks to sell!", true);
+            }
+        }
+        
+        // Start game function
+        function startGame() {
+            if (stocks === 0) {
+                showMessage("You need to buy stocks first!", true);
+                return;
+            }
+            
+            gameActive = true;
+            startBtn.disabled = true;
+            buyBtn.disabled = true;
+            sellBtn.disabled = false;
+            messageDisplay.textContent = "Game started! Watch the price and sell before it crashes!";
+            
+            // Start price fluctuations
+            gameInterval = setInterval(updateStockPrice, 500);
+        }
+        
+        // End game function
+        function endGame(win = false) {
+            gameActive = false;
+            clearInterval(gameInterval);
+            startBtn.disabled = false;
+            buyBtn.disabled = false;
+            
+            if (win) {
+                showMessage(`You sold before the crash! Final profit: $${((stocks * stockPrice) + cash - 10000).toFixed(2)}`);
+            } else {
+                gameContainer.classList.add('crash');
+                setTimeout(() => {
+                    gameContainer.classList.remove('crash');
+                }, 2000);
+                showMessage(`CRASH! You lost $${(stocks * stockPrice).toFixed(2)}`, true);
+                stocks = 0;
+                updateDisplays();
+            }
+        }
+        
+        // Update stock price
+        function updateStockPrice() {
+            // Random price change (-5% to +7%)
+            const changePercent = (Math.random() * 12 - 5) / 100;
+            const changeAmount = stockPrice * changePercent;
+            
+            // Apply change
+            const newPrice = stockPrice + changeAmount;
+            
+            // Ensure price doesn't go below $1
+            stockPrice = Math.max(1, newPrice);
+            
+            // Update change display
+            const changeElement = document.getElementById('change');
+            changeElement.textContent = `${changePercent >= 0 ? '+' : ''}${(changePercent * 100).toFixed(2)}%`;
+            changeElement.style.color = changePercent >= 0 ? '#2ecc71' : '#e74c3c';
+            
+            // Random crash chance (increases as price goes up)
+            const crashChance = Math.min(0.1, (stockPrice - 100) / 1000);
+            
+            if (Math.random() < crashChance) {
+                // Crash happened!
+                stockPrice = Math.max(1, stockPrice * (0.1 + Math.random() * 0.3)); // Drop to 10-40% of current price
+                endGame();
+            }
+            
+            updateDisplays();
+        }
+        
+        // Show message
+        function showMessage(msg, isError = false) {
+            messageDisplay.textContent = msg;
+            messageDisplay.style.color = isError ? '#e74c3c' : '#2ecc71';
+            
+            if (!isError) {
+                setTimeout(() => {
+                    messageDisplay.textContent = '';
+                }, 3000);
+            }
+        }
+        
+        // Initialize
+        updateDisplays();
+        sellBtn.disabled = true;
+    </script>
+</body>
+</html>
