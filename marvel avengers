@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Marvel Main Avengers Landing</title>
+  <style>
+    :root{
+      --bg1:#0b0b0f;
+      --bg2:#12060a;
+      --accent:#e92b2b;
+      --muted:#bdb8c0;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:Inter, sans-serif;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(233,43,43,0.05), transparent),
+                  linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:#fff;
+      overflow-x:hidden;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:24px 48px;
+      position:fixed;
+      top:0;left:0;right:0;
+      background:rgba(0,0,0,0.4);
+      backdrop-filter:blur(12px);
+      z-index:10;
+    }
+    .logo{
+      font-weight:800; font-size:28px; letter-spacing:4px;
+      background: linear-gradient(90deg,var(--accent), #ff4b4b);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    nav a{
+      color:var(--muted); text-decoration:none; margin-left:28px; font-size:14px; letter-spacing:2px; text-transform:uppercase;
+      transition:color 0.3s;
+    }
+    nav a:hover{color:#fff;}
+
+    .hero{
+      min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center; padding:0 20px; position:relative; overflow:hidden;
+    }
+    .hero::before{
+      content:""; position:absolute; inset:0; background: radial-gradient(circle at 50% 20%, rgba(233,43,43,0.2), transparent 60%);
+      z-index:0;
+    }
+    .hero h1{
+      font-size:64px; font-weight:900; letter-spacing:6px; text-transform:uppercase;
+      text-shadow:0 0 20px rgba(233,43,43,0.5);
+      z-index:1;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow{
+      0%{text-shadow:0 0 10px rgba(233,43,43,0.5), 0 0 20px rgba(233,43,43,0.3);}
+      100%{text-shadow:0 0 20px rgba(233,43,43,0.9), 0 0 40px rgba(233,43,43,0.5);}
+    }
+    .hero p{
+      font-size:18px; color:var(--muted); margin-top:20px; max-width:700px; z-index:1;
+    }
+    .hero .cta{
+      margin-top:40px; display:flex; gap:20px; z-index:1;
+    }
+    .hero .cta a{
+      padding:14px 32px; border-radius:50px; text-decoration:none; font-weight:600;
+      background:var(--accent); color:#fff; box-shadow:0 0 20px rgba(233,43,43,0.6);
+      transition:transform 0.3s, box-shadow 0.3s;
+    }
+    .hero .cta a:hover{transform:translateY(-4px) scale(1.05); box-shadow:0 0 40px rgba(233,43,43,0.8);}
+
+    .section{
+      padding:100px 48px; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:40px; justify-items:center;
+    }
+    .card{
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.06);
+      border-radius:18px; padding:40px; text-align:center; position:relative;
+      transition:transform 0.5s, box-shadow 0.5s;
+      overflow:hidden;
+    }
+    .card::before{
+      content:'';
+      position:absolute; inset:0;
+      background: linear-gradient(120deg, rgba(233,43,43,0.2), transparent, rgba(233,43,43,0.2));
+      opacity:0;
+      transition:opacity 0.5s;
+      z-index:0;
+    }
+    .card:hover::before{opacity:1;}
+    .card:hover{transform:translateY(-12px) scale(1.05) rotateX(3deg) rotateY(-3deg); box-shadow:0 30px 70px rgba(0,0,0,0.7);}
+    .card h3{margin:10px 0; font-size:22px; position:relative; z-index:1; animation: pulse 2s infinite alternate;}
+    .card p{color:var(--muted); font-size:14px; position:relative; z-index:1;}
+
+    @keyframes pulse{
+      0%{text-shadow:0 0 10px rgba(233,43,43,0.3);}
+      100%{text-shadow:0 0 25px rgba(233,43,43,0.8);}
+    }
+
+    footer{
+      text-align:center; padding:40px; font-size:13px; color:var(--muted);
+      background:rgba(0,0,0,0.5); margin-top:60px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">MARVEL</div>
+    <nav>
+      <a href="#heroes">Heroes</a>
+      <a href="#about">About</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Welcome to the Avengers</h1>
+    <p>The most famous heroes of the Marvel Universe assembled in one place. Explore the legends, their powers, and stories.</p>
+    <div class="cta">
+      <a href="#heroes">Meet the Heroes</a>
+    </div>
+  </section>
+
+  <section id="heroes" class="section">
+    <div class="card"><h3>Iron Man</h3><p>The armored Avenger powered by the arc reactor.</p></div>
+    <div class="card"><h3>Captain America</h3><p>The First Avenger, protector with an unbreakable shield.</p></div>
+    <div class="card"><h3>Thor</h3><p>God of Thunder, wielder of Mjölnir.</p></div>
+    <div class="card"><h3>Hulk</h3><p>The unstoppable green powerhouse.</p></div>
+    <div class="card"><h3>Black Widow</h3><p>Master spy and skilled fighter.</p></div>
+    <div class="card"><h3>Hawkeye</h3><p>Expert marksman and archer extraordinaire.</p></div>
+    <div class="card"><h3>Scarlet Witch</h3><p>Wielder of chaos magic and reality manipulation.</p></div>
+    <div class="card"><h3>Vision</h3><p>Android Avenger with immense strength and intellect.</p></div>
+    <div class="card"><h3>Falcon</h3><p>Winged hero and ally of Captain America.</p></div>
+    <div class="card"><h3>Winter Soldier</h3><p>Skilled fighter and super soldier.</p></div>
+    <div class="card"><h3>Black Panther</h3><p>King of Wakanda, master strategist and fighter.</p></div>
+    <div class="card"><h3>Captain Marvel</h3><p>Intergalactic hero with cosmic powers.</p></div>
+    <div class="card"><h3>Doctor Strange</h3><p>Master of Mystic Arts and protector of the multiverse.</p></div>
+    <div class="card"><h3>Spider-Man</h3><p>Friendly neighborhood hero with agility and wit.</p></div>
+    <div class="card"><h3>Ant-Man</h3><p>Hero with the ability to shrink and grow in size.</p></div>
+  </section>
+
+  <footer>
+    ©  Marvel Universe Concept Landing | Made with ❤️ 
+  </footer>
+</body>
+</html>
