@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Advanced Matrix Solver</title>
+  <style>
+      /* Responsive dark theme */
+:root{
+  --bg:#0f1115;
+  --panel:#111218;
+  --muted:#9aa3c0;
+  --accent:#6dd3ff;
+  --accent-2:#a57dff;
+  --card:#15161b;
+  --success:#2ecc71;
+  --danger:#ff6b6b;
+  --glass: rgba(255,255,255,0.03);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg,var(--bg),#05060a 140%);
+  color:#e6eef8;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Topbar */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 20px;
+  background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-bottom:1px solid rgba(255,255,255,0.03);
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+.brand{font-weight:700; font-size:1.1rem; color:var(--accent-2)}
+.top-actions{display:flex;gap:12px;align-items:center}
+.small{font-size:0.9rem;color:var(--muted)}
+
+/* Layout */
+.container{
+  max-width:1100px;
+  margin:22px auto;
+  width:calc(100% - 40px);
+  display:grid;
+  grid-template-columns: 1fr 420px;
+  gap:20px;
+  align-items:start;
+}
+
+/* panels */
+.panel{
+  background:linear-gradient(180deg,var(--panel), var(--card));
+  border-radius:12px;
+  padding:18px;
+  box-shadow: 0 6px 30px rgba(3,8,23,0.6);
+  border:1px solid rgba(255,255,255,0.02);
+}
+
+/* Inputs */
+.row{display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+.col{flex:1;min-width:220px}
+label{display:block;margin-bottom:8px;color:var(--muted)}
+textarea{
+  width:100%; min-height:120px; resize:vertical;
+  background:var(--glass); border:1px solid rgba(255,255,255,0.03);
+  color:inherit; padding:12px; border-radius:8px; font-family:monospace; font-size:0.95rem;
+}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+select, input[type=number]{
+  background:transparent; color:inherit; border:1px solid rgba(255,255,255,0.04);
+  padding:10px 12px; border-radius:8px;
+}
+.btn{padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.04); cursor:pointer;background:transparent;color:inherit}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#041124;font-weight:700;border:none;box-shadow:0 6px 18px rgba(106,150,255,0.12)}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04)}
+
+/* result panel */
+.result-area{min-height:220px; padding:12px; background:rgba(0,0,0,0.25); border-radius:8px; overflow:auto; font-family:monospace; color:#e7f0ff}
+.result-area table{border-collapse:collapse;margin:6px 0}
+.result-area td, .result-area th{padding:8px 12px;border:1px solid rgba(255,255,255,0.04); text-align:center}
+
+/* Alerts / steps */
+.alerts{margin-top:12px}
+.alert{
+  padding:10px 12px;border-radius:8px;margin-top:8px;font-size:0.95rem;
+}
+.alert.error{background:linear-gradient(90deg,var(--danger),#ff9a9a); color:#2a0404}
+.alert.info{background:linear-gradient(90deg,#6f7cff,#6dd3ff); color:#041124}
+.alert.success{background:linear-gradient(90deg,var(--success),#6ef0a6); color:#042a12}
+.steps{margin-top:12px}
+.steps-text{background:rgba(255,255,255,0.03); padding:12px; border-radius:8px; max-height:260px; overflow:auto;}
+
+/* footer */
+.footer{padding:12px;text-align:center;color:var(--muted);font-size:0.9rem;margin-top:20px}
+
+/* Responsive */
+@media (max-width: 980px){
+  .container{grid-template-columns:1fr; padding:0 10px}
+  .result-panel{order:2}
+  .input-panel{order:1}
+}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">🧮 Matrix Solver</div>
+    <div class="top-actions">
+      <label class="small" style="display:none;">Show Steps <input type="checkbox" id="showSteps" style="display:none;"></label>
+      <button id="clearBtn" class="btn ghost">Clear</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel input-panel">
+      <h2>Input Matrices</h2>
+      <p class="muted">Enter matrices as rows separated by semicolon `;` and elements by comma `,` — e.g. <code>1,2;3,4</code></p>
+
+      <div class="row">
+        <div class="col">
+          <label>Matrix A</label>
+          <textarea id="matrixA" placeholder="Example: 1,2;3,4"></textarea>
+        </div>
+        <div class="col">
+          <label>Matrix B (optional for Add/Sub/Mul)</label>
+          <textarea id="matrixB" placeholder="Example: 2,0;1,3"></textarea>
+        </div>
+      </div>
+
+      <div class="row controls">
+        <select id="operation">
+          <optgroup label="Basic">
+            <option value="add">Addition (A + B)</option>
+            <option value="sub">Subtraction (A - B)</option>
+            <option value="mul">Multiplication (A × B)</option>
+            <option value="scalar">Scalar Division (A ÷ k)</option>
+          </optgroup>
+          <optgroup label="Advanced">
+            <option value="det">Determinant (A)</option>
+            <option value="inv">Inverse (A⁻¹)</option>
+            <option value="transpose">Transpose (Aᵀ)</option>
+            <option value="sym">Symmetric / Skew Check (A)</option>
+            <option value="rank">Rank (A)</option>
+            <option value="eig">Eigenvalues (2×2 only, A)</option>
+          </optgroup>
+        </select>
+
+        <input id="scalarValue" type="number" placeholder="Scalar k (for division)" />
+        <button id="solveBtn" class="btn primary">Solve</button>
+      </div>
+
+      <div id="alerts" class="alerts" aria-live="polite"></div>
+    </section>
+
+    <section class="panel result-panel">
+      <h2>Result</h2>
+      <div id="resultArea" class="result-area">Result will appear here.</div>
+
+      <details id="stepsBox" class="steps" style="display:none;">
+        <summary>Steps / Explanation</summary>
+        <pre id="stepsText" class="steps-text"></pre>
+      </details>
+    </section>
+  </main>
+
+  <footer class="footer">
+    © 2025 • Built by Pravesh • Advanced Matrix Solver
+  </footer>
+
+  <script>
+      /* Advanced Matrix Solver - script.js
+   - robust validation, user alerts, steps (optional), responsive
+   - supports: add, sub, mul, scalar div, det (n×n), inverse (n×n via adjoint),
+     transpose, symmetry check, rank (Gaussian elimination), eigenvalues (2x2)
+*/
+
+// ---------- Helpers & UI ----------
+const matrixAEl = document.getElementById('matrixA');
+const matrixBEl = document.getElementById('matrixB');
+const opEl = document.getElementById('operation');
+const scalarEl = document.getElementById('scalarValue');
+const solveBtn = document.getElementById('solveBtn');
+const clearBtn = document.getElementById('clearBtn');
+const alertsEl = document.getElementById('alerts');
+const resultArea = document.getElementById('resultArea');
+const stepsBox = document.getElementById('stepsBox');
+const stepsText = document.getElementById('stepsText');
+const showSteps = document.getElementById('showSteps');
+
+function showAlert(msg, type='info', timeout=5000){
+  alertsEl.innerHTML = `<div class="alert ${type==='error' ? 'error' : type==='success' ? 'success' : 'info'}">${escapeHtml(msg)}</div>`;
+  if(timeout>0) setTimeout(()=>{ alertsEl.innerHTML=''; }, timeout);
+}
+function clearAlerts(){ alertsEl.innerHTML=''; }
+function clearResult(){ resultArea.innerHTML = 'Result will appear here.'; stepsText.textContent=''; stepsBox.style.display='none'; }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+
+// ---------- Parsing & formatting ----------
+function parseMatrixInput(text){
+  if(!text || !text.trim()) return null;
+  try{
+    // rows separated by ;, elements by ,
+    return text.trim().split(';').map(r => r.trim()).filter(Boolean).map(r => r.split(',').map(c => {
+      const v = c.trim();
+      if(v === '') throw new Error('Empty cell found');
+      const n = Number(v);
+      if(Number.isNaN(n)) throw new Error(`Invalid number '${v}'`);
+      return n;
+    }));
+  }catch(e){ throw new Error('Invalid matrix format: ' + e.message); }
+}
+function isRectangular(m){
+  if(!Array.isArray(m) || m.length===0) return false;
+  const c = m[0].length;
+  return m.every(r=>Array.isArray(r) && r.length===c);
+}
+function cloneMatrix(m){ return m.map(r => r.slice()); }
+function formatMatrixHTML(m){
+  if(!Array.isArray(m)) return escapeHtml(String(m));
+  let html = '<table>';
+  for(let r of m){
+    html += '<tr>';
+    for(let c of r) html += `<td>${escapeHtml(Number.isFinite(c)?(+c).toFixed(6).replace(/\.?0+$/,''):String(c))}</td>`;
+    html += '</tr>';
+  }
+  html += '</table>';
+  return html;
+}
+function formatMatrixText(m){
+  if(!Array.isArray(m)) return String(m);
+  return m.map(r=>r.map(v=>Number.isFinite(v)?(+v).toFixed(6).replace(/\.?0+$/,''):String(v)).join('\t')).join('\n');
+}
+
+// ---------- Basic ops ----------
+function addMatrices(A,B){
+  if(A.length!==B.length || A[0].length!==B[0].length) throw new Error('Addition requires same dimensions.');
+  let R = A.map((r,i)=>r.map((v,j)=>v + B[i][j]));
+  return R;
+}
+function subMatrices(A,B){
+  if(A.length!==B.length || A[0].length!==B[0].length) throw new Error('Subtraction requires same dimensions.');
+  let R = A.map((r,i)=>r.map((v,j)=>v - B[i][j]));
+  return R;
+}
+function mulMatrices(A,B){
+  if(A[0].length !== B.length) throw new Error('Multiplication requires A.columns == B.rows.');
+  let m=A.length, n=B[0].length, p=A[0].length;
+  let R = Array.from({length:m}, ()=>Array(n).fill(0));
+  for(let i=0;i<m;i++){
+    for(let j=0;j<n;j++){
+      let s=0;
+      for(let k=0;k<p;k++) s += A[i][k]*B[k][j];
+      R[i][j]=s;
+    }
+  }
+  return R;
+}
+function scalarDivide(A,k){
+  if(k===0) throw new Error('Division by zero.');
+  return A.map(r=>r.map(v=>v/k));
+}
+function transpose(A){
+  return A[0].map((_,j)=>A.map(r=>r[j]));
+}
+
+// ---------- Determinant (recursive) with optional steps ----------
+function determinant(A, steps=null){
+  const n = A.length;
+  if(!isRectangular(A) || A.length !== A[0].length) throw new Error('Determinant defined for square matrices only.');
+  if(n===1) {
+    if(steps) steps.push(`det([${A[0][0]}]) = ${A[0][0]}`);
+    return A[0][0];
+  }
+  if(n===2){
+    const val = A[0][0]*A[1][1] - A[0][1]*A[1][0];
+    if(steps) steps.push(`2x2 det = a*d - b*c = ${A[0][0]}*${A[1][1]} - ${A[0][1]}*${A[1][0]} = ${val}`);
+    return val;
+  }
+  // general recursive
+  let det = 0;
+  for(let col=0; col<n; col++){
+    const sign = (col%2===0)?1:-1;
+    // form minor
+    const minor = A.slice(1).map(r => r.filter((_,j)=>j!==col));
+    const cofactor = sign * A[0][col];
+    if(steps && n<=4) steps.push(`Expand along row0: element a0,${col} = ${A[0][col]}, sign=${sign}`);
+    const subDet = determinant(minor, steps);
+    if(steps && n<=4) steps.push(`Minor determinant = ${subDet}, contribution = ${cofactor} * ${subDet} = ${cofactor*subDet}`);
+    det += cofactor * subDet;
+  }
+  if(steps && n<=4) steps.push(`=> Determinant = ${det}`);
+  return det;
+}
+
+// ---------- Inverse via adjugate (cofactor matrix) ----------
+function cofactorMatrix(A){
+  const n = A.length;
+  let C = Array.from({length:n}, ()=>Array(n).fill(0));
+  for(let i=0;i<n;i++){
+    for(let j=0;j<n;j++){
+      // minor
+      const minor = A.filter((_,r)=>r!==i).map(r => r.filter((_,c)=>c!==j));
+      const sign = ((i+j)%2===0)?1:-1;
+      C[i][j] = sign * determinant(minor); // determinant of minor
+    }
+  }
+  return C;
+}
+function inverseMatrix(A, steps=null){
+  if(!isRectangular(A) || A.length !== A[0].length) throw new Error('Inverse defined for square matrices only.');
+  const detA = determinant(A, steps && A.length<=4 ? steps : null);
+  if(detA === 0) throw new Error('Matrix is singular (determinant = 0), inverse does not exist.');
+  const C = cofactorMatrix(A);
+  const adj = transpose(C);
+  const inv = adj.map(r=>r.map(v=>v/detA));
+  if(steps){
+    steps.push(`det(A) = ${detA}`);
+    steps.push(`Cofactor matrix computed, adjugate (transpose of cofactor) used, then divided by det.`);
+  }
+  return inv;
+}
+
+// ---------- Rank using row echelon (Gaussian elimination) ----------
+function matrixRank(A){
+  // make copy
+  let M = A.map(r => r.slice());
+  const rows = M.length, cols = M[0].length;
+  let rank = 0;
+  let r = 0;
+  for(let c=0; c<cols && r<rows; c++){
+    // find pivot
+    let pivot = r;
+    while(pivot<rows && Math.abs(M[pivot][c]) < 1e-12) pivot++;
+    if(pivot === rows) continue;
+    // swap
+    if(pivot !== r) [M[pivot], M[r]] = [M[r], M[pivot]];
+    // normalize row r
+    const val = M[r][c];
+    for(let j=c;j<cols;j++) M[r][j] /= val;
+    // eliminate other rows
+    for(let i=0;i<rows;i++){
+      if(i===r) continue;
+      const factor = M[i][c];
+      if(Math.abs(factor) < 1e-12) continue;
+      for(let j=c;j<cols;j++) M[i][j] -= factor * M[r][j];
+    }
+    r++; rank++;
+  }
+  return rank;
+}
+
+// ---------- Eigenvalues for 2x2 (including complex roots) ----------
+function eigenvalues2x2(A){
+  if(A.length!==2 || A[0].length!==2) throw new Error('Eigenvalues (this tool) supports 2×2 only.');
+  const a=A[0][0], b=A[0][1], c=A[1][0], d=A[1][1];
+  const trace = a + d;
+  const det = a*d - b*c;
+  const disc = trace*trace - 4*det;
+  if(disc >= 0){
+    const s = Math.sqrt(disc);
+    return [ (trace + s)/2, (trace - s)/2 ];
+  } else {
+    const s = Math.sqrt(-disc);
+    const re = trace/2, im = s/2;
+    return [ `${re.toFixed(6)} + ${im.toFixed(6)}i`, `${re.toFixed(6)} - ${im.toFixed(6)}i` ];
+  }
+}
+
+// ---------- Main solve function ----------
+function solve(){
+  clearAlerts(); clearResult();
+  let Atext = matrixAEl.value;
+  let Btext = matrixBEl.value;
+  const op = opEl.value;
+  const scalar = Number(scalarEl.value);
+  const wantSteps = showSteps.checked;
+
+  let A, B;
+  try{
+    A = parseMatrixInput(Atext);
+    if(!A) throw new Error('Matrix A is required.');
+    if(!isRectangular(A)) throw new Error('Matrix A is not rectangular (rows have unequal length).');
+    if(['add','sub','mul'].includes(op)){
+      if(!Btext || !Btext.trim()) throw new Error('Matrix B is required for this operation.');
+      B = parseMatrixInput(Btext);
+      if(!isRectangular(B)) throw new Error('Matrix B is not rectangular (rows have unequal length).');
+    }
+  }catch(e){
+    showAlert(e.message, 'error');
+    return;
+  }
+
+  // steps collector
+  let steps = [];
+  try{
+    let result;
+    switch(op){
+      case 'add':
+        result = addMatrices(A,B);
+        resultArea.innerHTML = formatMatrixHTML(result);
+        showAlert('Addition successful', 'success', 3000);
+        break;
+      case 'sub':
+        result = subMatrices(A,B);
+        resultArea.innerHTML = formatMatrixHTML(result);
+        showAlert('Subtraction successful', 'success', 3000);
+        break;
+      case 'mul':
+        result = mulMatrices(A,B);
+        resultArea.innerHTML = formatMatrixHTML(result);
+        showAlert('Multiplication successful', 'success', 3000);
+        break;
+      case 'scalar':
+        if(!scalar && scalar !== 0){ showAlert('Enter a scalar value for division', 'error'); return; }
+        result = scalarDivide(A, scalar);
+        resultArea.innerHTML = formatMatrixHTML(result);
+        showAlert('Scalar division done', 'success', 2500);
+        break;
+      case 'det':
+        if(A.length !== A[0].length) throw new Error('Determinant: Matrix A must be square.');
+        // show steps only for small n
+        const det = determinant(A, wantSteps ? steps : null);
+        resultArea.innerHTML = `<div class="muted">Determinant =</div><pre style="font-family:monospace;">${det}</pre>`;
+        showAlert('Determinant calculated', 'success', 3000);
+        break;
+      case 'inv':
+        if(A.length !== A[0].length) throw new Error('Inverse: Matrix A must be square.');
+        const inv = inverseMatrix(A, wantSteps ? steps : null);
+        resultArea.innerHTML = formatMatrixHTML(inv);
+        showAlert('Inverse computed', 'success', 3000);
+        break;
+      case 'transpose':
+        result = transpose(A);
+        resultArea.innerHTML = formatMatrixHTML(result);
+        showAlert('Transpose shown', 'success', 2000);
+        break;
+      case 'sym':
+        if(A.length !== A[0].length) throw new Error('Symmetry check: Matrix must be square.');
+        let isSym = true, isSkew = true;
+        const n = A.length;
+        for(let i=0;i<n;i++){
+          for(let j=0;j<n;j++){
+            if(A[i][j] !== A[j][i]) isSym = false;
+            if(A[i][j] !== -A[j][i]) isSkew = false;
+          }
+        }
+        let msg = isSym ? 'Matrix is Symmetric.' : (isSkew ? 'Matrix is Skew-Symmetric.' : 'Matrix is neither Symmetric nor Skew-Symmetric.');
+        resultArea.innerHTML = `<pre>${escapeHtml(msg)}</pre>${formatMatrixHTML(A)}`;
+        showAlert('Symmetry check done', 'info', 2500);
+        break;
+      case 'rank':
+        const r = matrixRank(A);
+        resultArea.innerHTML = `<pre>Rank = ${r}</pre>${formatMatrixHTML(A)}`;
+        showAlert('Rank calculated', 'info', 2500);
+        break;
+      case 'eig':
+        if(A.length !== 2 || A[0].length !== 2) throw new Error('Eigenvalues: only 2×2 matrices supported.');
+        const eig = eigenvalues2x2(A);
+        resultArea.innerHTML = `<pre>Eigenvalues:\n${eig.join('\n')}</pre>${formatMatrixHTML(A)}`;
+        showAlert('Eigenvalues (2×2) computed', 'success', 3000);
+        break;
+      default:
+        showAlert('Operation not recognized', 'error');
+    }
+
+    // show steps if collected and user wanted
+    if(wantSteps && steps.length>0){
+      stepsBox.style.display='block';
+      stepsText.textContent = steps.join('\n');
+    } else {
+      stepsBox.style.display='none';
+      stepsText.textContent='';
+    }
+  }catch(err){
+    showAlert(err.message, 'error');
+    resultArea.innerHTML = '—';
+    stepsBox.style.display='none';
+    stepsText.textContent='';
+  }
+}
+
+// ---------- UI hooks ----------
+solveBtn.addEventListener('click', solve);
+clearBtn.addEventListener('click', ()=>{
+  matrixAEl.value = '';
+  matrixBEl.value = '';
+  scalarEl.value = '';
+  clearAlerts();
+  clearResult();
+});
+opEl.addEventListener('change', ()=>{
+  // show/hide scalar field depending on op
+  scalarEl.style.display = (opEl.value==='scalar') ? 'inline-block' : 'none';
+});
+// initial hide scalar
+if(opEl.value !== 'scalar') scalarEl.style.display = 'none';
+
+// allow Ctrl+Enter to solve
+matrixAEl.addEventListener('keydown', e=>{ if(e.ctrlKey && e.key==='Enter') solve();});
+matrixBEl.addEventListener('keydown', e=>{ if(e.ctrlKey && e.key==='Enter') solve();});
+  </script>
+</body>
+</html>
