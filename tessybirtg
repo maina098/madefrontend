@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Dana 👑</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Open+Sans:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(135deg, #6a0dad, #1c1f4a, #8458B3, #000);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            text-align: center;
+            padding: 80px 20px;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+            animation: fadeIn 2s ease-out, glow 2s infinite alternate;
+        }
+
+        .subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: #FFB6C1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
+            to { text-shadow: 0 0 30px rgba(255, 255, 255, 0.9); }
+        }
+
+        /* Balloons and Stars */
+        .balloon, .star {
+            position: absolute;
+            z-index: -1;
+        }
+
+        .balloon {
+            width: 60px;
+            height: 70px;
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        .balloon:before {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 30px;
+            background: white;
+        }
+
+        .balloon:nth-child(1) { background: #FFB6C1; left: 10%; animation-delay: 0s; }
+        .balloon:nth-child(2) { background: #4682B4; left: 20%; animation-delay: 2s; }
+        .balloon:nth-child(3) { background: #6a0dad; left: 30%; animation-delay: 4s; }
+        .balloon:nth-child(4) { background: #FFB6C1; left: 70%; animation-delay: 1s; }
+        .balloon:nth-child(5) { background: #4682B4; left: 80%; animation-delay: 3s; }
+        .balloon:nth-child(6) { background: #6a0dad; left: 90%; animation-delay: 5s; }
+
+        .star {
+            width: 5px;
+            height: 5px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite alternate;
+        }
+
+        .star:nth-child(7) { left: 15%; top: 20%; animation-delay: 0s; }
+        .star:nth-child(8) { left: 25%; top: 40%; animation-delay: 1s; }
+        .star:nth-child(9) { left: 75%; top: 30%; animation-delay: 2s; }
+        .star:nth-child(10) { left: 85%; top: 60%; animation-delay: 0.5s; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            100% { opacity: 1; }
+        }
+
+        /* Content Sections */
+        .content-section {
+            padding: 80px 20px;
+            text-align: center;
+            background: rgba(28, 31, 74, 0.7);
+            border-radius: 20px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            margin-bottom: 30px;
+            color: #FFB6C1;
+        }
+
+        .section-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            color: #FFB6C1;
+        }
+
+        /* Gift Section */
+        .gift-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .gift-item {
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .gift-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .gift-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .gift-caption {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            color: #FFB6C1;
+        }
+
+        /* Cake Section */
+        .cake-container {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            margin: 0 auto;
+        }
+
+        .cake {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            position: relative;
+            animation: bounce 2s infinite alternate;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(255, 182, 193, 0.5);
+            overflow: hidden;
+        }
+
+        .cake img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .cake:hover img {
+            transform: scale(1.05);
+        }
+
+        .candles-container {
+            position: absolute;
+            top: -50px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .candle {
+            width: 12px;
+            height: 50px;
+            background: linear-gradient(to bottom, #ffeb3b, #ff9800, #ff5722);
+            border-radius: 5px 5px 0 0;
+            box-shadow: 0 0 15px #ff9800;
+            animation: flicker 1.5s infinite alternate;
+            position: relative;
+        }
+
+        .candle::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 15px;
+            background: radial-gradient(circle, #ffeb3b, #ff9800, transparent);
+            border-radius: 50%;
+            filter: blur(2px);
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
+        }
+
+        @keyframes flicker {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 15px #ff9800, 0 0 30px #ff5722;
+            }
+            50% {
+                opacity: 0.8;
+                box-shadow: 0 0 10px #ff9800, 0 0 20px #ff5722;
+            }
+        }
+
+        /* Closing Section */
+        .closing-section {
+            text-align: center;
+        }
+
+        .final-message {
+            font-size: 1.5rem;
+            margin: 20px 0;
+            line-height: 1.6;
+            color: #FFB6C1;
+        }
+
+        .arabic {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+        }
+
+        .signature {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            margin: 30px 0;
+            color: #FFB6C1;
+        }
+
+        /* Fireworks */
+        .fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            animation: firework-explode 1.5s ease-out forwards;
+        }
+
+        @keyframes firework-explode {
+            0% {
+                transform: translate(var(--x), var(--y)) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--x), var(--y)) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #FFB6C1;
+            border-radius: 50%;
+            animation: confettiFall 5s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Music Toggle */
+        .music-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(28, 31, 74, 0.7);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .music-toggle:hover {
+            transform: scale(1.1);
+            background: rgba(106, 13, 173, 0.7);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 3.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.8rem;
+            }
+            
+            .cake-container {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .gift-container {
+                flex-direction: column;
+            }
+            
+            .final-message {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Music Toggle -->
+    <div class="music-toggle" id="musicToggle">
+        <span id="musicIcon">🎵</span>
+    </div>
+    
+    <div class="container">
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <h1 class="title">Happy Birthday Dana!</h1>
+            <h2 class="subtitle">👑 Queen of Innovation 💡</h2>
+            
+            <!-- Balloons -->
+            <div class="balloon"></div>
+            <div class="balloon"></div>
+            <div class="balloon"></div>
+            <div class="balloon"></div>
+            <div class="balloon"></div>
+            <div class="balloon"></div>
+            
+            <!-- Stars -->
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+        </section>
+        
+        <!-- Music & Party Section -->
+        <section class="content-section" id="music">
+            <h2 class="section-title">🎵 Let's Celebrate!</h2>
+            <p class="section-subtitle">Enjoy this cheerful birthday song as we celebrate your very  special day </p>
+            <p>Background music: "Who" by Jimin</p>
+        </section>
+        
+        <!-- Gift Section -->
+        <section class="content-section" id="gifts">
+            <h2 class="section-title">🎁 Special Gifts for You</h2>
+            <div class="gift-container">
+                <div class="gift-item">
+                    <img src="https://i.ibb.co/Tp8k27m/shalwar-kameez.jpg" alt="Beautiful Pakistani Shalwar Kameez" class="gift-image">
+                    <p class="gift-caption">A beautiful Pakistani Shalwar Kameez</p>
+                </div>
+                <div class="gift-item">
+                    <img src="https://i.ibb.co/Df0604t9/perfume.jpg" alt="Shumukh - World's Most Expensive Perfume" class="gift-image">
+                    <p class="gift-caption">Shumukh - One of The World's Most Expensive Perfume</p>
+                    <p class="gift-caption">Because only the best gift for you ✨💎</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Cake Section -->
+        <section class="content-section" id="cake">
+            <h2 class="section-title">🎂 Birthday Cake</h2>
+            <div class="cake-container">
+                <div class="cake" onclick="blowCandles()">
+                    <img src="https://i.ibb.co/q3NR3S5B/bd-cake.jpg" alt="Birthday Cake for Dana">
+                    <div class="candles-container" id="candlesContainer">
+                        <div class="candle"></div>
+                        <div class="candle"></div>
+                        <div class="candle"></div>
+                        <div class="candle"></div>
+                        <div class="candle"></div>
+                    </div>
+                </div>
+            </div>
+            <p style="margin-top: 20px;">Click on the cake to blow out the candles!</p>
+        </section>
+        
+        <!-- Closing Section -->
+        <section class="content-section closing-section">
+            <h2 class="section-title">Happy Birthday, Dana! 🎉</h2>
+            
+            <div class="final-message">
+                We want you to know that you will always be an amazing person to us from all your friends in the SoloLearn community ❤️
+            </div>
+            
+            <div class="final-message arabic">
+                نريدك أن تعلمي أنك ستظلين دائمًا شخصًا رائعًا بالنسبة لنا من جميع أصدقائك في مجتمع SoloLearn ❤️
+            </div>
+            
+            <div class="final-message">
+                We wish you many more achievements and success in your coding journey and in your life wishes or dreams ✨️ 🥰
+            </div>
+            
+            <div class="final-message arabic">
+                نتمنى لك المزيد من الإنجازrات والنجاح في رحلتك في البرمجة وفي أمنيات حياتك أو أحلامك ✨️ 🥰
+            </div>
+            
+            <div class="signature">With love, from your friends 💕</div>
+            <div class="signature">مع الحب، من أصدقائك 💕</div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-text">Made with  ❤️ for Dana</div>
+            <!-- Confetti -->
+            <div class="confetti" style="left: 10%; animation-delay: 0s;"></div>
+            <div class="confetti" style="left: 20%; animation-delay: 1s;"></div>
+            <div class="confetti" style="left: 30%; animation-delay: 2s;"></div>
+            <div class="confetti" style="left: 40%; animation-delay: 3s;"></div>
+            <div class="confetti" style="left: 50%; animation-delay: 4s;"></div>
+            <div class="confetti" style="left: 60%; animation-delay: 0.5s;"></div>
+            <div class="confetti" style="left: 70%; animation-delay: 1.5s;"></div>
+            <div class="confetti" style="left: 80%; animation-delay: 2.5s;"></div>
+            <div class="confetti" style="left: 90%; animation-delay: 3.5s;"></div>
+        </footer>
+    </div>
+    
+    <!-- Fireworks div box -->
+    <div class="fireworks" id="fireworks"></div>
+    
+    <!-- Audio Element -->
+    <audio id="birthdayMusic" loop>
+        <source src="https://www.dropbox.com/scl/fi/gcy9j1ch7b5uxom1mnwnw/Who-jimin.m4a?rlkey=1gfu07kn3p6dactwq7f0y113v&st=jf2ff3l0&dl=1" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Music Toggle
+        const musicToggle = document.getElementById('musicToggle');
+        const musicIcon = document.getElementById('musicIcon');
+        const birthdayMusic = document.getElementById('birthdayMusic');
+        let musicPlaying = false;
+        
+        musicToggle.addEventListener('click', function() {
+            if (musicPlaying) {
+                birthdayMusic.pause();
+                musicIcon.textContent = '🎵';
+            } else {
+                birthdayMusic.play().catch(e => {
+                    console.log("Audio play failed:", e);
+                    alert("Background music requires user interaction first. Click anywhere on the page to enable music.");
+                });
+                musicIcon.textContent = '🔊';
+            }
+            musicPlaying = !musicPlaying;
+        });
+        
+        // Enable audio on first user interaction
+        document.addEventListener('click', function() {
+            if (birthdayMusic.paused) {
+                birthdayMusic.play().then(() => {
+                    birthdayMusic.pause();
+                    musicPlaying = false;
+                    musicIcon.textContent = '🎵';
+                }).catch(e => {
+                    console.log("Audio initialization failed:", e);
+                });
+            }
+        }, { once: true });
+        
+        // Blow out tiny candles
+        function blowCandles() {
+            const candles = document.querySelectorAll('.candle');
+            candles.forEach(candle => {
+                candle.style.animation = 'none';
+                candle.style.opacity = '0';
+            });
+            
+            // Create fireworks when candles are blown
+            createFireworks();
+        }
+        
+        // Create gentle fireworks
+        function createFireworks() {
+            const fireworksContainer = document.getElementById('fireworks');
+            for (let i = 0; i < 50; i++) {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                firework.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                firework.style.setProperty('--x', Math.random() * 100 - 50 + 'vw');
+                firework.style.setProperty('--y', Math.random() * 100 - 50 + 'vh');
+                firework.style.animationDelay = Math.random() * 1 + 's';
+                fireworksContainer.appendChild(firework);
+                
+                // Remove firework after animation
+                setTimeout(() => {
+                    firework.remove();
+                }, 1500);
+            }
+        }
+        
+        // Create additional floating elements
+        function createFloatingElements() {
+            const welcomeSection = document.querySelector('.welcome-section');
+            
+            for (let i = 0; i < 15; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                welcomeSection.appendChild(star);
+            }
+        }
+        
+        // Initialize the page
+        createFloatingElements();
+    </script>
+</body>
+</html>
