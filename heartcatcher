@@ -1,0 +1,126 @@
+<<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pastel Heart Catcher ✨💗💚</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }body { background: linear-gradient(135deg, #ffe4f0, #d8ffec); overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; position: relative; }
+
+#menu { position: absolute; width: 400px; height: 600px; background: rgba(255,255,255,0.7); border-radius: 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; backdrop-filter: blur(10px); box-shadow: 0 0 30px rgba(0,0,0,0.15); }
+
+.btn { padding: 12px 25px; background: #ffb3c6; border-radius: 15px; border: none; cursor: pointer; font-size: 20px; transition: 0.3s; } .btn:hover { background: #ff8fb2; transform: scale(1.05); }
+
+#game { position: relative; width: 400px; height: 600px; background: rgba(255,255,255,0.55); border-radius: 25px; overflow: hidden; backdrop-filter: blur(10px); box-shadow: 0 0 20px rgba(0,0,0,0.1); display: none; }
+
+#basket { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 100px; height: 45px; background: #ffb3c6; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+.heart { position: absolute; width: 45px; height: 45px; clip-path: polygon(50% 80%, 0% 30%, 20% 0%, 50% 20%, 80% 0%, 100% 30%); animation: fall linear; }
+
+@keyframes fall { from { top: -50px; } to { top: 650px; } }
+
+.pop { animation: pop 0.3s forwards; } @keyframes pop { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
+
+#score { position: absolute; top: 15px; left: 15px; font-size: 22px; color: #ff6faa; font-weight: bold; }
+
+/* Buttons for mobile */ #controls { position: absolute; bottom: 10px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; } .ctrl-btn { width: 70px; height: 50px; background: #b4f8c8; border-radius: 12px; border: none; font-size: 22px; }
+
+/* Floating pastel clouds */ .cloud { position: absolute; background: rgba(255,255,255,0.7); border-radius: 50px; filter: blur(8px); animation: drift 18s linear infinite; }
+
+.cloud.small { width: 120px; height: 60px; top: 20%; left: -150px; animation-duration: 22s; } .cloud.medium { width: 180px; height: 90px; top: 50%; left: -200px; animation-duration: 30s; } .cloud.large { width: 250px; height: 120px; top: 75%; left: -300px; animation-duration: 26s; }
+
+@keyframes drift { 0% { transform: translateX(0); } 100% { transform: translateX(1400px); } } </style>
+
+</head>
+<body><div class="cloud small"></div>
+<div class="cloud medium"></div>
+<div class="cloud large"></div>
+<div class="cloud small" style="top:10%; animation-duration:25s;"></div>
+<div class="cloud medium" style="top:30%; animation-duration:28s;"></div>
+<div class="cloud large" style="top:60%; animation-duration:32s;"></div>
+<div class="cloud small" style="top:80%; animation-duration:24s;"></div><div id="menu">
+  <h1 style="font-size: 32px; color:#ff8fb2;">✨ Pastel Heart Catcher ✨</h1>
+  <button class="btn" onclick="startGame(1)">Easy 💗</button>
+  <button class="btn" onclick="startGame(2)">Medium 💚</button>
+  <button class="btn" onclick="startGame(3)">DEMON MODE 💀💗</button>
+</div><div id="game">
+  <div id="score">Score: 0</div>
+  <div id="basket"></div>
+  <div id="controls">
+    <button class="ctrl-btn" id="left">⟵</button>
+    <button class="ctrl-btn" id="right">⟶</button>
+  </div>
+</div><audio id="bgm" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7ba5ac6e46.mp3" type="audio/mp3">
+</audio><script>
+  const menu = document.getElementById("menu");
+  const game = document.getElementById("game");
+  const basket = document.getElementById("basket");
+  const scoreDisplay = document.getElementById("score");
+  const bgm = document.getElementById("bgm");
+
+  let score = 0;
+  let speed = 3000;
+  let spawnRate = 1200;
+
+  function startGame(level) {
+    menu.style.display = "none";
+    game.style.display = "block";
+    bgm.play();
+
+    if (level === 2) { speed = 2200; spawnRate = 900; }
+    if (level === 3) { speed = 1300; spawnRate = 400; }
+
+    setInterval(spawnHeart, spawnRate);
+  }
+
+  document.addEventListener("mousemove", moveBasket);
+  document.getElementById("left").onclick = () => moveBasketBtn(-20);
+  document.getElementById("right").onclick = () => moveBasketBtn(20);
+
+  function moveBasket(e) {
+    const rect = game.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    if (x < 45) x = 45;
+    if (x > 355) x = 355;
+    basket.style.left = x + "px";
+  }
+
+  function moveBasketBtn(offset) {
+    let left = parseInt(basket.style.left || 200);
+    left += offset;
+    if (left < 45) left = 45;
+    if (left > 355) left = 355;
+    basket.style.left = left + "px";
+  }
+
+  function spawnHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+
+    const colors = ["#ffb3c6", "#b4f8c8", "#ffdde1", "#ffe7c7", "#c7e9ff"]; 
+    heart.style.background = colors[Math.floor(Math.random()*colors.length)];
+    heart.style.left = Math.random() * 360 + "px";
+    heart.style.animationDuration = speed + "ms";
+
+    game.appendChild(heart);
+
+    let fallCheck = setInterval(() => {
+      const h = heart.getBoundingClientRect();
+      const b = basket.getBoundingClientRect();
+
+      if (h.bottom >= b.top && h.left >= b.left && h.right <= b.right) {
+        score++;
+        scoreDisplay.textContent = "Score: " + score;
+        heart.classList.add("pop");
+        setTimeout(() => heart.remove(), 300);
+        clearInterval(fallCheck);
+      }
+
+      if (h.top > window.innerHeight) {
+        heart.remove();
+        clearInterval(fallCheck);
+      }
+    }, 20);
+  }
+</script></body>
+</html>
