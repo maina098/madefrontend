@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title> Algorithm Race 8-Way </title>
+<style>
+/* --- Global & Typography --- */
+body {
+    margin: 0;
+    background: #0c0c0c;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 20px;
+}
+h1 {
+    margin: 10px 0;
+    font-size: 1.4rem;
+    color: #0ff;
+    text-shadow: 0 0 5px #0ff8;
+}
+
+/* --- Race Container (Made wider/less restrictive) --- */
+.race {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+    /* Removed max-width constraint to use the full available screen width */
+    margin-top: 8px;
+}
+
+/* --- Algorithm Track (Smaller for 8 simultaneous views) --- */
+.track {
+    /* Narrower min/max width to fit 8 across on larger screens */
+    flex: 1 1 12%; /* Ensures at least 8 can fit side-by-side */
+    min-width: 120px; /* Smallest bar width */
+    max-width: 150px; /* Maximize track width */
+    margin: 5px;
+    background: #1b1b1b;
+    border: 2px solid #333;
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    overflow: hidden;
+    position: relative;
+    height: 180px; /* Slightly reduced height */
+}
+.track::before {
+    content: attr(data-name);
+    position: absolute;
+    top: 3px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #0ff;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    font-size: 0.75rem; /* Reduced font size for narrow tracks */
+    padding: 2px 0;
+    text-shadow: 0 0 5px #0ff;
+    background: rgba(27, 27, 27, 0.8);
+    white-space: nowrap; /* Prevents wrapping algorithm names */
+    overflow: hidden;
+}
+
+/* --- Bars and Highlighting --- */
+.bar {
+    background: #00e676; /* Default (Sorted) */
+    width: 100%;
+    margin: 0 0.5px;
+    flex: 1;
+    transition: height 0.04s linear;
+}
+.bar.c {
+    background: #ffca28; /* Compare/Pivot */
+}
+.bar.s {
+    background: #f44336; /* Swap */
+}
+
+/* --- Controls --- */
+button {
+    padding: 10px 18px;
+    margin: 8px 5px;
+    border: none;
+    border-radius: 6px;
+    background: #03a9f4;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+}
+button:active {
+    transform: scale(0.95);
+}
+
+/* --- Leaderboard --- */
+#leaderboard {
+    margin-top: 20px;
+    padding: 15px 25px;
+    background: #1b1b1b;
+    border: 2px solid #0ff;
+    border-radius: 10px;
+    min-width: 300px;
+    text-align: left;
+    display: none;
+    box-shadow: 0 0 15px #0ff5;
+}
+#leaderboard h2 {
+    margin: 0 0 10px 0;
+    color: gold;
+    font-size: 1.2rem;
+    text-align: center;
+}
+#leaderboard div {
+    padding: 5px 0;
+    border-bottom: 1px dashed #333;
+    display: flex;
+    justify-content: space-between;
+}
+#leaderboard div:last-child {
+    border-bottom: none;
+}
+#leaderboard .time {
+    font-weight: bold;
+    color: #00e676;
+}
+
+/* --- Media Queries for Mobile/Small Screens --- */
+@media(max-width: 700px) {
+    .track {
+        flex: 1 1 90%; /* Single column view for mobile */
+        min-width: 90%;
+        max-width: 90%;
+        height: 180px;
+    }
+    h1 {
+        font-size: 1.2rem;
+    }
+}
+</style>
+</head>
+<body>
+<h1> Algorithm Race 8-Way </h1>
+<div class="race">
+    <div id="radix" class="track" data-name="Radix Sort"></div>
+    <div id="quick" class="track" data-name="Quick Sort"></div>
+    <div id="heap" class="track" data-name="Heap Sort"></div>
+    <div id="merge" class="track" data-name="Merge Sort"></div>
+    <div id="shell" class="track" data-name="Shell Sort"></div>
+    <div id="insertion" class="track" data-name="Insertion Sort"></div>
+    <div id="bubble" class="track" data-name="Bubble Sort"></div>
+    <div id="selection" class="track" data-name="Selection Sort"></div>
+</div>
+<div>
+    <button id="btnStart">Start Race</button>
+    <button id="btnShuffle">Shuffle</button>
+</div>
+<div id="leaderboard"></div>
+
+<script>
+const N = 40; // Number of bars (elements to sort)
+const SPEED = 5; // Animation speed in ms (lower is faster)
+const SCALE = 3.0; // Bar height scale factor
+
+let running = false;
+let results = [];
+
+// DOM Elements for all 8 tracks
+const tracks = {
+    bubble: document.getElementById('bubble'),
+    selection: document.getElementById('selection'),
+    insertion: document.getElementById('insertion'),
+    merge: document.getElementById('merge'),
+    quick: document.getElementById('quick'),
+    heap: document.getElementById('heap'),
+    shell: document.getElementById('shell'),
+    radix: document.getElementById('radix'),
+};
+
+// Data structures to hold values and bar elements for all 8 algorithms
+let data = {
+    bubble: { vals: [], bars: [] },
+    selection: { vals: [], bars: [] },
+    insertion: { vals: [], bars: [] },
+    merge: { vals: [], bars: [] },
+    quick: { vals: [], bars: [] },
+    heap: { vals: [], bars: [] },
+    shell: { vals: [], bars: [] },
+    radix: { vals: [], bars: [] },
+};
+
+const algorithms = [
+    { name: "Bubble Sort", id: "bubble", fn: bubbleSort },
+    { name: "Selection Sort", id: "selection", fn: selectionSort },
+    { name: "Insertion Sort", id: "insertion", fn: insertionSort },
+    { name: "Merge Sort", id: "merge", fn: mergeSort },
+    { name: "Quick Sort", id: "quick", fn: quickSort },
+    { name: "Heap Sort", id: "heap", fn: heapSort },
+    { name: "Shell Sort", id: "shell", fn: shellSort },
+    { name: "Radix Sort", id: "radix", fn: radixSort },
+];
+
+function init() {
+    running = false;
+    results = [];
+    document.getElementById('leaderboard').style.display = 'none';
+
+    // Generate a single random array and clone it for all algorithms
+    const initialVals = Array.from({ length: N }, () => Math.floor(Math.random() * 60) + 10);
+
+    for (const algo of algorithms) {
+        const id = algo.id;
+        const track = tracks[id];
+        
+        // Clear previous state
+        track.innerHTML = '';
+        data[id].vals = [...initialVals];
+        data[id].bars = [];
+
+        // Create bars
+        for (let i = 0; i < N; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            bar.style.height = data[id].vals[i] * SCALE + 'px';
+            track.appendChild(bar);
+            data[id].bars.push(bar);
+        }
+    }
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Helper function to update bar height and optionally highlight
+async function visualize(bars, indices, type = 'c', speed = SPEED) {
+    if (speed === 0) return;
+    
+    bars.forEach(b => b.classList.remove('c', 's'));
+
+    for (const i of indices) {
+        if (i < 0 || i >= bars.length) continue;
+        bars[i].style.height = data[bars[i].parentElement.id].vals[i] * SCALE + 'px';
+        bars[i].classList.add(type);
+    }
+    await sleep(speed);
+}
+
+// Helper function to mark array as fully sorted
+function finalize(bars) {
+    bars.forEach(b => b.classList.remove('c', 's'));
+}
+
+// ----- Sorting Algorithms (No changes to logic) -----
+
+async function bubbleSort(a, b) {
+    const n = a.length;
+    for (let i = 0; i < n - 1; i++) {
+        for (let j = 0; j < n - i - 1; j++) {
+            if (a[j] > a[j + 1]) {
+                [a[j], a[j + 1]] = [a[j + 1], a[j]];
+                await visualize(b, [j, j + 1], 's');
+            } else {
+                await visualize(b, [j, j + 1], 'c');
+            }
+        }
+    }
+    finalize(b);
+}
+
+async function selectionSort(a, b) {
+    const n = a.length;
+    for (let i = 0; i < n - 1; i++) {
+        let min_idx = i;
+        for (let j = i + 1; j < n; j++) {
+            if (a[j] < a[min_idx]) {
+                min_idx = j;
+            }
+            await visualize(b, [i, j, min_idx], 'c');
+        }
+        [a[i], a[min_idx]] = [a[min_idx], a[i]];
+        await visualize(b, [i, min_idx], 's');
+    }
+    finalize(b);
+}
+
+async function insertionSort(a, b) {
+    const n = a.length;
+    for (let i = 1; i < n; i++) {
+        let key = a[i], j = i - 1;
+        while (j >= 0 && a[j] > key) {
+            a[j + 1] = a[j];
+            j--;
+            await visualize(b, [j + 1, j], 's');
+        }
+        a[j + 1] = key;
+        await visualize(b, [j + 1, i], 'c');
+    }
+    finalize(b);
+}
+
+async function mergeSort(a, b, l = 0, r = a.length - 1) {
+    async function merge(arr, l, m, r) {
+        let n1 = m - l + 1, n2 = r - m;
+        let L = arr.slice(l, m + 1), R = arr.slice(m + 1, r + 1);
+        let i = 0, j = 0, k = l;
+
+        while (i < n1 && j < n2) {
+            if (L[i] <= R[j]) {
+                arr[k++] = L[i++];
+            } else {
+                arr[k++] = R[j++];
+            }
+            await visualize(b, [k - 1, l, r], 'c', SPEED / 2);
+        }
+        while (i < n1) { arr[k++] = L[i++]; await visualize(b, [k - 1], 'c', SPEED / 2); }
+        while (j < n2) { arr[k++] = R[j++]; await visualize(b, [k - 1], 'c', SPEED / 2); }
+    }
+    if (l >= r) return;
+    let m = Math.floor((l + r) / 2);
+    await mergeSort(a, b, l, m);
+    await mergeSort(a, b, m + 1, r);
+    await merge(a, l, m, r);
+    if (l === 0 && r === a.length - 1) finalize(b);
+}
+
+async function quickSort(a, b, l = 0, r = a.length - 1) {
+    async function partition(arr, low, high) {
+        let pivot = arr[high], i = low - 1;
+        
+        for (let j = low; j < high; j++) {
+            if (arr[j] < pivot) {
+                i++;
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+                await visualize(b, [i, j, high], 's');
+            } else {
+                await visualize(b, [j, high], 'c');
+            }
+        }
+        [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+        await visualize(b, [i + 1, high], 's');
+        return i + 1;
+    }
+    if (l < r) {
+        let pi = await partition(a, l, r);
+        await Promise.all([
+            quickSort(a, b, l, pi - 1),
+            quickSort(a, b, pi + 1, r)
+        ]);
+    }
+    if (l === 0 && r === a.length - 1) finalize(b);
+}
+
+async function heapSort(a, b) {
+    let n = a.length;
+    async function heapify(arr, n, i) {
+        let largest = i, l = 2 * i + 1, r = 2 * i + 2;
+        if (l < n && arr[l] > arr[largest]) largest = l;
+        if (r < n && arr[r] > arr[largest]) largest = r;
+        if (largest !== i) {
+            [arr[i], arr[largest]] = [arr[largest], arr[i]];
+            await visualize(b, [i, largest], 's');
+            await heapify(arr, n, largest);
+        }
+    }
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) await heapify(a, n, i);
+    for (let i = n - 1; i > 0; i--) {
+        [a[0], a[i]] = [a[i], a[0]];
+        await visualize(b, [0, i], 's');
+        await heapify(a, i, 0);
+    }
+    finalize(b);
+}
+
+async function shellSort(a, b) {
+    for (let gap = Math.floor(a.length / 2); gap > 0; gap = Math.floor(gap / 2)) {
+        for (let i = gap; i < a.length; i++) {
+            let temp = a[i], j = i;
+            while (j >= gap && a[j - gap] > temp) {
+                a[j] = a[j - gap];
+                j -= gap;
+                await visualize(b, [i, j + gap], 's');
+            }
+            a[j] = temp;
+            await visualize(b, [j, i], 'c');
+        }
+    }
+    finalize(b);
+}
+
+async function radixSort(a, b) {
+    const getMax = arr => Math.max(...arr);
+    const countSort = async (exp) => {
+        let output = new Array(a.length).fill(0);
+        let count = new Array(10).fill(0);
+        for (let i = 0; i < a.length; i++) count[Math.floor(a[i] / exp) % 10]++;
+        for (let i = 1; i < 10; i++) count[i] += count[i - 1];
+        for (let i = a.length - 1; i >= 0; i--) {
+            output[count[Math.floor(a[i] / exp) % 10] - 1] = a[i];
+            count[Math.floor(a[i] / exp) % 10]--;
+        }
+        for (let i = 0; i < a.length; i++) {
+            a[i] = output[i];
+            await visualize(b, [i], 'c', SPEED / 2);
+        }
+    }
+    let max = getMax(a);
+    if (max === 0) max = 1;
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) await countSort(exp);
+    finalize(b);
+}
+
+// ----- Race Management -----
+
+async function runRace() {
+    if (running) return;
+    running = true;
+    
+    results = [];
+    document.getElementById('leaderboard').style.display = 'none';
+
+    const racePromises = algorithms.map(algo => {
+        const id = algo.id;
+        const vals = data[id].vals;
+        const bars = data[id].bars;
+        
+        return new Promise(async (resolve) => {
+            const start = performance.now();
+            await algo.fn(vals, bars);
+            const time = (performance.now() - start).toFixed(2);
+            results.push({ name: algo.name, time: parseFloat(time) });
+            resolve();
+        });
+    });
+
+    await Promise.all(racePromises);
+    
+    showLeaderboard();
+    running = false;
+}
+
+function showLeaderboard() {
+    const sorted = results.sort((a, b) => a.time - b.time);
+    const medals = ["1", "2", "3", "4.", "5.", "6.", "7.", "8."];
+    
+    let html = '<h2>🏁 Final Ranking 🏁</h2>';
+    
+    sorted.forEach((r, i) => {
+        html += `
+            <div>
+                <span>${medals[i]} ${r.name}</span>
+                <span class="time">${r.time} ms</span>
+            </div>
+        `;
+    });
+
+    const leaderboardDiv = document.getElementById('leaderboard');
+    leaderboardDiv.innerHTML = html;
+    leaderboardDiv.style.display = 'block';
+}
+
+
+// --- Event Listeners ---
+document.getElementById('btnStart').onclick = runRace;
+document.getElementById('btnShuffle').onclick = init;
+
+// Initial setup
+init();
+</script>
+</body>
+</html>
