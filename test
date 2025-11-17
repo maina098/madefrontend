@@ -1,0 +1,136 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini HTML Game</title>
+  <style>
+    body {
+      background: radial-gradient(circle at center, #0a0a0a, #000000 80%);
+      color: #0ff;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      margin-top: 50px;
+      overflow: hidden;
+    }h1 {
+  font-size: 48px;
+  text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+}
+
+p {
+  font-size: 24px;
+  text-shadow: 0 0 5px #0ff;
+}
+
+#gameBox {
+  width: 120px;
+  height: 120px;
+  background: #ff0099;
+  box-shadow: 0 0 20px #ff0099, 0 0 40px #ff0099;
+  position: absolute;
+  top: 200px;
+  left: 200px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+#gameBox:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px #ff00ff, 0 0 60px #ff00ff;
+}
+
+/* Retro grid background */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(#0ff3 1px, transparent 1px),
+                    linear-gradient(90deg, #0ff3 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+  </style>
+</head>
+<body>
+  <h1 id="title">NEON ARCADE</h1>  <!-- Start Screen -->  <div id="startScreen" style="margin-top: 120px;">
+    <h2 style="font-size:32px; text-shadow:0 0 10px #0ff;">Click to Start</h2>
+    <button id="startBtn" style="padding:15px 30px; font-size:20px; background:#0ff; border:none; border-radius:10px; cursor:pointer; box-shadow:0 0 20px #0ff;">START</button>
+  </div>  <!-- Game UI -->  <p id="scoreText" style="display:none;">Score: <span id="score">0</span></p>
+  <div id="gameBox" style="display:none;"></div>  <!-- Game Over Screen -->  <div id="gameOverScreen" style="display:none; margin-top:120px;">
+    <h2 style="font-size:40px; text-shadow:0 0 10px #f0f;">GAME OVER</h2>
+    <p style="font-size:24px;">Final Score: <span id="finalScore">0</span></p>
+    <button id="restartBtn" style="padding:15px 30px; font-size:20px; background:#f0f; border:none; border-radius:10px; cursor:pointer; box-shadow:0 0 20px #f0f;">RESTART</button>
+  </div>  <script>
+    let score = 0;
+    let gameActive = false;
+    let timeLimit = 15000; // 15 seconds
+    const box = document.getElementById("gameBox");
+    const scoreDisplay = document.getElementById("score");
+    const scoreText = document.getElementById("scoreText");
+    const startBtn = document.getElementById("startBtn");
+    const startScreen = document.getElementById("startScreen");
+    const gameOverScreen = document.getElementById("gameOverScreen");
+    const finalScore = document.getElementById("finalScore");
+    const restartBtn = document.getElementById("restartBtn");
+
+    startBtn.addEventListener("click", startGame);
+    restartBtn.addEventListener("click", startGame);
+
+    function startGame() {
+      score = 0;
+      scoreDisplay.textContent = score;
+      gameActive = true;
+
+      startScreen.style.display = "none";
+      gameOverScreen.style.display = "none";
+      box.style.display = "block";
+      scoreText.style.display = "block";
+
+      moveBox();
+
+      setTimeout(() => {
+        endGame();
+      }, timeLimit);
+    }
+
+    box.addEventListener("click", () => {
+      if (!gameActive) return;
+      score++;
+      scoreDisplay.textContent = score;
+      moveBox();
+    });
+
+    function moveBox() {
+      const x = Math.random() * (window.innerWidth - 150);
+      const y = Math.random() * (window.innerHeight - 150);
+      box.style.left = x + "px";
+      box.style.top = y + "px";
+    }
+
+    function endGame() {
+      gameActive = false;
+      box.style.display = "none";
+      scoreText.style.display = "none";
+
+      finalScore.textContent = score;
+      gameOverScreen.style.display = "block";
+    }
+  </script>  <audio id="bgMusic" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7e3fb8f301.mp3?filename=synthwave-110113.mp3" type="audio/mpeg">
+  </audio>  <script>
+    const music = document.getElementById("bgMusic");
+    music.volume = 0.4;
+
+    startBtn.addEventListener("click", () => {
+      music.play();
+    });
+
+    restartBtn.addEventListener("click", () => {
+      music.play();
+    });
+  </script></body>
+</html>
