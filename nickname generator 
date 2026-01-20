@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ultimate Nickname Generator</title>
+    <style>
+        :root {
+            --accent: #00d2ff;
+            --secondary: #3a7bd5;
+            --dark: #0f0c29;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        h2 { margin-bottom: 20px; letter-spacing: 2px; }
+
+        .input-box {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #24243e;
+            color: white;
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            filter: brightness(1.2);
+            transform: translateY(-2px);
+        }
+
+        #result-display {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .nickname {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent);
+            display: block;
+            text-shadow: 0 0 10px var(--accent);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>NICKNAME GEN</h2>
+    <input type="text" id="realName" class="input-box" placeholder="Enter Real Name...">
+    
+    <select id="vibe">
+        <option value="cool">Cool / Alpha</option>
+        <option value="funny">Funny / Weird</option>
+        <option value="gaming">Pro Gamer</option>
+        <option value="cute">Soft / Cute</option>
+    </select>
+
+    <button onclick="generateNickname()">Craft Nickname</button>
+
+    <div id="result-display">
+        <span style="font-size: 0.8rem; color: #aaa;">YOUR NEW IDENTITY IS</span>
+        <span class="nickname" id="nickname-output"></span>
+    </div>
+</div>
+
+<script>
+    const data = {
+        cool: {
+            prefix: ["Shadow", "Iron", "Ghost", "Neo", "Zenith", "Storm"],
+            suffix: ["Viper", "Blade", "X", "Nova", "Reaper", "Prime"]
+        },
+        funny: {
+            prefix: ["Captain", "Professor", "Sir", "Dancing", "Sticky", "Lazy"],
+            suffix: ["Potato", "Noodle", "Waffle", "Muffin", "Pickle", "Feet"]
+        },
+        gaming: {
+            prefix: ["Elite", "Godly", "Laggy", "Toxic", "Hidden", "Sniper"],
+            suffix: ["GG", "MVP", "Carry", "Bot", "Aim", "Slayer"]
+        },
+        cute: {
+            prefix: ["Tiny", "Lil", "Sugar", "Honey", "Bubbly", "Soft"],
+            suffix: ["Bear", "Cloud", "Bee", "Peach", "Button", "Sparkle"]
+        }
+    };
+
+    function generateNickname() {
+        const name = document.getElementById('realName').value.trim();
+        const vibe = document.getElementById('vibe').value;
+        
+        if (!name) {
+            alert("Enter a name first, you ghost!");
+            return;
+        }
+
+        const category = data[vibe];
+        const randomPre = category.prefix[Math.floor(Math.random() * category.prefix.length)];
+        const randomSuf = category.suffix[Math.floor(Math.random() * category.suffix.length)];
+        
+        // Pick a random style: Prefix + Name, Name + Suffix, or Prefix + Suffix
+        const styles = [
+            `${randomPre} ${name}`,
+            `${name} ${randomSuf}`,
+            `${randomPre}_${name.slice(0,3)}_${randomSuf}`
+        ];
+
+        const finalName = styles[Math.floor(Math.random() * styles.length)];
+
+        document.getElementById('nickname-output').innerText = finalName;
+        document.getElementById('result-display').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
