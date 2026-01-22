@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ultra Realistic Phone UI</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    background:#0b0b0b;
+    font-family:system-ui,-apple-system,sans-serif;
+}
+.phone{
+    width:330px;height:640px;
+    margin:20px auto;
+    background:#000;
+    border-radius:44px;
+    padding:10px;
+    box-shadow:0 30px 70px rgba(0,0,0,.9);
+}
+.screen{
+    height:100%;
+    background:#111;
+    border-radius:34px;
+    overflow:hidden;
+    color:#fff;
+    position:relative;
+}
+
+/* STATUS BAR */
+.status{
+    height:30px;
+    padding:6px 14px;
+    font-size:12px;
+    display:flex;
+    justify-content:space-between;
+    opacity:.85;
+}
+
+/* APP VIEWS */
+.view{
+    position:absolute;
+    inset:30px 0 0 0;
+    padding:14px;
+    opacity:0;
+    transform:translateY(18px);
+    pointer-events:none;
+    transition:.35s cubic-bezier(.25,.8,.25,1);
+}
+.view.active{
+    opacity:1;
+    transform:none;
+    pointer-events:auto;
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+}
+.back{font-size:20px;cursor:pointer}
+
+/* HOME */
+.home{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    padding-top:26px;
+}
+.icon{text-align:center;font-size:12px}
+.app-icon{
+    width:62px;height:62px;
+    border-radius:18px;
+    background:linear-gradient(145deg,#3a3a3a,#1c1c1c);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
+    margin:auto;
+    cursor:pointer;
+}
+.app-icon:active{transform:scale(.92)}
+
+.dock{
+    position:absolute;
+    bottom:12px;
+    left:12px;
+    right:12px;
+    background:rgba(255,255,255,.08);
+    border-radius:22px;
+    padding:10px;
+    display:flex;
+    justify-content:space-around;
+}
+
+/* LIST */
+.list{
+    background:#1c1c1e;
+    border-radius:18px;
+    overflow:hidden;
+}
+.item{
+    padding:14px;
+    border-bottom:1px solid #2c2c2e;
+    cursor:pointer;
+}
+.item:last-child{border:none}
+.item span{opacity:.6;font-size:12px}
+
+/* MESSAGES */
+.chat-list .item{
+    display:flex;
+    justify-content:space-between;
+}
+.chat{
+    height:420px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+.bubble{
+    max-width:72%;
+    padding:10px 14px;
+    border-radius:18px;
+    font-size:14px;
+}
+.sent{background:#0a84ff;align-self:flex-end}
+.recv{background:#2c2c2e;align-self:flex-start}
+.msg-input{
+    display:flex;
+    gap:6px;
+    margin-top:8px;
+}
+.msg-input input{
+    flex:1;border:none;border-radius:18px;padding:10px;
+}
+.msg-input button{
+    width:42px;border:none;border-radius:50%;
+    background:#0a84ff;color:#fff;
+}
+
+/* PHONE */
+.dial{
+    text-align:center;
+    font-size:26px;
+    letter-spacing:2px;
+    margin:15px 0;
+}
+.keypad{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+}
+.key{
+    background:#1c1c1e;
+    border-radius:50%;
+    height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    cursor:pointer;
+}
+.call{background:#34c759;margin-top:14px;padding:12px;border-radius:22px;text-align:center}
+.end{background:#ff3b30;margin-top:8px;padding:12px;border-radius:22px;text-align:center}
+
+/* NOTES */
+.note{
+    background:#1c1c1e;
+    border-radius:16px;
+    padding:12px;
+    margin-bottom:10px;
+    cursor:pointer;
+}
+.note small{opacity:.6}
+.new-note{
+    background:#0a84ff;
+    border-radius:16px;
+    padding:10px;
+    text-align:center;
+    margin-bottom:10px;
+}
+textarea{
+    width:100%;
+    height:420px;
+    background:#111;
+    color:#fff;
+    border:none;
+    resize:none;
+    font-size:15px;
+}
+</style>
+</head>
+
+<body>
+<div class="phone"><div class="screen">
+
+<div class="status">
+    <span id="time"></span>
+    <span>📶 5G 🔋</span>
+</div>
+
+<!-- HOME -->
+<div class="view active" id="home">
+    <div class="home">
+        <div class="icon" onclick="openApp('phone')"><div class="app-icon">📞</div>Phone</div>
+        <div class="icon" onclick="openApp('messages')"><div class="app-icon">💬</div>Messages</div>
+        <div class="icon" onclick="openApp('notes')"><div class="app-icon">📝</div>Notes</div>
+        <div class="icon" onclick="openApp('settings')"><div class="app-icon">⚙️</div>Settings</div>
+    </div>
+    <div class="dock">
+        <div class="app-icon" onclick="openApp('phone')">📞</div>
+        <div class="app-icon" onclick="openApp('messages')">💬</div>
+        <div class="app-icon" onclick="openApp('settings')">⚙️</div>
+    </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="view" id="settings">
+    <div class="header"><span class="back" onclick="goHome()">←</span><b>Settings</b></div>
+    <div class="list">
+        <div class="item">Wi-Fi<span>Connected</span></div>
+        <div class="item">Mobile Network<span>5G</span></div>
+        <div class="item">Display<span>Dark</span></div>
+        <div class="item">About Phone</div>
+    </div>
+</div>
+
+<!-- MESSAGES -->
+<div class="view" id="messages">
+    <div class="header"><span class="back" onclick="goHome()">←</span><b>Messages</b></div>
+    <div class="list chat-list" id="chatList"></div>
+</div>
+
+<div class="view" id="chatView">
+    <div class="header"><span class="back" onclick="openApp('messages')">←</span><b id="chatName"></b></div>
+    <div class="chat" id="chat"></div>
+    <div class="msg-input">
+        <input id="msgText" placeholder="Message">
+        <button onclick="sendMsg()">➤</button>
+    </div>
+</div>
+
+<!-- PHONE -->
+<div class="view" id="phone">
+    <div class="header"><span class="back" onclick="goHome()">←</span><b>Phone</b></div>
+    <div class="dial" id="dialNum"></div>
+    <div class="keypad">
+        <div class="key" onclick="press('1')">1</div>
+        <div class="key" onclick="press('2')">2</div>
+        <div class="key" onclick="press('3')">3</div>
+        <div class="key" onclick="press('4')">4</div>
+        <div class="key" onclick="press('5')">5</div>
+        <div class="key" onclick="press('6')">6</div>
+        <div class="key" onclick="press('7')">7</div>
+        <div class="key" onclick="press('8')">8</div>
+        <div class="key" onclick="press('9')">9</div>
+        <div class="key" onclick="press('*')">*</div>
+        <div class="key" onclick="press('0')">0</div>
+        <div class="key" onclick="press('#')">#</div>
+    </div>
+    <div class="call" onclick="startCall()">Call</div>
+    <div class="end" onclick="endCall()">End</div>
+</div>
+
+<!-- NOTES -->
+<div class="view" id="notes">
+    <div class="header"><span class="back" onclick="goHome()">←</span><b>Notes</b></div>
+    <div class="new-note" onclick="newNote()">＋ New Note</div>
+    <div id="notesList"></div>
+</div>
+
+<div class="view" id="noteEdit">
+    <div class="header"><span class="back" onclick="openApp('notes')">←</span><b>Edit Note</b></div>
+    <textarea id="noteText"></textarea>
+</div>
+
+</div></div>
+
+<script>
+function openApp(id){
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+function goHome(){openApp('home');}
+
+/* CLOCK */
+setInterval(()=>{
+    let d=new Date();
+    time.innerText=d.getHours().toString().padStart(2,"0")+":"+
+                   d.getMinutes().toString().padStart(2,"0");
+},1000);
+
+/* PHONE */
+let number="";
+let calling=false;
+function press(n){
+    if(calling)return;
+    number+=n;
+    dialNum.innerText=number.replace(/(\d{3})(\d{3})(\d+)/,"$1 $2 $3");
+}
+function startCall(){
+    if(!number)return;
+    calling=true;
+    dialNum.innerText="Calling…";
+}
+function endCall(){
+    calling=false;
+    number="";
+    dialNum.innerText="";
+}
+
+/* NOTES */
+let notes=[];
+function newNote(){
+    notes.unshift("New note");
+    renderNotes();
+    editNote(0);
+}
+function renderNotes(){
+    notesList.innerHTML="";
+    notes.forEach((n,i)=>{
+        let title=n.split("\n")[0];
+        notesList.innerHTML+=`
+        <div class="note" onclick="editNote(${i})">
+            <b>${title||"Note"}</b><br>
+            <small>${n.slice(0,50)}</small>
+        </div>`;
+    });
+}
+function editNote(i){
+    openApp('noteEdit');
+    noteText.value=notes[i];
+    noteText.focus();
+    noteText.oninput=()=>notes[i]=noteText.value;
+}
+
+/* MESSAGES */
+let contacts=[
+    {name:"John", replies:["Alright","Got it","👍"]},
+    {name:"Aisha", replies:["In shā’ Allāh","Yes","Noted"]},
+    {name:"Mom", replies:["Call me","Okay ❤️"]}
+];
+let chats={}, current=null;
+contacts.forEach(c=>chats[c.name]=[]);
+
+function renderChats(){
+    chatList.innerHTML="";
+    contacts.forEach(c=>{
+        let last=chats[c.name].slice(-1)[0]?.text||"No messages";
+        chatList.innerHTML+=`
+        <div class="item" onclick="openChat('${c.name}')">
+            <b>${c.name}</b>
+            <span>${last}</span>
+        </div>`;
+    });
+}
+function openChat(name){
+    current=contacts.find(c=>c.name===name);
+    chatName.innerText=name;
+    openApp('chatView');
+    renderChat();
+}
+function renderChat(){
+    chat.innerHTML="";
+    chats[current.name].forEach(m=>{
+        chat.innerHTML+=`<div class="bubble ${m.type}">${m.text}</div>`;
+    });
+    chat.scrollTop=chat.scrollHeight;
+}
+function sendMsg(){
+    if(!msgText.value)return;
+    chats[current.name].push({type:"sent",text:msgText.value});
+    msgText.value="";
+    renderChat();
+    setTimeout(()=>{
+        let r=current.replies[Math.floor(Math.random()*current.replies.length)];
+        chats[current.name].push({type:"recv",text:r});
+        renderChat();
+        renderChats();
+    },1000);
+}
+renderChats();
+</script>
+</body>
+</html>
